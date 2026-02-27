@@ -35,3 +35,12 @@
 
 В проект добавлен workflow `.github/workflows/pages.yml`.
 После пуша в `main`/`master` сайт деплоится на GitHub Pages автоматически.
+
+## Проверка перед push
+
+```bash
+node --check AngryBirdsGame.js
+python3 scripts/validate_project.py
+```
+
+Дополнительно это же проверяется в CI (`.github/workflows/ci.yml`).
