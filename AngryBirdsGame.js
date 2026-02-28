@@ -27,39 +27,20 @@ var STRING_DISCLAIMER7 = "";
 var STRING_DISCLAIMER8_DESKTOP = "";
 var STRING_DISCLAIMER8_MOBILE = "";
 
-// CHECKING THE USER LANGUAGE
-if (userLanguage.substring(0,2)=="es")
-	{
-	STRING_PLAY = "JUGAR";
-	STRING_PLAYWIDTH = 130;
-	STRING_YOUWIN = "BIEN HECHO!";
-	STRING_YOULOSE = "Vuelve a intentarlo!";
-	STRING_DISCLAIMER1 = "DESCARGO DE RESPONSABILIDAD";
-	STRING_DISCLAIMER2 = "Los recursos de Angry Birds";
-	STRING_DISCLAIMER3 = "(im" + String.fromCharCode(225) + "genes, fuentes, m" + String.fromCharCode(250) + "sica y sonidos)";
-	STRING_DISCLAIMER4 = "se proporcionan UNICAMENTE con fines";
-	STRING_DISCLAIMER5 = "educativos. Esta demostraci" + String.fromCharCode(243) + "n no est" + String.fromCharCode(225);
-	STRING_DISCLAIMER6 = "afiliada ni respaldada por sus respectivos";
-	STRING_DISCLAIMER7 = "titulares de derechos de autor.";
-	STRING_DISCLAIMER8_DESKTOP = "Haga click para continuar";
-	STRING_DISCLAIMER8_MOBILE = "Presione para continuar";
-	}
-	else
-	{
-	STRING_PLAY = "PLAY";
-	STRING_PLAYWIDTH = 108;
-	STRING_YOUWIN = "WELL DONE!";
-	STRING_YOULOSE = "Try it again!"
-	STRING_DISCLAIMER1 = "DISCLAIMER";
-	STRING_DISCLAIMER2 = "The Angry Birds resources";
-	STRING_DISCLAIMER3 = "(images, fonts, music and sounds)";
-	STRING_DISCLAIMER4 = "are provided for educational purposes ONLY.";
-	STRING_DISCLAIMER5 = "This demo is not affiliated with";
-	STRING_DISCLAIMER6 = "or endorsed by their respective";
-	STRING_DISCLAIMER7 = "copyright holders.";
-	STRING_DISCLAIMER8_DESKTOP = "Click to continue";
-	STRING_DISCLAIMER8_MOBILE = "Tap to continue";
-	}
+// CURRENTLY USING A SINGLE RUSSIAN UI COPY
+STRING_PLAY = "Играть";
+STRING_PLAYWIDTH = 150;
+STRING_YOUWIN = "Колобки празднуют!";
+STRING_YOULOSE = "Эх, попробуй ещё раз!";
+STRING_DISCLAIMER1 = "СЛУЖЕБНАЯ ЗАМЕТКА";
+STRING_DISCLAIMER2 = "Материалы Angry Birds";
+STRING_DISCLAIMER3 = "(изображения, шрифты, музыка и звуки)";
+STRING_DISCLAIMER4 = "используются здесь только";
+STRING_DISCLAIMER5 = "в учебных и демонстрационных целях.";
+STRING_DISCLAIMER6 = "Этот проект не связан";
+STRING_DISCLAIMER7 = "с правообладателями оригинала.";
+STRING_DISCLAIMER8_DESKTOP = "Нажмите, чтобы продолжить";
+STRING_DISCLAIMER8_MOBILE = "Коснитесь, чтобы продолжить";
 
 var GAME_SOUND_ENABLED = true;
 var GAME_LEVEL_SELECTED = "";
@@ -94,12 +75,12 @@ AngryBirds.Preloader.prototype = {
 	preload: function()
 		{
 		// ALL THE IMAGES THAT ARE GOING TO BE USED ARE LOADED FROM THE ASSETS FOLDER
-		var imageSplash = "assets/embedded/imageSplash.jpg";
+		var imageSplash = "assets/embedded/imageSplash.png";
 		var imageMenuTitle = "assets/embedded/imageMenuTitle.png";
 		var imageMenuPlay = "assets/embedded/imageMenuPlay.png";
 		var imageMenuSoundOn = "assets/embedded/imageMenuSoundOn.png";
 		var imageMenuSoundOff = "assets/embedded/imageMenuSoundOff.png";
-		var imageLevelSelectorBackground = "assets/embedded/imageLevelSelectorBackground.jpg";
+		var imageLevelSelectorBackground = "assets/embedded/imageLevelSelectorBackground.png";
 		var imageLevelSelectorLeftImage = "assets/embedded/imageLevelSelectorLeftImage.png";
 		var imageLevelSelectorRightImage = "assets/embedded/imageLevelSelectorRightImage.png";
 		var imageLevelSelectorLevel = "assets/embedded/imageLevelSelectorLevel.png";
@@ -406,9 +387,8 @@ AngryBirds.Menu.prototype = {
 		this.menuPlay = this.add.sprite(0, 155, "imageMenuPlay");
 		this.menuPlay.position.x = game.width / 2 - this.menuPlay.width / 2;
 
-		// ADDING THE PLAY BUTTON TEXT
-		this.menuPlayText = game.add.bitmapText(0, 250, "AngryBirdsFontLight", STRING_PLAY, 40);
-		this.menuPlayText.width = STRING_PLAYWIDTH;
+		// Bitmap fonts in this project do not contain Cyrillic glyphs.
+		this.menuPlayText = game.add.text(0, 250, STRING_PLAY, {font: "34px Plymouth", fill: "#fff7d6", stroke: "#7a2d12", strokeThickness: 4});
 		this.menuPlayText.position.x = Math.floor(game.width / 2 - this.menuPlayText.width / 2 - 1);
 		this.menuPlayText.position.y = Math.floor(game.height / 2 - this.menuPlayText.height / 2 + 48);
 		this.menuPlayText.fixedToCamera = true;
@@ -581,15 +561,6 @@ AngryBirds.LevelSelector.prototype = {
 		// ADDING THE BACKGROUND
 		this.levelSelectorBackgroundImage = this.add.sprite(0, 0, "imageLevelSelectorBackground");
 
-		// ADDING THE LEFT IMAGE
-		this.levelSelectorLeftImage = this.add.sprite(0, 0, "imageLevelSelectorLeftImage");
-		this.levelSelectorLeftImage.position.y = game.height - this.levelSelectorLeftImage.height;
-
-		// ADDING THE RIGHT IMAGE
-		this.levelSelectorRightImage = this.add.sprite(0, 0, "imageLevelSelectorRightImage");
-		this.levelSelectorRightImage.position.x = game.width - this.levelSelectorRightImage.width;
-		this.levelSelectorRightImage.position.y = game.height - this.levelSelectorRightImage.height;
-
 		// GETTING ALL THE SOLVED LEVELS
 		var solvedLevels = parseInt(game.state.states["AngryBirds.SplashGame"].getSolvedLevels());
 		if (isNaN(solvedLevels)==true)
@@ -684,17 +655,8 @@ AngryBirds.LevelSelector.prototype = {
 			MUSIC_PLAYER.stop();
 			}
 
-		// CHECKING IF THE USER SELECTED THE FIRST LEVEL
-		if (levelNumber=="1")
-			{
-			// LOADING THE EPISODE INTRO
-			game.state.start("AngryBirds.EpisodeIntro", Phaser.Plugin.StateTransition.Out.SlideLeft);
-			}
-			else
-			{
-			// LOADING THE GAME
-			game.state.start("AngryBirds.Game", Phaser.Plugin.StateTransition.Out.SlideLeft);
-			}
+		// LOADING THE GAME DIRECTLY
+		game.state.start("AngryBirds.Game", Phaser.Plugin.StateTransition.Out.SlideLeft);
 		}
 	};
 
@@ -962,7 +924,7 @@ AngryBirds.Game.prototype = {
 
 		// ADDING THE MENU ICON
 		this.menuIcon = this.add.sprite(5, 5, "imageGameMenu");
-		this.menuIcon.alpha = 0.5;
+		this.menuIcon.alpha = 1;
 		this.menuIcon.fixedToCamera = true;
 
 		// ADDING THE MENU ICON HANDLER
@@ -975,7 +937,7 @@ AngryBirds.Game.prototype = {
 
 		// ADDING THE RESTART ICON
 		this.restartIcon = this.add.sprite(70, 5, "imageGameRestart");
-		this.restartIcon.alpha = 0.5;
+		this.restartIcon.alpha = 1;
 		this.restartIcon.fixedToCamera = true;
 
 		// ADDING THE RESTART HANDLER
@@ -991,14 +953,14 @@ AngryBirds.Game.prototype = {
 			{
 			// ADDING THE SOUND ON ICON
 			this.soundIcon = this.add.sprite(135, 5, "imageGameSoundOn");
-			this.soundIcon.alpha = 0.5;
+			this.soundIcon.alpha = 1;
 			this.soundIcon.fixedToCamera = true;
 			}
 			else
 			{
 			// ADDING THE SOUND OFF ICON
 			this.soundIcon = this.add.sprite(135, 5, "imageGameSoundOff");
-			this.soundIcon.alpha = 0.5;
+			this.soundIcon.alpha = 1;
 			this.soundIcon.fixedToCamera = true;
 			}
 
@@ -1009,17 +971,6 @@ AngryBirds.Game.prototype = {
 		this.soundHandler.fixedToCamera = true;
 		this.soundHandler.inputEnabled = true;
 		this.soundHandler.events.onInputUp.add(function(){this.toggleSound()},this);
-
-		// ADDING THE DEBUG "PASS LEVEL" BUTTON
-		this.debugPassLevelButton = game.add.graphics();
-		this.debugPassLevelButton.beginFill(0x111111, 0.35);
-		this.debugPassLevelButton.drawRect(200, 5, 70, 32);
-		this.debugPassLevelButton.fixedToCamera = true;
-		this.debugPassLevelButton.inputEnabled = true;
-		this.debugPassLevelButton.events.onInputUp.add(function(){this.debugPassLevel()},this);
-
-		this.debugPassLevelLabel = game.add.bitmapText(209, 11, "AngryBirdsFont", "WIN", 18);
-		this.debugPassLevelLabel.fixedToCamera = true;
 
 		// ADDING THE BIRD LAUNCHER
 		this.birdLauncher = game.add.graphics(0, 0);
@@ -1626,8 +1577,14 @@ AngryBirds.Game.prototype = {
 				game.time.events.add(5000, function()
 					{
 					// REMOVING THE TOAST MESSAGE
-					game.state.states["AngryBirds.Game"].toastShadow.destroy();
-					game.state.states["AngryBirds.Game"].toastText.destroy();
+					if (game.state.states["AngryBirds.Game"].toastShadow!=null)
+						{
+						game.state.states["AngryBirds.Game"].toastShadow.destroy();
+						}
+					if (game.state.states["AngryBirds.Game"].toastText!=null)
+						{
+						game.state.states["AngryBirds.Game"].toastText.destroy();
+						}
 
 					// GOING BACK TO THE LEVEL SELECTOR
 					game.state.states["AngryBirds.Game"].goBackToLevelSelector();
@@ -1880,24 +1837,23 @@ AngryBirds.Game.prototype = {
 
 	showToast: function(myText)
 		{
-		// CREATING THE TOAST SHADOW
+		// CREATING THE TOAST BACKGROUND
 		this.toastShadow = game.add.graphics();
-		this.toastShadow.beginFill(0x000000, 0.3);
+		this.toastShadow.beginFill(0x2c7f83, 0.72);
 		this.toastShadow.fixedToCamera = true;
 		this.toastShadow.alpha = 0;
 
-		// CREATING THE TOAST TEXT
-		this.toastText = game.add.bitmapText(0, 0, "AngryBirdsFont", myText, 34.5);
-		this.toastText.height = 38.5;
-		this.toastText.position.x = game.width / 2 - this.toastText.width / 2;
-		this.toastText.position.y = 15;
+		// Bitmap fonts in this project do not contain Cyrillic glyphs.
+		this.toastText = game.add.text(0, 0, myText, {font: "28px Plymouth", fill: "#fff3cf"});
+		this.toastText.position.x = Math.floor(game.width / 2 - this.toastText.width / 2);
+		this.toastText.position.y = 18;
 		this.toastText.fixedToCamera = true;
 		this.toastText.alpha = 0;
 
-		// DRAWING THE TOAST SHADOW
-		this.toastShadow.drawRoundedRect(game.width / 2 - this.toastText.width / 2 - 10, 10, this.toastText.width + 20, 54, 10);
+		// DRAWING THE TOAST BACKGROUND
+		this.toastShadow.drawRoundedRect(Math.floor(game.width / 2 - this.toastText.width / 2 - 18), 8, Math.ceil(this.toastText.width + 36), 52, 14);
 
-		// FADING IN THE TOAST SHADOW
+		// FADING IN THE TOAST BACKGROUND
 		game.add.tween(this.toastShadow).to({alpha: 1}, 300, Phaser.Easing.Linear.None, true);
 
 		// FADING IN THE TOAST TEST
