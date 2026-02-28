@@ -96,7 +96,12 @@ AngryBirds.Preloader.prototype = {
 		var imageGamePoleLeft = "assets/embedded/imageGamePoleLeft.png";
 		var imageGamePoleRight = "assets/embedded/imageGamePoleRight.png";
 		var imageGameBird = "assets/embedded/imageGameBird.png";
+		var imageGameBird2 = "assets/embedded/imageGameBird-2.png";
+		var imageGameBird3 = "assets/embedded/imageGameBird-3.png";
 		var imageGamePig = "assets/embedded/imageGamePig.png";
+		var imageGamePig2 = "assets/embedded/imageGamePig-2.png";
+		var imageGamePig3 = "assets/embedded/imageGamePig-3.png";
+		var imageGamePig4 = "assets/embedded/imageGamePig-4.png";
 		var imageGameBoxLight = "assets/embedded/imageGameBoxLight.png";
 		var imageGameBoxHeavy = "assets/embedded/imageGameBoxHeavy.png";
 		var imageGameExplosion = "assets/embedded/imageGameExplosion.png";
@@ -140,7 +145,12 @@ AngryBirds.Preloader.prototype = {
 		this.load.image("imageGamePoleLeft", imageGamePoleLeft);
 		this.load.image("imageGamePoleRight", imageGamePoleRight);
 		this.load.image("imageGameBird", imageGameBird);
-		this.load.spritesheet("imageGamePig", imageGamePig, 48, 46, 6, 1, 2);
+		this.load.image("imageGameBird2", imageGameBird2);
+		this.load.image("imageGameBird3", imageGameBird3);
+		this.load.spritesheet("imageGamePig", imageGamePig, 50, 43, 3, 0, 0);
+		this.load.spritesheet("imageGamePig2", imageGamePig2, 50, 48, 3, 0, 0);
+		this.load.spritesheet("imageGamePig3", imageGamePig3, 50, 54, 3, 0, 0);
+		this.load.spritesheet("imageGamePig4", imageGamePig4, 50, 68, 3, 0, 0);
 		this.load.image("imageGameBoxLight", imageGameBoxLight);
 		this.load.image("imageGameBoxHeavy", imageGameBoxHeavy);
 		this.load.spritesheet("imageGameExplosion", imageGameExplosion, 48, 48, 5, 1, 2);
@@ -388,7 +398,7 @@ AngryBirds.Menu.prototype = {
 		this.menuPlay.position.x = game.width / 2 - this.menuPlay.width / 2;
 
 		// Bitmap fonts in this project do not contain Cyrillic glyphs.
-		this.menuPlayText = game.add.text(0, 250, STRING_PLAY, {font: "34px Plymouth", fill: "#fff7d6", stroke: "#7a2d12", strokeThickness: 4});
+		this.menuPlayText = game.add.text(0, 250, STRING_PLAY, {font: "34px Variete", fill: "#fff7d6", stroke: "#7a2d12", strokeThickness: 4});
 		this.menuPlayText.position.x = Math.floor(game.width / 2 - this.menuPlayText.width / 2 - 1);
 		this.menuPlayText.position.y = Math.floor(game.height / 2 - this.menuPlayText.height / 2 + 48);
 		this.menuPlayText.fixedToCamera = true;
@@ -792,6 +802,7 @@ AngryBirds.Game = function (game)
 	this.soundHandler = null;
 	this.turnInProgress = null;
 	this.currentLevel = null;
+	this.debugGraphics = null;
 
 	// SCALING THE CANVAS SIZE FOR THE GAME
 	function resizeF()
@@ -854,6 +865,7 @@ AngryBirds.Game.prototype = {
 		this.soundHandler = null;
 		this.turnInProgress = false;
 		this.currentLevel = null;
+		this.debugGraphics = null;
 		},
 
 	create: function()
@@ -881,6 +893,9 @@ AngryBirds.Game.prototype = {
 
 		// ADDING THE BACKGROUND
 		this.backgroundImage = this.add.tileSprite(0, 0, this.game.world.width * 2, this.game.world.height, "imageGameBackground");
+
+		// DEBUG OVERLAY
+		this.debugGraphics = this.add.graphics(0, 0);
 
 		// CREATING THE BIRDS GROUP
 		this.birds = this.add.group();
@@ -971,6 +986,22 @@ AngryBirds.Game.prototype = {
 		this.soundHandler.fixedToCamera = true;
 		this.soundHandler.inputEnabled = true;
 		this.soundHandler.events.onInputUp.add(function(){this.toggleSound()},this);
+
+		// ADDING A DEBUG WIN BUTTON
+		this.debugPassLevelButton = game.add.graphics();
+		this.debugPassLevelButton.beginFill(0x5B2C12, 0.85);
+		this.debugPassLevelButton.drawRoundedRect(0, 0, 74, 30, 8);
+		this.debugPassLevelButton.fixedToCamera = true;
+		this.debugPassLevelButton.cameraOffset.setTo(200, 20);
+		this.debugPassLevelButton.inputEnabled = true;
+		this.debugPassLevelButton.events.onInputUp.add(function(){this.debugPassLevel()},this);
+
+		this.debugPassLevelLabel = game.add.text(237, 35, "WIN", {
+			font: "18px Variete",
+			fill: "#fff3cf"
+		});
+		this.debugPassLevelLabel.anchor.setTo(0.5);
+		this.debugPassLevelLabel.fixedToCamera = true;
 
 		// ADDING THE BIRD LAUNCHER
 		this.birdLauncher = game.add.graphics(0, 0);
@@ -1192,6 +1223,10 @@ AngryBirds.Game.prototype = {
 			// BRINGING THE MENU ICON TO THE TOP
 			this.game.world.bringToTop(this.menuIcon);
 
+			// BRINGING THE DEBUG WIN BUTTON TO THE TOP
+			this.game.world.bringToTop(this.debugPassLevelButton);
+			this.game.world.bringToTop(this.debugPassLevelLabel);
+
 			// BRINGING THE RESTART ICON TO THE TOP
 			this.game.world.bringToTop(this.restartIcon);
 
@@ -1271,6 +1306,8 @@ AngryBirds.Game.prototype = {
 				game.state.states["AngryBirds.Game"].endTurn();
 				});
 			}
+
+		this.drawDebugOverlay();
 		},
 
 	hitEnemy: function(bodyA, bodyB, shapeA, shapeB, equation)
@@ -1383,8 +1420,27 @@ AngryBirds.Game.prototype = {
 
 	createEnemy: function(data)
 		{
+		var enemyAssetKey = data.asset;
+
+		if (data.asset=="imageGamePig")
+			{
+			var enemyIndex = this.enemies.children.length;
+			if (enemyIndex % 4==1)
+				{
+				enemyAssetKey = "imageGamePig2";
+				}
+			else if (enemyIndex % 4==2)
+				{
+				enemyAssetKey = "imageGamePig3";
+				}
+			else if (enemyIndex % 4==3)
+				{
+				enemyAssetKey = "imageGamePig4";
+				}
+			}
+
 		// CREATING THE BLOCK
-		var enemy = new Phaser.Sprite(this.game, data.x, data.y, data.asset);
+		var enemy = new Phaser.Sprite(this.game, data.x, data.y, enemyAssetKey);
 
 		// ADDING THE ENEMY TO THE ENEMIES GROUP
 		this.enemies.add(enemy);
@@ -1412,10 +1468,29 @@ AngryBirds.Game.prototype = {
 		return enemy;
 		},
 
+	getBirdAssetKey: function(birdIndex)
+		{
+		var birdVariant = birdIndex % 3;
+
+		if (birdVariant==1)
+			{
+			return "imageGameBird2";
+			}
+		else if (birdVariant==2)
+			{
+			return "imageGameBird3";
+			}
+
+		return "imageGameBird";
+		},
+
 	addBird: function()
 		{
+		var activeBirdIndex = Math.max(0, 3 - this.availableBirdsCounter);
+		var activeBirdKey = this.getBirdAssetKey(activeBirdIndex);
+
 		// ADDING A BIRD TO THE STARTING POSITION
-		this.bird = this.add.sprite(this.pole.x, this.pole.y, "imageGameBird");
+		this.bird = this.add.sprite(this.pole.x, this.pole.y, activeBirdKey);
 		this.bird.anchor.setTo(0.5);
 
 		// CREATING A REFERENCE TO THE CURRENT BIRD
@@ -1441,7 +1516,8 @@ AngryBirds.Game.prototype = {
 		for (var i = this.availableBirdsCounter - 2; i > -1; i--)
 			{
 			// ADDING THE BIRD
-			this.birds.create(90 - i * 70, 347, "imageGameBird");
+			var queueBirdIndex = activeBirdIndex + (this.availableBirdsCounter - 1 - i);
+			this.birds.create(84 - i * 78, 347, this.getBirdAssetKey(queueBirdIndex));
 			}
 
 		// MAKING THE CAMERA TO NOT FOLLOW THE BIRD
@@ -1604,6 +1680,72 @@ AngryBirds.Game.prototype = {
 		// EMULATE LAST ENEMY KILL TO REUSE THE ORIGINAL WIN/UNLOCK FLOW
 		this.countDeadEnemies = Math.max(0, this.totalNumEnemies - 1);
 		this.updateDeadCount();
+		},
+
+	drawDebugOverlay: function()
+		{
+		if (this.debugGraphics==null)
+			{
+			return;
+			}
+
+		this.debugGraphics.clear();
+
+		var floorTopY = this.game.world.height - 48;
+		this.debugGraphics.lineStyle(2, 0x00d7ff, 0.9);
+		this.debugGraphics.moveTo(0, floorTopY);
+		this.debugGraphics.lineTo(this.game.world.width * 2, floorTopY);
+
+		for (var i=0;i<this.blocks.children.length;i++)
+			{
+			var block = this.blocks.children[i];
+			if (block===this.floor)
+				{
+				continue;
+				}
+
+			this.debugGraphics.lineStyle(2, 0x35ff6b, 0.85);
+			this.debugGraphics.drawRect(block.x - block.width / 2, block.y - block.height / 2, block.width, block.height);
+			}
+
+		for (var j=0;j<this.enemies.children.length;j++)
+			{
+			var enemy = this.enemies.children[j];
+			var enemyCenterX = enemy.x;
+			var enemyCenterY = enemy.y;
+			var enemyRadius = Math.floor(Math.min(enemy.width, enemy.height) * 0.4);
+
+			this.debugGraphics.lineStyle(2, 0xd14cff, 0.85);
+			this.debugGraphics.drawRect(enemy.x - enemy.width / 2, enemy.y - enemy.height / 2, enemy.width, enemy.height);
+			this.debugGraphics.lineStyle(2, 0xffd84d, 0.95);
+			this.debugGraphics.drawCircle(enemyCenterX, enemyCenterY, enemyRadius * 2);
+			}
+
+		if (this.bird!=null && this.bird.alive!==false)
+			{
+			var birdCenterX = this.bird.body==null ? this.bird.x : this.bird.x;
+			var birdCenterY = this.bird.body==null ? this.bird.y : this.bird.y;
+			var birdRadius = Math.floor(Math.min(this.bird.width, this.bird.height) * 0.4);
+
+			this.debugGraphics.lineStyle(2, 0xff4d4d, 0.95);
+			this.debugGraphics.drawRect(this.bird.x - this.bird.width / 2, this.bird.y - this.bird.height / 2, this.bird.width, this.bird.height);
+			this.debugGraphics.drawCircle(birdCenterX, birdCenterY, birdRadius * 2);
+			}
+
+		for (var k=0;k<this.birds.children.length;k++)
+			{
+			var queueBird = this.birds.children[k];
+			var queueBirdCenterX = queueBird.x + queueBird.width / 2;
+			var queueBirdCenterY = queueBird.y + queueBird.height / 2;
+			var queueBirdRadius = Math.floor(Math.min(queueBird.width, queueBird.height) * 0.4);
+
+			this.debugGraphics.lineStyle(2, 0xffffff, 0.8);
+			this.debugGraphics.drawRect(queueBird.x, queueBird.y, queueBird.width, queueBird.height);
+			this.debugGraphics.lineStyle(2, 0xffb000, 0.9);
+			this.debugGraphics.drawCircle(queueBirdCenterX, queueBirdCenterY, queueBirdRadius * 2);
+			}
+
+		this.game.world.bringToTop(this.debugGraphics);
 		},
 
 	killBird: function()
@@ -1844,7 +1986,7 @@ AngryBirds.Game.prototype = {
 		this.toastShadow.alpha = 0;
 
 		// Bitmap fonts in this project do not contain Cyrillic glyphs.
-		this.toastText = game.add.text(0, 0, myText, {font: "28px Plymouth", fill: "#fff3cf"});
+		this.toastText = game.add.text(0, 0, myText, {font: "28px Variete", fill: "#fff3cf"});
 		this.toastText.position.x = Math.floor(game.width / 2 - this.toastText.width / 2);
 		this.toastText.position.y = 18;
 		this.toastText.fixedToCamera = true;
