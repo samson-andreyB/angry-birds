@@ -147,10 +147,10 @@ AngryBirds.Preloader.prototype = {
 		this.load.image("imageGameBird", imageGameBird);
 		this.load.image("imageGameBird2", imageGameBird2);
 		this.load.image("imageGameBird3", imageGameBird3);
-		this.load.spritesheet("imageGamePig", imageGamePig, 50, 43, 3, 0, 0);
+		this.load.spritesheet("imageGamePig", imageGamePig, 50, 48, 3, 0, 0);
 		this.load.spritesheet("imageGamePig2", imageGamePig2, 50, 48, 3, 0, 0);
-		this.load.spritesheet("imageGamePig3", imageGamePig3, 50, 54, 3, 0, 0);
-		this.load.spritesheet("imageGamePig4", imageGamePig4, 50, 68, 3, 0, 0);
+		this.load.spritesheet("imageGamePig3", imageGamePig3, 50, 48, 3, 0, 0);
+		this.load.spritesheet("imageGamePig4", imageGamePig4, 50, 48, 3, 0, 0);
 		this.load.image("imageGameBoxLight", imageGameBoxLight);
 		this.load.image("imageGameBoxHeavy", imageGameBoxHeavy);
 		this.load.spritesheet("imageGameExplosion", imageGameExplosion, 48, 48, 5, 1, 2);
@@ -866,6 +866,9 @@ AngryBirds.Game.prototype = {
 		this.turnInProgress = false;
 		this.currentLevel = null;
 		this.debugGraphics = null;
+		this.showDebugOverlay = true;
+		this.debugToggleButton = null;
+		this.debugToggleLabel = null;
 		},
 
 	create: function()
@@ -1002,6 +1005,22 @@ AngryBirds.Game.prototype = {
 		});
 		this.debugPassLevelLabel.anchor.setTo(0.5);
 		this.debugPassLevelLabel.fixedToCamera = true;
+
+		// ADDING A DEBUG OVERLAY TOGGLE BUTTON
+		this.debugToggleButton = game.add.graphics();
+		this.debugToggleButton.beginFill(0x1E5B58, 0.85);
+		this.debugToggleButton.drawRoundedRect(0, 0, 74, 30, 8);
+		this.debugToggleButton.fixedToCamera = true;
+		this.debugToggleButton.cameraOffset.setTo(280, 20);
+		this.debugToggleButton.inputEnabled = true;
+		this.debugToggleButton.events.onInputUp.add(function(){this.toggleDebugOverlay()},this);
+
+		this.debugToggleLabel = game.add.text(317, 35, "DBG", {
+			font: "18px Variete",
+			fill: "#fff3cf"
+		});
+		this.debugToggleLabel.anchor.setTo(0.5);
+		this.debugToggleLabel.fixedToCamera = true;
 
 		// ADDING THE BIRD LAUNCHER
 		this.birdLauncher = game.add.graphics(0, 0);
@@ -1226,6 +1245,8 @@ AngryBirds.Game.prototype = {
 			// BRINGING THE DEBUG WIN BUTTON TO THE TOP
 			this.game.world.bringToTop(this.debugPassLevelButton);
 			this.game.world.bringToTop(this.debugPassLevelLabel);
+			this.game.world.bringToTop(this.debugToggleButton);
+			this.game.world.bringToTop(this.debugToggleLabel);
 
 			// BRINGING THE RESTART ICON TO THE TOP
 			this.game.world.bringToTop(this.restartIcon);
@@ -1439,8 +1460,24 @@ AngryBirds.Game.prototype = {
 				}
 			}
 
+		var enemyY = data.y;
+		var enemyHeight = this.cache.getImage(enemyAssetKey).height;
+		var supportTopY = Number.POSITIVE_INFINITY;
+		this.levelData.blocks.forEach(function(blockData)
+			{
+			if (blockData.x==data.x)
+				{
+				supportTopY = Math.min(supportTopY, blockData.y);
+				}
+			}, this);
+
+		if (supportTopY!==Number.POSITIVE_INFINITY)
+			{
+			enemyY = supportTopY - enemyHeight;
+			}
+
 		// CREATING THE BLOCK
-		var enemy = new Phaser.Sprite(this.game, data.x, data.y, enemyAssetKey);
+		var enemy = new Phaser.Sprite(this.game, data.x, enemyY, enemyAssetKey);
 
 		// ADDING THE ENEMY TO THE ENEMIES GROUP
 		this.enemies.add(enemy);
@@ -1516,8 +1553,10 @@ AngryBirds.Game.prototype = {
 		for (var i = this.availableBirdsCounter - 2; i > -1; i--)
 			{
 			// ADDING THE BIRD
-			var queueBirdIndex = activeBirdIndex + (this.availableBirdsCounter - 1 - i);
-			this.birds.create(84 - i * 78, 347, this.getBirdAssetKey(queueBirdIndex));
+			var queueBirdIndex = activeBirdIndex + i + 1;
+			var queueBirdKey = this.getBirdAssetKey(queueBirdIndex);
+			var queueBird = this.birds.create(84 - i * 78, 0, queueBirdKey);
+			queueBird.y = this.game.world.height - 48 - queueBird.height;
 			}
 
 		// MAKING THE CAMERA TO NOT FOLLOW THE BIRD
@@ -1682,10 +1721,35 @@ AngryBirds.Game.prototype = {
 		this.updateDeadCount();
 		},
 
+	toggleDebugOverlay: function()
+		{
+		this.showDebugOverlay = !this.showDebugOverlay;
+		if (this.debugToggleButton!=null)
+			{
+			this.debugToggleButton.clear();
+			this.debugToggleButton.beginFill(this.showDebugOverlay ? 0x1E5B58 : 0x5B2C12, 0.85);
+			this.debugToggleButton.drawRoundedRect(0, 0, 74, 30, 8);
+			}
+		if (this.debugToggleLabel!=null)
+			{
+			this.debugToggleLabel.text = this.showDebugOverlay ? "DBG" : "NO DBG";
+			}
+		if (this.showDebugOverlay==false && this.debugGraphics!=null)
+			{
+			this.debugGraphics.clear();
+			}
+		},
+
 	drawDebugOverlay: function()
 		{
 		if (this.debugGraphics==null)
 			{
+			return;
+			}
+
+		if (this.showDebugOverlay==false)
+			{
+			this.debugGraphics.clear();
 			return;
 			}
 
