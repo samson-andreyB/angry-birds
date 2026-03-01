@@ -449,7 +449,6 @@ AngryBirds.Menu.prototype = {
 		this.menuPlay = null;
 		this.menuPlayText = null;
 		this.menuPlayHandler = null;
-		this.menuDebugControls = null;
 		this.menuSoundIcon = null;
 		this.menuSoundHandler = null;
 		},
@@ -513,18 +512,6 @@ AngryBirds.Menu.prototype = {
 		this.menuSoundHandler.inputEnabled = true;
 		this.menuSoundHandler.fixedToCamera = true;
 		this.menuSoundHandler.events.onInputUp.add(function(){this.toggleSound()},this);
-
-		// VISIBLE DEBUG AREAS FOR MENU CONTROLS
-		this.menuDebugControls = game.add.graphics();
-		this.menuDebugControls.fixedToCamera = true;
-		this.menuDebugControls.lineStyle(3, 0xffffff, 1);
-		this.menuDebugControls.beginFill(0xffffff, 0.08);
-		this.menuDebugControls.drawRect(this.menuPlay.x, this.menuPlay.y, this.menuPlay.width, this.menuPlay.height);
-		this.menuDebugControls.endFill();
-		this.menuDebugControls.lineStyle(3, 0x59d8ff, 1);
-		this.menuDebugControls.beginFill(0x59d8ff, 0.08);
-		this.menuDebugControls.drawRect(5, 5, 60, 60);
-		this.menuDebugControls.endFill();
 
 		// PLAYING THE MENU MUSIC
 		this.playMenuMusic();
@@ -884,7 +871,6 @@ AngryBirds.Game = function (game)
 	this.soundHandler = null;
 	this.turnInProgress = null;
 	this.currentLevel = null;
-	this.debugGraphics = null;
 
 	// SCALING THE CANVAS SIZE FOR THE GAME
 	function resizeF()
@@ -947,11 +933,6 @@ AngryBirds.Game.prototype = {
 		this.soundHandler = null;
 		this.turnInProgress = false;
 		this.currentLevel = null;
-		this.debugGraphics = null;
-		this.debugUiGraphics = null;
-		this.showDebugOverlay = true;
-		this.debugToggleButton = null;
-		this.debugToggleLabel = null;
 		},
 
 	create: function()
@@ -979,11 +960,6 @@ AngryBirds.Game.prototype = {
 
 		// ADDING THE BACKGROUND
 		this.backgroundImage = this.add.tileSprite(0, 0, this.game.world.width * 2, this.game.world.height, "gameBackground");
-
-		// DEBUG OVERLAY
-		this.debugGraphics = this.add.graphics(0, 0);
-		this.debugUiGraphics = this.add.graphics(0, 0);
-		this.debugUiGraphics.fixedToCamera = true;
 
 		// CREATING THE BIRDS GROUP
 		this.birds = this.add.group();
@@ -1074,38 +1050,6 @@ AngryBirds.Game.prototype = {
 		this.soundHandler.fixedToCamera = true;
 		this.soundHandler.inputEnabled = true;
 		this.soundHandler.events.onInputUp.add(function(){this.toggleSound()},this);
-
-		// ADDING A DEBUG WIN BUTTON
-		this.debugPassLevelButton = game.add.graphics();
-		this.debugPassLevelButton.beginFill(0x5B2C12, 0.85);
-		this.debugPassLevelButton.drawRoundedRect(0, 0, 74, 30, 8);
-		this.debugPassLevelButton.fixedToCamera = true;
-		this.debugPassLevelButton.cameraOffset.setTo(200, 20);
-		this.debugPassLevelButton.inputEnabled = true;
-		this.debugPassLevelButton.events.onInputUp.add(function(){this.debugPassLevel()},this);
-
-		this.debugPassLevelLabel = game.add.text(237, 35, "WIN", {
-			font: "18px Variete",
-			fill: "#fff3cf"
-		});
-		this.debugPassLevelLabel.anchor.setTo(0.5);
-		this.debugPassLevelLabel.fixedToCamera = true;
-
-		// ADDING A DEBUG OVERLAY TOGGLE BUTTON
-		this.debugToggleButton = game.add.graphics();
-		this.debugToggleButton.beginFill(0x1E5B58, 0.85);
-		this.debugToggleButton.drawRoundedRect(0, 0, 74, 30, 8);
-		this.debugToggleButton.fixedToCamera = true;
-		this.debugToggleButton.cameraOffset.setTo(280, 20);
-		this.debugToggleButton.inputEnabled = true;
-		this.debugToggleButton.events.onInputUp.add(function(){this.toggleDebugOverlay()},this);
-
-		this.debugToggleLabel = game.add.text(317, 35, "DBG", {
-			font: "18px Variete",
-			fill: "#fff3cf"
-		});
-		this.debugToggleLabel.anchor.setTo(0.5);
-		this.debugToggleLabel.fixedToCamera = true;
 
 		// ADDING THE BIRD LAUNCHER
 		this.birdLauncher = game.add.graphics(0, 0);
@@ -1327,12 +1271,6 @@ AngryBirds.Game.prototype = {
 			// BRINGING THE MENU ICON TO THE TOP
 			this.game.world.bringToTop(this.menuIcon);
 
-			// BRINGING THE DEBUG WIN BUTTON TO THE TOP
-			this.game.world.bringToTop(this.debugPassLevelButton);
-			this.game.world.bringToTop(this.debugPassLevelLabel);
-			this.game.world.bringToTop(this.debugToggleButton);
-			this.game.world.bringToTop(this.debugToggleLabel);
-
 			// BRINGING THE RESTART ICON TO THE TOP
 			this.game.world.bringToTop(this.restartIcon);
 
@@ -1413,7 +1351,6 @@ AngryBirds.Game.prototype = {
 				});
 			}
 
-		this.drawDebugOverlay();
 		},
 
 	hitEnemy: function(bodyA, bodyB, shapeA, shapeB, equation)
@@ -1794,136 +1731,6 @@ AngryBirds.Game.prototype = {
 					game.state.states["AngryBirds.Game"].goBackToLevelSelector();
 					});
 				}
-			}
-		},
-
-	debugPassLevel: function()
-		{
-		// AVOID DOUBLE TRIGGERING WHILE THE WIN FLOW IS ALREADY RUNNING
-		if (this.gameWon==true)
-			{
-			return;
-			}
-
-		// EMULATE LAST ENEMY KILL TO REUSE THE ORIGINAL WIN/UNLOCK FLOW
-		this.countDeadEnemies = Math.max(0, this.totalNumEnemies - 1);
-		this.updateDeadCount();
-		},
-
-	toggleDebugOverlay: function()
-		{
-		this.showDebugOverlay = !this.showDebugOverlay;
-		if (this.debugToggleButton!=null)
-			{
-			this.debugToggleButton.clear();
-			this.debugToggleButton.beginFill(this.showDebugOverlay ? 0x1E5B58 : 0x5B2C12, 0.85);
-			this.debugToggleButton.drawRoundedRect(0, 0, 74, 30, 8);
-			}
-		if (this.debugToggleLabel!=null)
-			{
-			this.debugToggleLabel.text = this.showDebugOverlay ? "DBG" : "NO DBG";
-			}
-		if (this.showDebugOverlay==false && this.debugGraphics!=null)
-			{
-			this.debugGraphics.clear();
-			}
-		},
-
-	drawDebugOverlay: function()
-		{
-		if (this.debugGraphics==null)
-			{
-			return;
-			}
-
-		if (this.showDebugOverlay==false)
-			{
-			this.debugGraphics.clear();
-			if (this.debugUiGraphics!=null)
-				{
-				this.debugUiGraphics.clear();
-				}
-			return;
-			}
-
-		this.debugGraphics.clear();
-		if (this.debugUiGraphics!=null)
-			{
-			this.debugUiGraphics.clear();
-			}
-
-		var floorTopY = this.game.world.height - 48;
-		this.debugGraphics.lineStyle(2, 0x00d7ff, 0.9);
-		this.debugGraphics.moveTo(0, floorTopY);
-		this.debugGraphics.lineTo(this.game.world.width * 2, floorTopY);
-
-		for (var i=0;i<this.blocks.children.length;i++)
-			{
-			var block = this.blocks.children[i];
-			if (block===this.floor)
-				{
-				continue;
-				}
-
-			this.debugGraphics.lineStyle(2, 0x35ff6b, 0.85);
-			this.debugGraphics.drawRect(block.x - block.width / 2, block.y - block.height / 2, block.width, block.height);
-			}
-
-		for (var j=0;j<this.enemies.children.length;j++)
-			{
-			var enemy = this.enemies.children[j];
-			var enemyCenterX = enemy.x;
-			var enemyCenterY = enemy.y;
-			var enemyRadius = Math.floor(Math.min(enemy.width, enemy.height) * 0.4);
-
-			this.debugGraphics.lineStyle(2, 0xd14cff, 0.85);
-			this.debugGraphics.drawRect(enemy.x - enemy.width / 2, enemy.y - enemy.height / 2, enemy.width, enemy.height);
-			this.debugGraphics.lineStyle(2, 0xffd84d, 0.95);
-			this.debugGraphics.drawCircle(enemyCenterX, enemyCenterY, enemyRadius * 2);
-			}
-
-		if (this.bird!=null && this.bird.alive!==false)
-			{
-			var birdCenterX = this.bird.body==null ? this.bird.x : this.bird.x;
-			var birdCenterY = this.bird.body==null ? this.bird.y : this.bird.y;
-			var birdRadius = Math.floor(Math.min(this.bird.width, this.bird.height) * 0.4);
-
-			this.debugGraphics.lineStyle(2, 0xff4d4d, 0.95);
-			this.debugGraphics.drawRect(this.bird.x - this.bird.width / 2, this.bird.y - this.bird.height / 2, this.bird.width, this.bird.height);
-			this.debugGraphics.drawCircle(birdCenterX, birdCenterY, birdRadius * 2);
-			}
-
-		for (var k=0;k<this.birds.children.length;k++)
-			{
-			var queueBird = this.birds.children[k];
-			var queueBirdCenterX = queueBird.x + queueBird.width / 2;
-			var queueBirdCenterY = queueBird.y + queueBird.height / 2;
-			var queueBirdRadius = Math.floor(Math.min(queueBird.width, queueBird.height) * 0.4);
-
-			this.debugGraphics.lineStyle(2, 0xffffff, 0.8);
-			this.debugGraphics.drawRect(queueBird.x, queueBird.y, queueBird.width, queueBird.height);
-			this.debugGraphics.lineStyle(2, 0xffb000, 0.9);
-			this.debugGraphics.drawCircle(queueBirdCenterX, queueBirdCenterY, queueBirdRadius * 2);
-			}
-
-		this.game.world.bringToTop(this.debugGraphics);
-		if (this.debugUiGraphics!=null)
-			{
-			var controlsCenterY = 35;
-			this.debugUiGraphics.lineStyle(2, 0x00d7ff, 0.8);
-			this.debugUiGraphics.moveTo(0, controlsCenterY);
-			this.debugUiGraphics.lineTo(360, controlsCenterY);
-
-			this.debugUiGraphics.lineStyle(2, 0x00ffcc, 0.9);
-			this.debugUiGraphics.drawRect(5, 5, 60, 60);
-			this.debugUiGraphics.drawRect(70, 5, 60, 60);
-			this.debugUiGraphics.drawRect(135, 5, 60, 60);
-
-			this.debugUiGraphics.lineStyle(2, 0xffb000, 0.9);
-			this.debugUiGraphics.drawRect(200, 20, 74, 30);
-			this.debugUiGraphics.drawRect(280, 20, 74, 30);
-
-			this.game.world.bringToTop(this.debugUiGraphics);
 			}
 		},
 
