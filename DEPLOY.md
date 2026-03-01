@@ -29,7 +29,7 @@ git push -u origin main
 
 После успешного workflow сайт будет доступен по адресу:
 
-- `https://<YOUR_USER>.github.io/angry-birds/AngryBirds.htm`
+- `https://<YOUR_USER>.github.io/angry-birds/index.html`
 
 ## Примечание
 

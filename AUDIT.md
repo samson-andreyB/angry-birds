@@ -19,7 +19,7 @@
 
 ### 2.1 Файловая структура
 
-- Точка входа оболочки: `AngryBirds.htm` (iframe-обертка, SW, manifest).
+- Точка входа оболочки: `index.html` (iframe-обертка, SW, manifest).
 - Игровая страница: `AngryBirdsGame.htm`.
 - Вся игровая логика: `AngryBirdsGame.js`.
 - Runtime-ассеты: `assets/embedded/*`.
@@ -55,7 +55,7 @@
 
 2. Неправильная конфигурация манифеста для форка/нового Pages
 - Файл: `AngryBirds.json`.
-- `start_url` и `icons.src` жестко указывают на `https://lrusso.github.io/AngryBirds/...`.
+- `start_url` и `icons.src` должны быть относительными и привязанными к текущему репозиторию.
 - Риск: в вашем репозитории PWA/иконки будут ссылаться на чужой origin.
 
 ## High
@@ -86,7 +86,7 @@
 - Риск: раздутый репозиторий и время клонирования.
 
 3. Обертка через iframe + частый `setInterval(..., 250)`
-- Файл: `AngryBirds.htm`.
+- Файл: `index.html`.
 - Риск: лишние перерисовки/focus-циклы, потенциальные мобильные баги.
 
 ## Low
@@ -203,14 +203,14 @@ git push -u origin main
 ## 8) GitHub Pages (публикация)
 
 1. Исправить `AngryBirds.json`:
-- `start_url` -> относительный (`"./AngryBirds.htm"`).
+- `start_url` -> относительный (`"./index.html"`).
 - `icons.src` -> относительные пути.
 
 2. Включить Pages:
 - Settings -> Pages -> Deploy from branch -> `main` / root.
 
 3. Проверка после деплоя:
-- Игра стартует по `https://<user>.github.io/<repo>/AngryBirds.htm`.
+- Игра стартует по `https://<user>.github.io/<repo>/index.html`.
 - Работают уровни и прогресс.
 - Нет 404 по ассетам.
 - SW отдает актуальные ресурсы после hard refresh.
@@ -224,4 +224,3 @@ git push -u origin main
 3. Декомпозиция JS и вынос уровней/ассетов в манифесты.
 4. i18n-инфраструктура.
 5. Финальная оптимизация и публикация на GitHub Pages.
-

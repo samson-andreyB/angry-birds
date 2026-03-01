@@ -34,5 +34,5 @@ if [[ "${FREE_PORT}" != "${PORT}" ]]; then
   echo "Port ${PORT} is busy, using ${FREE_PORT} instead."
 fi
 
-echo "Starting local server at http://${HOST}:${FREE_PORT}/AngryBirds.htm"
+echo "Starting local server at http://${HOST}:${FREE_PORT}/index.html"
 python3 -m http.server "${FREE_PORT}" --bind "${HOST}"

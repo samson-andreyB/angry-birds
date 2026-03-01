@@ -1,7 +1,7 @@
-const APP_CACHE = "angrybirds-v2";
+const APP_CACHE = "angrybirds-v3";
 
 const filesToCache = [
-	"AngryBirds.htm",
+	"index.html",
 	"AngryBirds.json",
 	"AngryBirds.png",
 	"AngryBirdsFavIcon_16x16.png",

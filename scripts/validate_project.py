@@ -8,7 +8,6 @@ JS_PATH = ROOT / "AngryBirdsGame.js"
 
 REQUIRED_FILES = [
     ROOT / "index.html",
-    ROOT / "AngryBirds.htm",
     ROOT / "AngryBirdsGame.htm",
     ROOT / "AngryBirdsGame.js",
     ROOT / "worker.js",
@@ -28,10 +27,10 @@ def main() -> int:
     js = JS_PATH.read_text(encoding="utf-8", errors="ignore")
 
     # 1) Check referenced embedded assets exist on disk.
-    refs = sorted(set(re.findall(r"assets/embedded/[A-Za-z0-9_./-]+", js)))
+    refs = sorted(set(re.findall(r"assets/(?:img|audio|fonts)/[A-Za-z0-9_./-]+", js)))
     missing = [p for p in refs if not (ROOT / p).exists()]
     if missing:
-        print("[FAIL] Missing embedded assets referenced in AngryBirdsGame.js:")
+        print("[FAIL] Missing assets referenced in AngryBirdsGame.js:")
         for p in missing:
             print(f"  - {p}")
         return 1
@@ -55,7 +54,7 @@ def main() -> int:
         fail("Legacy Splash/Disclaimer states are still registered")
 
     print("[OK] Project validation passed")
-    print(f"[INFO] Referenced embedded assets: {len(refs)}")
+    print(f"[INFO] Referenced assets: {len(refs)}")
     print(f"[INFO] Levels defined/loaded: 1..{max(defined)}")
     return 0
 
