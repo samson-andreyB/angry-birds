@@ -258,7 +258,7 @@ AngryBirds.SplashGame.prototype = {
 		// SHOWING THE CONTINUE PROMPT AFTER A SHORT DELAY
 		game.time.events.add(3000, function()
 			{
-			this.splashContinueText = game.add.text(0, 0, "Нажмите, чтобы продолжить", {font: "28px Variete", fill: "#fff3cf"});
+		this.splashContinueText = game.add.text(0, 0, "Нажмите, чтобы продолжить", {font: "28px Semlor", fill: "#fff3cf"});
 			this.splashContinueText.position.x = Math.floor(game.width / 2 - this.splashContinueText.width / 2);
 			this.splashContinueText.position.y = Math.floor(game.height - 58);
 			this.splashContinueText.fixedToCamera = true;
@@ -1985,7 +1985,7 @@ AngryBirds.Game.prototype = {
 		this.toastShadow.alpha = 0;
 
 		// Bitmap fonts in this project do not contain Cyrillic glyphs.
-		this.toastText = game.add.text(0, 0, myText, {font: "28px Variete", fill: "#fff3cf"});
+		this.toastText = game.add.text(0, 0, myText, {font: "28px Semlor", fill: "#fff3cf"});
 		this.toastText.position.x = Math.floor(game.width / 2 - this.toastText.width / 2);
 		this.toastText.position.y = 18;
 		this.toastText.fixedToCamera = true;
