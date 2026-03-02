@@ -128,6 +128,7 @@ AngryBirds.Preloader.prototype = {
 		var musicBackground = "assets/audio/background.mp3";
 		var sfxSlingshot = "assets/audio/slingshot.mp3";
 		var sfxFly = "assets/audio/fly.mp3";
+		var sfxFlyBogatyr = "assets/audio/hero-3.mp3";
 		var sfxExplosion = "assets/audio/explosion.mp3";
 		var sfxExplosionLight = "assets/audio/explosion-2.mp3";
 		var sfxExplosionHeavy = "assets/audio/explosion-3.mp3";
@@ -188,6 +189,7 @@ AngryBirds.Preloader.prototype = {
 		this.load.audio("musicBackground", musicBackground);
 		this.load.audio("sfxSlingshot", sfxSlingshot);
 		this.load.audio("sfxFly", sfxFly);
+		this.load.audio("sfxFlyBogatyr", sfxFlyBogatyr);
 		this.load.audio("sfxExplosion", sfxExplosion);
 		this.load.audio("sfxExplosionLight", sfxExplosionLight);
 		this.load.audio("sfxExplosionHeavy", sfxExplosionHeavy);
@@ -1770,8 +1772,10 @@ AngryBirds.Game.prototype = {
 		// CHECKING IF THE SOUND IS ENABLED
 		if (GAME_SOUND_ENABLED==true)
 			{
+			var flyAudioKey = this.currentBirdKey=="heroKolobokBogatyr" ? "sfxFlyBogatyr" : "sfxFly";
+
 			// LOADING THE AUDIO FLY
-			this.audioPlayer = this.add.audio("sfxFly");
+			this.audioPlayer = this.add.audio(flyAudioKey);
 
 			// SETTING THE AUDIO FLY VOLUME
 			this.audioPlayer.volume = 1;
