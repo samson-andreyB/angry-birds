@@ -81,7 +81,18 @@ AngryBirds.Preloader.prototype = {
 		var menuSoundOn = "assets/img/ui/sound-on.png";
 		var menuSoundOff = "assets/img/ui/sound-off.png";
 		var levelSelectBackground = "assets/img/level-selector/background.png";
-		var levelSelectButton = "assets/img/level-selector/level-button.png";
+		var levelSelectButton01 = "assets/img/level-selector/level-button-01.png";
+		var levelSelectButton02 = "assets/img/level-selector/level-button-02.png";
+		var levelSelectButton03 = "assets/img/level-selector/level-button-03.png";
+		var levelSelectButton04 = "assets/img/level-selector/level-button-04.png";
+		var levelSelectButton05 = "assets/img/level-selector/level-button-05.png";
+		var levelSelectButton06 = "assets/img/level-selector/level-button-06.png";
+		var levelSelectButton07 = "assets/img/level-selector/level-button-07.png";
+		var levelSelectButton08 = "assets/img/level-selector/level-button-08.png";
+		var levelSelectButton09 = "assets/img/level-selector/level-button-09.png";
+		var levelSelectButton10 = "assets/img/level-selector/level-button-10.png";
+		var levelSelectButton11 = "assets/img/level-selector/level-button-11.png";
+		var levelSelectButton12 = "assets/img/level-selector/level-button-12.png";
 		var levelSelectLocked = "assets/img/level-selector/level-locked.png";
 		var levelSelectStar1 = "assets/img/level-selector/star-1.png";
 		var levelSelectStar2 = "assets/img/level-selector/star-2.png";
@@ -126,7 +137,18 @@ AngryBirds.Preloader.prototype = {
 		this.load.image("menuSoundOn", menuSoundOn);
 		this.load.image("menuSoundOff", menuSoundOff);
 		this.load.image("levelSelectBackground", levelSelectBackground);
-		this.load.image("levelSelectButton", levelSelectButton);
+		this.load.image("levelSelectButton01", levelSelectButton01);
+		this.load.image("levelSelectButton02", levelSelectButton02);
+		this.load.image("levelSelectButton03", levelSelectButton03);
+		this.load.image("levelSelectButton04", levelSelectButton04);
+		this.load.image("levelSelectButton05", levelSelectButton05);
+		this.load.image("levelSelectButton06", levelSelectButton06);
+		this.load.image("levelSelectButton07", levelSelectButton07);
+		this.load.image("levelSelectButton08", levelSelectButton08);
+		this.load.image("levelSelectButton09", levelSelectButton09);
+		this.load.image("levelSelectButton10", levelSelectButton10);
+		this.load.image("levelSelectButton11", levelSelectButton11);
+		this.load.image("levelSelectButton12", levelSelectButton12);
 		this.load.image("levelSelectLocked", levelSelectLocked);
 		this.load.image("levelSelectStar1", levelSelectStar1);
 		this.load.image("levelSelectStar2", levelSelectStar2);
@@ -758,7 +780,9 @@ AngryBirds.LevelSelector.prototype = {
 	createLevelButton: function(x, y, levelNumber, solvedLevels)
 		{
 		// GETTING THE CURRENT LEVEL KEY
-		var nextLevel = "level" + (parseInt(levelNumber));
+		var normalizedLevelNumber = ("0" + parseInt(levelNumber)).slice(-2);
+		var nextLevel = "level" + parseInt(levelNumber);
+		var levelButtonAssetKey = "levelSelectButton" + normalizedLevelNumber;
 
 		// CHECKING IF THE LEVEL IS BLOCKED OR DOESN'T EXISTS AS A TEXT KEY
 		if (solvedLevels+1<levelNumber || game.cache.checkTextKey(nextLevel)==false)
@@ -769,12 +793,7 @@ AngryBirds.LevelSelector.prototype = {
 			else
 			{
 			// ADDING THE LEVEL IMAGE
-			var levelSelectorLevelImage = this.add.sprite(x, y, "levelSelectButton");
-
-			// ADDING THE LEVEL LABEL
-			var levelSelectorLevelNumber = game.add.bitmapText(0, 0, "AngryBirdsFont", levelNumber, 35);
-			levelSelectorLevelNumber.position.x = levelSelectorLevelImage.position.x + levelSelectorLevelImage.width / 2 - levelSelectorLevelNumber.width / 2;
-			levelSelectorLevelNumber.position.y = levelSelectorLevelImage.position.y + levelSelectorLevelImage.height / 2 - levelSelectorLevelNumber.height / 2 - 13;
+			var levelSelectorLevelImage = this.add.sprite(x, y, levelButtonAssetKey);
 
 			// ADDING THE LEVEL HANDLER
 			var levelSelectorLevelHandler = game.add.graphics();
