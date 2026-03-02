@@ -98,7 +98,9 @@ AngryBirds.Preloader.prototype = {
 		var levelSelectStar2 = "assets/img/level-selector/star-2.png";
 		var levelSelectStar3 = "assets/img/level-selector/star-3.png";
 		var levelSelectBackButton = "assets/img/level-selector/back-button.png";
-		var gameBackground = "assets/img/game/background.png";
+		var gameBackground1 = "assets/img/game/background-1.png";
+		var gameBackground2 = "assets/img/game/background-2.png";
+		var gameBackground3 = "assets/img/game/background-3.png";
 		var gameFloor = "assets/img/game/floor.png";
 		var gameGrassBack = "assets/img/game/grass-back.png";
 		var gameGrassFront = "assets/img/game/grass-front.png";
@@ -127,6 +129,8 @@ AngryBirds.Preloader.prototype = {
 		var sfxSlingshot = "assets/audio/slingshot.mp3";
 		var sfxFly = "assets/audio/fly.mp3";
 		var sfxExplosion = "assets/audio/explosion.mp3";
+		var sfxExplosionLight = "assets/audio/explosion-2.mp3";
+		var sfxExplosionHeavy = "assets/audio/explosion-3.mp3";
 		var sfxYouWin = "assets/audio/you-win.mp3";
 		var sfxYouLose = "assets/audio/you-lose.mp3";
 
@@ -154,7 +158,9 @@ AngryBirds.Preloader.prototype = {
 		this.load.image("levelSelectStar2", levelSelectStar2);
 		this.load.image("levelSelectStar3", levelSelectStar3);
 		this.load.image("levelSelectBackButton", levelSelectBackButton);
-		this.load.image("gameBackground", gameBackground);
+		this.load.image("gameBackground1", gameBackground1);
+		this.load.image("gameBackground2", gameBackground2);
+		this.load.image("gameBackground3", gameBackground3);
 		this.load.image("gameFloor", gameFloor);
 		this.load.image("gameGrassBack", gameGrassBack);
 		this.load.image("gameGrassFront", gameGrassFront);
@@ -183,6 +189,8 @@ AngryBirds.Preloader.prototype = {
 		this.load.audio("sfxSlingshot", sfxSlingshot);
 		this.load.audio("sfxFly", sfxFly);
 		this.load.audio("sfxExplosion", sfxExplosion);
+		this.load.audio("sfxExplosionLight", sfxExplosionLight);
+		this.load.audio("sfxExplosionHeavy", sfxExplosionHeavy);
 		this.load.audio("sfxYouWin", sfxYouWin);
 		this.load.audio("sfxYouLose", sfxYouLose);
 
@@ -478,7 +486,7 @@ AngryBirds.Menu.prototype = {
 	create: function()
 		{
 		// ADDING THE BACKGROUND
-		this.menuBackgroundImage = this.add.tileSprite(0, 0, this.game.world.width, this.game.world.height, "gameBackground");
+		this.menuBackgroundImage = this.add.tileSprite(0, 0, this.game.world.width, this.game.world.height, "gameBackground1");
 
 		// ADDING THE FLOOR
 		this.menuFloor = this.add.tileSprite(0, this.game.world.height - 48, this.game.world.width, 48, "gameFloor");
@@ -737,6 +745,7 @@ AngryBirds.LevelSelector.prototype = {
 			{
 			solvedLevels = 0;
 			}
+		solvedLevels = 11;
 
 		// ADDING LEVEL BUTTONS FROM 1 TO 5
 		this.createLevelButton(50,   50,  "1", solvedLevels);
@@ -950,6 +959,20 @@ AngryBirds.Game.prototype = {
 		this.birdLandedAt = null;
 		},
 
+	getCurrentBackgroundKey: function()
+		{
+		var levelNumber = parseInt(this.currentLevel, 10);
+		if (levelNumber>=9)
+			{
+			return "gameBackground3";
+			}
+		if (levelNumber>=5)
+			{
+			return "gameBackground2";
+			}
+		return "gameBackground1";
+		},
+
 	create: function()
 		{
 		// SETTING THE WORLD BOUNDS
@@ -974,7 +997,7 @@ AngryBirds.Game.prototype = {
 		this.birdsCollisionGroup = this.game.physics.p2.createCollisionGroup();
 
 		// ADDING THE BACKGROUND
-		this.backgroundImage = this.add.tileSprite(0, 0, this.game.world.width * 2, this.game.world.height, "gameBackground");
+		this.backgroundImage = this.add.tileSprite(0, 0, this.game.world.width * 2, this.game.world.height, this.getCurrentBackgroundKey());
 
 		// CREATING THE BIRDS GROUP
 		this.birds = this.add.group();
@@ -1065,6 +1088,7 @@ AngryBirds.Game.prototype = {
 		this.soundHandler.fixedToCamera = true;
 		this.soundHandler.inputEnabled = true;
 		this.soundHandler.events.onInputUp.add(function(){this.toggleSound()},this);
+
 
 		// ADDING THE BIRD LAUNCHER
 		this.birdLauncher = game.add.graphics(0, 0);
@@ -1313,7 +1337,7 @@ AngryBirds.Game.prototype = {
 		for (var i=0;i<this.enemies.children.length;i++)
 			{
 			// CHECKING IF THE ENEMY IS IN MOVEMENT AND THAT WASN'T KILLED
-			if (Math.abs(this.enemies.children[i].body.velocity.x) + Math.abs(this.enemies.children[i].body.velocity.y) > 0.8 && this.enemies.children[i].alpha==1)
+			if (this.enemies.children[i].exists==true && this.enemies.children[i].body!=null && Math.abs(this.enemies.children[i].body.velocity.x) + Math.abs(this.enemies.children[i].body.velocity.y) > 0.8 && this.enemies.children[i].alpha==1)
 				{
 				// SETTING THAT THE GAME IS MOTION
 				gameInMotion = true;
@@ -1324,7 +1348,7 @@ AngryBirds.Game.prototype = {
 		for (var i=0;i<this.blocks.children.length;i++)
 			{
 			// CHECKING IF THE BLOCK IS IN MOVEMENT
-			if (Math.abs(this.blocks.children[i].body.velocity.x) + Math.abs(this.blocks.children[i].body.velocity.y) > 0.8)
+			if (this.blocks.children[i].exists==true && this.blocks.children[i].body!=null && Math.abs(this.blocks.children[i].body.velocity.x) + Math.abs(this.blocks.children[i].body.velocity.y) > 0.8)
 				{
 				// SETTING THAT THE GAME IS MOTION
 				gameInMotion = true;
@@ -1476,7 +1500,8 @@ AngryBirds.Game.prototype = {
 
 		if (GAME_SOUND_ENABLED==true)
 			{
-			gameState.audioPlayer = gameState.add.audio("sfxExplosion");
+			var blockExplosionSound = this.assetKey=="blockHeavy" ? "sfxExplosionHeavy" : "sfxExplosionLight";
+			gameState.audioPlayer = gameState.add.audio(blockExplosionSound);
 			gameState.audioPlayer.volume = 1;
 			gameState.audioPlayer.loop = false;
 			gameState.audioPlayer.play();
