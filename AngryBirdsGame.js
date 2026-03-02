@@ -946,6 +946,8 @@ AngryBirds.Game.prototype = {
 		this.soundHandler = null;
 		this.turnInProgress = false;
 		this.currentLevel = null;
+		this.currentBirdKey = null;
+		this.birdLandedAt = null;
 		},
 
 	create: function()
@@ -1332,6 +1334,20 @@ AngryBirds.Game.prototype = {
 		// CHECKING IF THE BIRD IS IN MOVEMENT
 		if (this.bird.body!=null)
 			{
+			// KILL THE BIRD 4 SECONDS AFTER THE FIRST GROUND LANDING IF IT STILL EXISTS
+			if (this.birdLandedAt!=null && this.bird.alpha==1 && game.time.now - this.birdLandedAt >= 4000)
+				{
+				// FLAGGING THE BIRD
+				this.bird.alpha = 0.99;
+
+				// WAITING A BRIEF MOMENT TO REUSE THE SAME KILL FLOW
+				game.time.events.add(50, function()
+					{
+					// KILLING THE BIRD
+					game.state.states["AngryBirds.Game"].killBird();
+					});
+				}
+
 			// CHECKING IF THE BIRD IS NOT MOVING ANYMORE OR IF IT'S OUT OF THE SCREEN
 			if ((Math.abs(this.bird.body.velocity.x) + Math.abs(this.bird.body.velocity.y) < 0.2 && this.bird.alpha==1) || (this.bird.position.x>game.world.width + 30 && this.bird.alpha==1))
 				{
@@ -1368,6 +1384,18 @@ AngryBirds.Game.prototype = {
 
 	hitEnemy: function(bodyA, bodyB, shapeA, shapeB, equation)
 		{
+		var gameState = game.state.states["AngryBirds.Game"];
+		if (bodyA==null || bodyB==null || equation==null || equation[0]==null)
+			{
+			return;
+			}
+
+		var birdBody = gameState.bird && gameState.bird.body ? gameState.bird.body : null;
+		if (birdBody==null || bodyA!=birdBody && bodyB!=birdBody)
+			{
+			return;
+			}
+
 		// GETTING THE HIT VELOCITY
 		var velocityDiff = Phaser.Point.distance(new Phaser.Point(equation[0].bodyA.velocity[0], equation[0].bodyA.velocity[1]), new Phaser.Point(equation[0].bodyB.velocity[0], equation[0].bodyB.velocity[1]));
 
@@ -1408,6 +1436,50 @@ AngryBirds.Game.prototype = {
 
 			// UPDATING THE DEAD COUNT
 			game.state.states["AngryBirds.Game"].updateDeadCount();
+			}
+		},
+
+	hitBlock: function(bodyA, bodyB, shapeA, shapeB, equation)
+		{
+		var gameState = game.state.states["AngryBirds.Game"];
+		var birdBody = gameState.bird && gameState.bird.body ? gameState.bird.body : null;
+		if (birdBody==null || bodyA==null || bodyB==null || equation==null || equation[0]==null)
+			{
+			return;
+			}
+
+		if (bodyA!=birdBody && bodyB!=birdBody)
+			{
+			return;
+			}
+
+		var canDestroyBlock =
+			(gameState.currentBirdKey=="heroKolobokWreath" && this.assetKey=="blockLight") ||
+			(gameState.currentBirdKey=="heroKolobokBogatyr" && (this.assetKey=="blockLight" || this.assetKey=="blockHeavy"));
+
+		if (canDestroyBlock==false)
+			{
+			return;
+			}
+
+		var velocityDiff = Phaser.Point.distance(new Phaser.Point(equation[0].bodyA.velocity[0], equation[0].bodyA.velocity[1]), new Phaser.Point(equation[0].bodyB.velocity[0], equation[0].bodyB.velocity[1]));
+		if (velocityDiff <= gameState.KILL_DIFF)
+			{
+			return;
+			}
+
+		this.explosion.position.x = this.position.x - 24;
+		this.explosion.position.y = this.position.y - 24;
+		this.explosion.animations.play("explosion", 10, false);
+		this.explosion.visible = true;
+		this.kill();
+
+		if (GAME_SOUND_ENABLED==true)
+			{
+			gameState.audioPlayer = gameState.add.audio("sfxExplosion");
+			gameState.audioPlayer.volume = 1;
+			gameState.audioPlayer.loop = false;
+			gameState.audioPlayer.play();
 			}
 		},
 
@@ -1463,12 +1535,23 @@ AngryBirds.Game.prototype = {
 
 		// SETTING THE BLOCK MASS
 		block.body.mass = data.mass;
+		block.assetKey = data.asset;
 
 		// SETTING THE COLLISION GROUP
 		block.body.setCollisionGroup(this.blocksCollisionGroup);
 
 		// SETTING THAT THE BLOCK WILL COLLIDE WITH ENEMIES, BIRDS AND OTHER BLOCKS
 		block.body.collides([this.blocksCollisionGroup, this.enemiesCollisionGroup, this.birdsCollisionGroup]);
+		block.body.onBeginContact.add(this.hitBlock, block);
+
+		// ADDING THE EXPLOSION SPRITE
+		block.explosion = game.add.sprite(420, 307, "effectExplosion");
+		block.explosionAnimation = block.explosion.animations.add("explosion", [0, 1, 2, 3, 4]);
+		block.explosionAnimation.onComplete.add(function()
+			{
+			block.explosion.visible = false;
+			}, block);
+		block.explosion.visible = false;
 
 		// RETURNING THE BLOCK
 		return block;
@@ -1560,6 +1643,8 @@ AngryBirds.Game.prototype = {
 		{
 		var activeBirdIndex = Math.max(0, 3 - this.availableBirdsCounter);
 		var activeBirdKey = this.getBirdAssetKey(activeBirdIndex);
+		this.currentBirdKey = activeBirdKey;
+		this.birdLandedAt = null;
 
 		// ADDING A BIRD TO THE STARTING POSITION
 		this.bird = this.add.sprite(this.pole.x, this.pole.y, activeBirdKey);
@@ -1628,6 +1713,15 @@ AngryBirds.Game.prototype = {
 
 		// ENABLING PHYSICS TO THE BIRD
 		this.game.physics.p2.enable(this.bird);
+
+		// USE A ROUND BODY SO THE KOLOBOK ROLLS NATURALLY AFTER LANDING
+		var birdRadius = Math.floor(Math.min(this.bird.width, this.bird.height) * 0.42);
+		this.bird.body.clearShapes();
+		this.bird.body.setCircle(birdRadius);
+		this.bird.body.fixedRotation = false;
+		this.bird.body.damping = 0.12;
+		this.bird.body.angularDamping = 0.08;
+		this.bird.body.onBeginContact.add(this.handleBirdLandingContact, this);
 
 		// SETTING THE COLLISION GROUP
 		this.bird.body.setCollisionGroup(this.birdsCollisionGroup);
@@ -1744,6 +1838,14 @@ AngryBirds.Game.prototype = {
 					game.state.states["AngryBirds.Game"].goBackToLevelSelector();
 					});
 				}
+			}
+		},
+
+	handleBirdLandingContact: function(body)
+		{
+		if (this.birdLandedAt==null && body!=null && this.floor!=null && body===this.floor.body)
+			{
+			this.birdLandedAt = game.time.now;
 			}
 		},
 
