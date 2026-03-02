@@ -497,12 +497,6 @@ AngryBirds.Menu.prototype = {
 		this.menuPlay = this.add.sprite(0, 175, "menuPlayButton");
 		this.menuPlay.position.x = game.width / 2 - this.menuPlay.width / 2;
 
-		// Bitmap fonts in this project do not contain Cyrillic glyphs.
-		this.menuPlayText = game.add.text(0, 250, STRING_PLAY, {font: "34px Variete", fill: "#fff7d6", stroke: "#7a2d12", strokeThickness: 4});
-		this.menuPlayText.position.x = Math.floor(this.menuPlay.x + this.menuPlay.width / 2 - this.menuPlayText.width / 2);
-		this.menuPlayText.position.y = Math.floor(this.menuPlay.y + this.menuPlay.height / 2 - this.menuPlayText.height / 2 - 1);
-		this.menuPlayText.fixedToCamera = true;
-
 		// ADDING THE PLAY BUTTON HANDLER
 		this.menuPlayHandler = game.add.graphics();
 		this.menuPlayHandler.beginFill(0x000000, 0);
