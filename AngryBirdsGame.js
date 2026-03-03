@@ -1263,17 +1263,6 @@ AngryBirds.Game.prototype = {
 		// ADDING A BIRD
 		this.addBird();
 
-		// LOOPING ALL THE ENEMIES
-		for (var i=0;i<this.enemies.children.length;i++)
-			{
-			// ADDING THE ENEMY ANIMATIONS
-			this.enemies.children[i].animations.add("stand", [1, 2, 0]);
-			this.enemies.children[i].animations.add("win", [2]);
-
-			// PLAYING THE ENEMY STAND ANIMATION
-			this.enemies.children[i].animations.play("stand", 0.5, true);
-			}
-
 		// CHECKING IF THE SOUND IS ENABLED
 		if (GAME_SOUND_ENABLED==true)
 			{
@@ -1300,6 +1289,21 @@ AngryBirds.Game.prototype = {
 
 	update: function()
 		{
+		// UPDATING THE ENEMY POSES DEPENDING ON THEIR STATE
+		for (var i=0;i<this.enemies.children.length;i++)
+			{
+			var enemy = this.enemies.children[i];
+
+			if (enemy.exists==true && enemy.poseChanged!==true)
+				{
+				if (Math.abs(enemy.x-enemy.startPositionX)>2 || Math.abs(enemy.y-enemy.startPositionY)>2)
+					{
+					enemy.frame = 0;
+					enemy.poseChanged = true;
+					}
+				}
+			}
+
 		// CHECKING IF THE WORLD CAMERA CAN BE MOVED
 		if (this.input.activePointer.isDown==true && this.isPreparingShot==false)
 			{
@@ -1750,6 +1754,12 @@ AngryBirds.Game.prototype = {
 		// CREATING THE BLOCK
 		var enemy = new Phaser.Sprite(this.game, data.x, enemyY, enemyAssetKey);
 
+		// SETTING THE DEFAULT ENEMY POSE
+		enemy.frame = 1;
+		enemy.startPositionX = data.x;
+		enemy.startPositionY = enemyY;
+		enemy.poseChanged = false;
+
 		// ADDING THE ENEMY TO THE ENEMIES GROUP
 		this.enemies.add(enemy);
 
@@ -2050,8 +2060,8 @@ AngryBirds.Game.prototype = {
 				// LOOPING ALL THE ENEMIES
 				for (var i=0;i<this.enemies.children.length;i++)
 					{
-					// PLAYING THE ENEMY WIN ANIMATION
-					this.enemies.children[i].animations.play("win", 3, false);
+					// SETTING THE ENEMY LOSE POSE
+					this.enemies.children[i].frame = 2;
 					}
 
 				// CHECKING IF THE SOUND IS ENABLED
@@ -2162,6 +2172,7 @@ AngryBirds.Game.prototype = {
 		this.winOverlay.beginFill(0x000000, 0.45);
 		this.winOverlay.drawRect(0, 0, game.width, game.height);
 		this.winOverlay.fixedToCamera = true;
+		this.returnCameraToSceneStart();
 		this.winToastText = game.add.text(0, 0, this.getCurrentWinMessage(), {font: "28px Semlor", fill: "#fff3cf"});
 		this.winToastText.position.x = Math.floor(game.width / 2 - this.winToastText.width / 2);
 		this.winToastText.position.y = Math.floor(game.height / 2 - this.winToastText.height / 2 - 138);
@@ -2235,6 +2246,12 @@ AngryBirds.Game.prototype = {
 			}, this);
 		},
 
+	returnCameraToSceneStart: function()
+		{
+		game.camera.follow(null);
+		game.add.tween(game.camera).to({x: 0, y: 0}, 450, Phaser.Easing.Sinusoidal.Out, true);
+		},
+
 	showLoseOverlay: function()
 		{
 		if (this.loseOverlay!=null)
@@ -2246,6 +2263,7 @@ AngryBirds.Game.prototype = {
 		this.loseOverlay.beginFill(0x000000, 0.45);
 		this.loseOverlay.drawRect(0, 0, game.width, game.height);
 		this.loseOverlay.fixedToCamera = true;
+		this.returnCameraToSceneStart();
 		this.showToast(STRING_YOULOSE);
 		},
 
@@ -2332,7 +2350,7 @@ AngryBirds.Game.prototype = {
 		// Bitmap fonts in this project do not contain Cyrillic glyphs.
 		this.toastText = game.add.text(0, 0, myText, {font: "28px Semlor", fill: "#fff3cf"});
 		this.toastText.position.x = Math.floor(game.width / 2 - this.toastText.width / 2);
-		this.toastText.position.y = Math.floor(game.height / 2 - this.toastText.height / 2 + 14);
+		this.toastText.position.y = Math.floor(game.height / 2 - this.toastText.height / 2 - 138);
 		this.toastText.fixedToCamera = true;
 		this.toastText.alpha = 0;
 
