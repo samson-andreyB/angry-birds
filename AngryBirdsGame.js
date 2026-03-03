@@ -1755,8 +1755,8 @@ AngryBirds.Game.prototype = {
 		this.currentBirdKey = activeBirdKey;
 		this.birdLandedAt = null;
 
-		// ADDING A BIRD TO THE STARTING POSITION
-		this.bird = this.add.sprite(this.pole.x, this.pole.y, activeBirdKey);
+		// ADDING A BIRD NEAR THE SLINGSHOT AND TWEENING IT INTO PLACE
+		this.bird = this.add.sprite(this.pole.x - 70, this.pole.y + 36, activeBirdKey);
 		this.bird.anchor.setTo(0.5);
 
 		// CREATING A REFERENCE TO THE CURRENT BIRD
@@ -1772,8 +1772,8 @@ AngryBirds.Game.prototype = {
 			}, _this);
 		this.bird.explosion.visible = false;
 
-		// SETTING THAT THE BIRD IS READY
-		this.isBirdReady = true;
+		// SETTING THAT THE BIRD WILL BECOME READY AFTER THE INTRO TWEEN
+		this.isBirdReady = false;
 
 		// TEMPORARILY REMOVING ALL THE AVAILABLE BIRDS
 		this.birds.removeAll();
@@ -1796,6 +1796,20 @@ AngryBirds.Game.prototype = {
 
 		// BRINGING THE LEFT SIDE OF THE POLE TO THE TOP
 		this.game.world.bringToTop(this.poleLeft);
+
+		// MAKING THE BIRD HOP INTO THE SLINGSHOT BEFORE IT BECOMES PLAYABLE
+		var birdHopUpTween = game.add.tween(this.bird).to({x: this.pole.x - 24, y: this.pole.y - 32}, 220, Phaser.Easing.Sinusoidal.Out, true);
+		var birdHopScaleUpTween = game.add.tween(this.bird.scale).to({x: 1.04, y: 0.97}, 220, Phaser.Easing.Sinusoidal.Out, true);
+		birdHopUpTween.onComplete.add(function()
+			{
+			var birdHopDownTween = game.add.tween(this.bird).to({x: this.pole.x, y: this.pole.y}, 260, Phaser.Easing.Sinusoidal.InOut, true);
+			game.add.tween(this.bird.scale).to({x: 1, y: 1}, 260, Phaser.Easing.Sinusoidal.InOut, true);
+			birdHopDownTween.onComplete.add(function()
+				{
+				this.isBirdReady = true;
+				this.game.world.bringToTop(this.poleLeft);
+				}, this);
+			}, this);
 		},
 
 	throwBird: function()
