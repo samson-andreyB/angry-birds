@@ -209,18 +209,18 @@ AngryBirds.Preloader.prototype = {
 		this.load.audio("sfxYouLose", sfxYouLose);
 
 		// ALL THE LEVELS THAT ARE GOING TO BE USED ARE STORED IN JSON FORMAT
-		var level1 = {"blocks":[{"x":330,"y":368,"asset":"blockHeavy","mass":12},{"x":426,"y":368,"asset":"blockLight","mass":5},{"x":426,"y":320,"asset":"blockLight","mass":5},{"x":426,"y":272,"asset":"blockLight","mass":5}],"enemies":[{"x":426,"y":224,"asset":"enemyRabbit"}]};
-		var level2 = {"blocks":[{"x":330,"y":368,"asset":"blockHeavy","mass":12},{"x":330,"y":320,"asset":"blockHeavy","mass":12},{"x":426,"y":368,"asset":"blockLight","mass":5},{"x":426,"y":320,"asset":"blockLight","mass":5},{"x":426,"y":272,"asset":"blockLight","mass":5},{"x":522,"y":368,"asset":"blockLight","mass":5},{"x":522,"y":320,"asset":"blockLight","mass":5},{"x":522,"y":272,"asset":"blockLight","mass":5}],"enemies":[{"x":426,"y":224,"asset":"enemyRabbit"},{"x":522,"y":224,"asset":"enemyRabbit"}]};
-		var level3 = {"blocks":[{"x":330,"y":368,"asset":"blockHeavy","mass":12},{"x":330,"y":320,"asset":"blockHeavy","mass":12},{"x":426,"y":368,"asset":"blockLight","mass":5},{"x":426,"y":320,"asset":"blockLight","mass":5},{"x":426,"y":272,"asset":"blockLight","mass":5},{"x":522,"y":368,"asset":"blockHeavy","mass":12},{"x":522,"y":320,"asset":"blockHeavy","mass":12},{"x":618,"y":368,"asset":"blockLight","mass":5},{"x":618,"y":320,"asset":"blockLight","mass":5},{"x":618,"y":272,"asset":"blockLight","mass":5},{"x":618,"y":224,"asset":"blockLight","mass":5}],"enemies":[{"x":426,"y":224,"asset":"enemyRabbit"},{"x":618,"y":176,"asset":"enemyRabbit"}]};
-		var level4 = {"blocks":[{"x":330,"y":368,"asset":"blockHeavy","mass":12},{"x":330,"y":320,"asset":"blockHeavy","mass":12},{"x":330,"y":272,"asset":"blockHeavy","mass":12},{"x":426,"y":368,"asset":"blockLight","mass":5},{"x":426,"y":320,"asset":"blockLight","mass":5},{"x":426,"y":272,"asset":"blockLight","mass":5},{"x":522,"y":368,"asset":"blockLight","mass":5},{"x":522,"y":320,"asset":"blockLight","mass":5},{"x":522,"y":272,"asset":"blockLight","mass":5},{"x":522,"y":224,"asset":"blockLight","mass":5},{"x":618,"y":368,"asset":"blockHeavy","mass":12},{"x":618,"y":320,"asset":"blockHeavy","mass":12},{"x":618,"y":272,"asset":"blockHeavy","mass":12}],"enemies":[{"x":426,"y":224,"asset":"enemyWolf"},{"x":522,"y":176,"asset":"enemyWolf"},{"x":618,"y":224,"asset":"enemyWolf"}]};
-		var level5 = {"blocks":[{"x":330,"y":368,"asset":"blockHeavy","mass":12},{"x":330,"y":320,"asset":"blockHeavy","mass":12},{"x":330,"y":272,"asset":"blockHeavy","mass":12},{"x":426,"y":368,"asset":"blockLight","mass":5},{"x":426,"y":320,"asset":"blockLight","mass":5},{"x":426,"y":272,"asset":"blockLight","mass":5},{"x":426,"y":224,"asset":"blockLight","mass":5},{"x":522,"y":368,"asset":"blockHeavy","mass":12},{"x":522,"y":320,"asset":"blockHeavy","mass":12},{"x":522,"y":272,"asset":"blockHeavy","mass":12},{"x":618,"y":368,"asset":"blockLight","mass":5},{"x":618,"y":320,"asset":"blockLight","mass":5},{"x":618,"y":272,"asset":"blockLight","mass":5},{"x":618,"y":224,"asset":"blockLight","mass":5},{"x":714,"y":368,"asset":"blockHeavy","mass":12},{"x":714,"y":320,"asset":"blockHeavy","mass":12},{"x":714,"y":272,"asset":"blockHeavy","mass":12}],"enemies":[{"x":426,"y":176,"asset":"enemyWolf"},{"x":618,"y":176,"asset":"enemyWolf"},{"x":714,"y":224,"asset":"enemyWolf"}]};
-		var level6 = {"blocks":[{"x":330,"y":368,"asset":"blockHeavy","mass":12},{"x":330,"y":320,"asset":"blockHeavy","mass":12},{"x":330,"y":272,"asset":"blockHeavy","mass":12},{"x":426,"y":368,"asset":"blockLight","mass":5},{"x":426,"y":320,"asset":"blockLight","mass":5},{"x":426,"y":272,"asset":"blockLight","mass":5},{"x":426,"y":224,"asset":"blockLight","mass":5},{"x":522,"y":368,"asset":"blockHeavy","mass":12},{"x":522,"y":320,"asset":"blockHeavy","mass":12},{"x":522,"y":272,"asset":"blockHeavy","mass":12},{"x":522,"y":224,"asset":"blockHeavy","mass":12},{"x":618,"y":368,"asset":"blockLight","mass":5},{"x":618,"y":320,"asset":"blockLight","mass":5},{"x":618,"y":272,"asset":"blockLight","mass":5},{"x":618,"y":224,"asset":"blockLight","mass":5},{"x":714,"y":368,"asset":"blockHeavy","mass":12},{"x":714,"y":320,"asset":"blockHeavy","mass":12},{"x":714,"y":272,"asset":"blockHeavy","mass":12}],"enemies":[{"x":426,"y":176,"asset":"enemyWolf"},{"x":522,"y":176,"asset":"enemyWolf"},{"x":618,"y":176,"asset":"enemyWolf"}]};
-		var level7 = {"blocks":[{"x":330,"y":368,"asset":"blockHeavy","mass":12},{"x":330,"y":320,"asset":"blockHeavy","mass":12},{"x":330,"y":272,"asset":"blockHeavy","mass":12},{"x":426,"y":368,"asset":"blockLight","mass":5},{"x":426,"y":320,"asset":"blockLight","mass":5},{"x":426,"y":272,"asset":"blockLight","mass":5},{"x":426,"y":224,"asset":"blockLight","mass":5},{"x":522,"y":368,"asset":"blockHeavy","mass":12},{"x":522,"y":320,"asset":"blockHeavy","mass":12},{"x":522,"y":272,"asset":"blockHeavy","mass":12},{"x":618,"y":368,"asset":"blockLight","mass":5},{"x":618,"y":320,"asset":"blockLight","mass":5},{"x":618,"y":272,"asset":"blockLight","mass":5},{"x":618,"y":224,"asset":"blockLight","mass":5},{"x":714,"y":368,"asset":"blockHeavy","mass":12},{"x":714,"y":320,"asset":"blockHeavy","mass":12},{"x":714,"y":272,"asset":"blockHeavy","mass":12}],"enemies":[{"x":330,"y":224,"asset":"enemyBear"},{"x":426,"y":176,"asset":"enemyBear"},{"x":618,"y":176,"asset":"enemyBear"},{"x":714,"y":224,"asset":"enemyBear"}]};
-		var level8 = {"blocks":[{"x":330,"y":368,"asset":"blockHeavy","mass":12},{"x":330,"y":320,"asset":"blockHeavy","mass":12},{"x":330,"y":272,"asset":"blockHeavy","mass":12},{"x":330,"y":224,"asset":"blockHeavy","mass":12},{"x":426,"y":368,"asset":"blockLight","mass":5},{"x":426,"y":320,"asset":"blockLight","mass":5},{"x":426,"y":272,"asset":"blockLight","mass":5},{"x":426,"y":224,"asset":"blockLight","mass":5},{"x":522,"y":368,"asset":"blockHeavy","mass":12},{"x":522,"y":320,"asset":"blockHeavy","mass":12},{"x":522,"y":272,"asset":"blockHeavy","mass":12},{"x":522,"y":224,"asset":"blockHeavy","mass":12},{"x":618,"y":368,"asset":"blockLight","mass":5},{"x":618,"y":320,"asset":"blockLight","mass":5},{"x":618,"y":272,"asset":"blockLight","mass":5},{"x":618,"y":224,"asset":"blockLight","mass":5},{"x":714,"y":368,"asset":"blockHeavy","mass":12},{"x":714,"y":320,"asset":"blockHeavy","mass":12},{"x":714,"y":272,"asset":"blockHeavy","mass":12}],"enemies":[{"x":330,"y":176,"asset":"enemyBear"},{"x":426,"y":176,"asset":"enemyBear"},{"x":618,"y":176,"asset":"enemyBear"},{"x":714,"y":224,"asset":"enemyBear"}]};
-		var level9 = {"blocks":[{"x":330,"y":368,"asset":"blockHeavy","mass":12},{"x":330,"y":320,"asset":"blockHeavy","mass":12},{"x":330,"y":272,"asset":"blockHeavy","mass":12},{"x":330,"y":224,"asset":"blockHeavy","mass":12},{"x":426,"y":368,"asset":"blockHeavy","mass":12},{"x":426,"y":320,"asset":"blockHeavy","mass":12},{"x":426,"y":272,"asset":"blockHeavy","mass":12},{"x":522,"y":368,"asset":"blockLight","mass":5},{"x":522,"y":320,"asset":"blockLight","mass":5},{"x":522,"y":272,"asset":"blockLight","mass":5},{"x":522,"y":224,"asset":"blockLight","mass":5},{"x":618,"y":368,"asset":"blockHeavy","mass":12},{"x":618,"y":320,"asset":"blockHeavy","mass":12},{"x":618,"y":272,"asset":"blockHeavy","mass":12},{"x":714,"y":368,"asset":"blockHeavy","mass":12},{"x":714,"y":320,"asset":"blockHeavy","mass":12},{"x":714,"y":272,"asset":"blockHeavy","mass":12},{"x":714,"y":224,"asset":"blockHeavy","mass":12}],"enemies":[{"x":330,"y":176,"asset":"enemyBear"},{"x":522,"y":176,"asset":"enemyBear"},{"x":618,"y":224,"asset":"enemyBear"},{"x":714,"y":176,"asset":"enemyBear"}]};
-		var level10 = {"blocks":[{"x":330,"y":368,"asset":"blockHeavy","mass":12},{"x":330,"y":320,"asset":"blockHeavy","mass":12},{"x":330,"y":272,"asset":"blockHeavy","mass":12},{"x":426,"y":368,"asset":"blockLight","mass":5},{"x":426,"y":320,"asset":"blockLight","mass":5},{"x":426,"y":272,"asset":"blockLight","mass":5},{"x":426,"y":224,"asset":"blockLight","mass":5},{"x":522,"y":368,"asset":"blockHeavy","mass":12},{"x":522,"y":320,"asset":"blockHeavy","mass":12},{"x":522,"y":272,"asset":"blockHeavy","mass":12},{"x":522,"y":224,"asset":"blockLight","mass":5},{"x":522,"y":176,"asset":"blockLight","mass":5},{"x":618,"y":368,"asset":"blockLight","mass":5},{"x":618,"y":320,"asset":"blockLight","mass":5},{"x":618,"y":272,"asset":"blockLight","mass":5},{"x":618,"y":224,"asset":"blockLight","mass":5},{"x":714,"y":368,"asset":"blockHeavy","mass":12},{"x":714,"y":320,"asset":"blockHeavy","mass":12},{"x":714,"y":272,"asset":"blockHeavy","mass":12}],"enemies":[{"x":426,"y":176,"asset":"enemyFox"},{"x":522,"y":128,"asset":"enemyFox"},{"x":618,"y":176,"asset":"enemyFox"},{"x":714,"y":224,"asset":"enemyFox"}]};
-		var level11 = {"blocks":[{"x":330,"y":368,"asset":"blockHeavy","mass":12},{"x":330,"y":320,"asset":"blockHeavy","mass":12},{"x":330,"y":272,"asset":"blockHeavy","mass":12},{"x":330,"y":224,"asset":"blockHeavy","mass":12},{"x":426,"y":368,"asset":"blockLight","mass":5},{"x":426,"y":320,"asset":"blockLight","mass":5},{"x":426,"y":272,"asset":"blockLight","mass":5},{"x":426,"y":224,"asset":"blockLight","mass":5},{"x":522,"y":368,"asset":"blockHeavy","mass":12},{"x":522,"y":320,"asset":"blockHeavy","mass":12},{"x":522,"y":272,"asset":"blockHeavy","mass":12},{"x":522,"y":224,"asset":"blockHeavy","mass":12},{"x":522,"y":176,"asset":"blockHeavy","mass":12},{"x":618,"y":368,"asset":"blockLight","mass":5},{"x":618,"y":320,"asset":"blockLight","mass":5},{"x":618,"y":272,"asset":"blockLight","mass":5},{"x":618,"y":224,"asset":"blockLight","mass":5},{"x":714,"y":368,"asset":"blockHeavy","mass":12},{"x":714,"y":320,"asset":"blockHeavy","mass":12},{"x":714,"y":272,"asset":"blockHeavy","mass":12},{"x":714,"y":224,"asset":"blockHeavy","mass":12}],"enemies":[{"x":426,"y":176,"asset":"enemyFox"},{"x":522,"y":128,"asset":"enemyFox"},{"x":618,"y":176,"asset":"enemyFox"},{"x":714,"y":176,"asset":"enemyFox"}]};
-		var level12 = {"blocks":[{"x":330,"y":368,"asset":"blockHeavy","mass":12},{"x":330,"y":320,"asset":"blockHeavy","mass":12},{"x":330,"y":272,"asset":"blockHeavy","mass":12},{"x":330,"y":224,"asset":"blockHeavy","mass":12},{"x":426,"y":368,"asset":"blockLight","mass":5},{"x":426,"y":320,"asset":"blockLight","mass":5},{"x":426,"y":272,"asset":"blockLight","mass":5},{"x":426,"y":224,"asset":"blockLight","mass":5},{"x":474,"y":368,"asset":"blockLight","mass":5},{"x":474,"y":320,"asset":"blockLight","mass":5},{"x":522,"y":368,"asset":"blockHeavy","mass":12},{"x":522,"y":320,"asset":"blockHeavy","mass":12},{"x":522,"y":272,"asset":"blockHeavy","mass":12},{"x":522,"y":224,"asset":"blockHeavy","mass":12},{"x":522,"y":176,"asset":"blockHeavy","mass":12},{"x":570,"y":368,"asset":"blockLight","mass":5},{"x":570,"y":320,"asset":"blockLight","mass":5},{"x":618,"y":368,"asset":"blockLight","mass":5},{"x":618,"y":320,"asset":"blockLight","mass":5},{"x":618,"y":272,"asset":"blockLight","mass":5},{"x":618,"y":224,"asset":"blockLight","mass":5},{"x":714,"y":368,"asset":"blockHeavy","mass":12},{"x":714,"y":320,"asset":"blockHeavy","mass":12},{"x":714,"y":272,"asset":"blockHeavy","mass":12},{"x":714,"y":224,"asset":"blockHeavy","mass":12}],"enemies":[{"x":426,"y":176,"asset":"enemyFox"},{"x":522,"y":128,"asset":"enemyFox"},{"x":618,"y":176,"asset":"enemyFox"},{"x":714,"y":176,"asset":"enemyFox"}]};
+		var level1 = {"blocks":[{"x":570,"y":368,"asset":"blockHeavy","mass":12},{"x":666,"y":368,"asset":"blockLight","mass":5},{"x":666,"y":320,"asset":"blockLight","mass":5},{"x":666,"y":272,"asset":"blockLight","mass":5}],"enemies":[{"x":666,"y":224,"asset":"enemyRabbit"}]};
+		var level2 = {"blocks":[{"x":570,"y":368,"asset":"blockHeavy","mass":12},{"x":570,"y":320,"asset":"blockHeavy","mass":12},{"x":666,"y":368,"asset":"blockLight","mass":5},{"x":666,"y":320,"asset":"blockLight","mass":5},{"x":666,"y":272,"asset":"blockLight","mass":5},{"x":762,"y":368,"asset":"blockLight","mass":5},{"x":762,"y":320,"asset":"blockLight","mass":5},{"x":762,"y":272,"asset":"blockLight","mass":5}],"enemies":[{"x":666,"y":224,"asset":"enemyRabbit"},{"x":762,"y":224,"asset":"enemyRabbit"}]};
+		var level3 = {"blocks":[{"x":570,"y":368,"asset":"blockHeavy","mass":12},{"x":570,"y":320,"asset":"blockHeavy","mass":12},{"x":666,"y":368,"asset":"blockLight","mass":5},{"x":666,"y":320,"asset":"blockLight","mass":5},{"x":666,"y":272,"asset":"blockLight","mass":5},{"x":762,"y":368,"asset":"blockHeavy","mass":12},{"x":762,"y":320,"asset":"blockHeavy","mass":12},{"x":858,"y":368,"asset":"blockLight","mass":5},{"x":858,"y":320,"asset":"blockLight","mass":5},{"x":858,"y":272,"asset":"blockLight","mass":5},{"x":858,"y":224,"asset":"blockLight","mass":5}],"enemies":[{"x":666,"y":224,"asset":"enemyRabbit"},{"x":858,"y":176,"asset":"enemyRabbit"}]};
+		var level4 = {"blocks":[{"x":570,"y":368,"asset":"blockHeavy","mass":12},{"x":570,"y":320,"asset":"blockHeavy","mass":12},{"x":570,"y":272,"asset":"blockHeavy","mass":12},{"x":666,"y":368,"asset":"blockLight","mass":5},{"x":666,"y":320,"asset":"blockLight","mass":5},{"x":666,"y":272,"asset":"blockLight","mass":5},{"x":762,"y":368,"asset":"blockLight","mass":5},{"x":762,"y":320,"asset":"blockLight","mass":5},{"x":762,"y":272,"asset":"blockLight","mass":5},{"x":762,"y":224,"asset":"blockLight","mass":5},{"x":858,"y":368,"asset":"blockHeavy","mass":12},{"x":858,"y":320,"asset":"blockHeavy","mass":12},{"x":858,"y":272,"asset":"blockHeavy","mass":12}],"enemies":[{"x":666,"y":224,"asset":"enemyWolf"},{"x":762,"y":176,"asset":"enemyWolf"},{"x":858,"y":224,"asset":"enemyWolf"}]};
+		var level5 = {"blocks":[{"x":570,"y":368,"asset":"blockHeavy","mass":12},{"x":570,"y":320,"asset":"blockHeavy","mass":12},{"x":570,"y":272,"asset":"blockHeavy","mass":12},{"x":666,"y":368,"asset":"blockLight","mass":5},{"x":666,"y":320,"asset":"blockLight","mass":5},{"x":666,"y":272,"asset":"blockLight","mass":5},{"x":666,"y":224,"asset":"blockLight","mass":5},{"x":762,"y":368,"asset":"blockHeavy","mass":12},{"x":762,"y":320,"asset":"blockHeavy","mass":12},{"x":762,"y":272,"asset":"blockHeavy","mass":12},{"x":858,"y":368,"asset":"blockLight","mass":5},{"x":858,"y":320,"asset":"blockLight","mass":5},{"x":858,"y":272,"asset":"blockLight","mass":5},{"x":858,"y":224,"asset":"blockLight","mass":5},{"x":954,"y":368,"asset":"blockHeavy","mass":12},{"x":954,"y":320,"asset":"blockHeavy","mass":12},{"x":954,"y":272,"asset":"blockHeavy","mass":12}],"enemies":[{"x":666,"y":176,"asset":"enemyWolf"},{"x":858,"y":176,"asset":"enemyWolf"},{"x":954,"y":224,"asset":"enemyWolf"}]};
+		var level6 = {"blocks":[{"x":570,"y":368,"asset":"blockHeavy","mass":12},{"x":570,"y":320,"asset":"blockHeavy","mass":12},{"x":570,"y":272,"asset":"blockHeavy","mass":12},{"x":666,"y":368,"asset":"blockLight","mass":5},{"x":666,"y":320,"asset":"blockLight","mass":5},{"x":666,"y":272,"asset":"blockLight","mass":5},{"x":666,"y":224,"asset":"blockLight","mass":5},{"x":762,"y":368,"asset":"blockHeavy","mass":12},{"x":762,"y":320,"asset":"blockHeavy","mass":12},{"x":762,"y":272,"asset":"blockHeavy","mass":12},{"x":762,"y":224,"asset":"blockHeavy","mass":12},{"x":858,"y":368,"asset":"blockLight","mass":5},{"x":858,"y":320,"asset":"blockLight","mass":5},{"x":858,"y":272,"asset":"blockLight","mass":5},{"x":858,"y":224,"asset":"blockLight","mass":5},{"x":954,"y":368,"asset":"blockHeavy","mass":12},{"x":954,"y":320,"asset":"blockHeavy","mass":12},{"x":954,"y":272,"asset":"blockHeavy","mass":12}],"enemies":[{"x":666,"y":176,"asset":"enemyWolf"},{"x":762,"y":176,"asset":"enemyWolf"},{"x":858,"y":176,"asset":"enemyWolf"}]};
+		var level7 = {"blocks":[{"x":570,"y":368,"asset":"blockHeavy","mass":12},{"x":570,"y":320,"asset":"blockHeavy","mass":12},{"x":570,"y":272,"asset":"blockHeavy","mass":12},{"x":666,"y":368,"asset":"blockLight","mass":5},{"x":666,"y":320,"asset":"blockLight","mass":5},{"x":666,"y":272,"asset":"blockLight","mass":5},{"x":666,"y":224,"asset":"blockLight","mass":5},{"x":762,"y":368,"asset":"blockHeavy","mass":12},{"x":762,"y":320,"asset":"blockHeavy","mass":12},{"x":762,"y":272,"asset":"blockHeavy","mass":12},{"x":858,"y":368,"asset":"blockLight","mass":5},{"x":858,"y":320,"asset":"blockLight","mass":5},{"x":858,"y":272,"asset":"blockLight","mass":5},{"x":858,"y":224,"asset":"blockLight","mass":5},{"x":954,"y":368,"asset":"blockHeavy","mass":12},{"x":954,"y":320,"asset":"blockHeavy","mass":12},{"x":954,"y":272,"asset":"blockHeavy","mass":12}],"enemies":[{"x":570,"y":224,"asset":"enemyBear"},{"x":666,"y":176,"asset":"enemyBear"},{"x":858,"y":176,"asset":"enemyBear"},{"x":954,"y":224,"asset":"enemyBear"}]};
+		var level8 = {"blocks":[{"x":570,"y":368,"asset":"blockHeavy","mass":12},{"x":570,"y":320,"asset":"blockHeavy","mass":12},{"x":570,"y":272,"asset":"blockHeavy","mass":12},{"x":570,"y":224,"asset":"blockHeavy","mass":12},{"x":666,"y":368,"asset":"blockLight","mass":5},{"x":666,"y":320,"asset":"blockLight","mass":5},{"x":666,"y":272,"asset":"blockLight","mass":5},{"x":666,"y":224,"asset":"blockLight","mass":5},{"x":762,"y":368,"asset":"blockHeavy","mass":12},{"x":762,"y":320,"asset":"blockHeavy","mass":12},{"x":762,"y":272,"asset":"blockHeavy","mass":12},{"x":762,"y":224,"asset":"blockHeavy","mass":12},{"x":858,"y":368,"asset":"blockLight","mass":5},{"x":858,"y":320,"asset":"blockLight","mass":5},{"x":858,"y":272,"asset":"blockLight","mass":5},{"x":858,"y":224,"asset":"blockLight","mass":5},{"x":954,"y":368,"asset":"blockHeavy","mass":12},{"x":954,"y":320,"asset":"blockHeavy","mass":12},{"x":954,"y":272,"asset":"blockHeavy","mass":12}],"enemies":[{"x":570,"y":176,"asset":"enemyBear"},{"x":666,"y":176,"asset":"enemyBear"},{"x":858,"y":176,"asset":"enemyBear"},{"x":954,"y":224,"asset":"enemyBear"}]};
+		var level9 = {"blocks":[{"x":570,"y":368,"asset":"blockHeavy","mass":12},{"x":570,"y":320,"asset":"blockHeavy","mass":12},{"x":570,"y":272,"asset":"blockHeavy","mass":12},{"x":570,"y":224,"asset":"blockHeavy","mass":12},{"x":666,"y":368,"asset":"blockHeavy","mass":12},{"x":666,"y":320,"asset":"blockHeavy","mass":12},{"x":666,"y":272,"asset":"blockHeavy","mass":12},{"x":762,"y":368,"asset":"blockLight","mass":5},{"x":762,"y":320,"asset":"blockLight","mass":5},{"x":762,"y":272,"asset":"blockLight","mass":5},{"x":762,"y":224,"asset":"blockLight","mass":5},{"x":858,"y":368,"asset":"blockHeavy","mass":12},{"x":858,"y":320,"asset":"blockHeavy","mass":12},{"x":858,"y":272,"asset":"blockHeavy","mass":12},{"x":954,"y":368,"asset":"blockHeavy","mass":12},{"x":954,"y":320,"asset":"blockHeavy","mass":12},{"x":954,"y":272,"asset":"blockHeavy","mass":12},{"x":954,"y":224,"asset":"blockHeavy","mass":12}],"enemies":[{"x":570,"y":176,"asset":"enemyBear"},{"x":762,"y":176,"asset":"enemyBear"},{"x":858,"y":224,"asset":"enemyBear"},{"x":954,"y":176,"asset":"enemyBear"}]};
+		var level10 = {"blocks":[{"x":570,"y":368,"asset":"blockHeavy","mass":12},{"x":570,"y":320,"asset":"blockHeavy","mass":12},{"x":570,"y":272,"asset":"blockHeavy","mass":12},{"x":666,"y":368,"asset":"blockLight","mass":5},{"x":666,"y":320,"asset":"blockLight","mass":5},{"x":666,"y":272,"asset":"blockLight","mass":5},{"x":666,"y":224,"asset":"blockLight","mass":5},{"x":762,"y":368,"asset":"blockHeavy","mass":12},{"x":762,"y":320,"asset":"blockHeavy","mass":12},{"x":762,"y":272,"asset":"blockHeavy","mass":12},{"x":762,"y":224,"asset":"blockLight","mass":5},{"x":762,"y":176,"asset":"blockLight","mass":5},{"x":858,"y":368,"asset":"blockLight","mass":5},{"x":858,"y":320,"asset":"blockLight","mass":5},{"x":858,"y":272,"asset":"blockLight","mass":5},{"x":858,"y":224,"asset":"blockLight","mass":5},{"x":954,"y":368,"asset":"blockHeavy","mass":12},{"x":954,"y":320,"asset":"blockHeavy","mass":12},{"x":954,"y":272,"asset":"blockHeavy","mass":12}],"enemies":[{"x":666,"y":176,"asset":"enemyFox"},{"x":762,"y":128,"asset":"enemyFox"},{"x":858,"y":176,"asset":"enemyFox"},{"x":954,"y":224,"asset":"enemyFox"}]};
+		var level11 = {"blocks":[{"x":570,"y":368,"asset":"blockHeavy","mass":12},{"x":570,"y":320,"asset":"blockHeavy","mass":12},{"x":570,"y":272,"asset":"blockHeavy","mass":12},{"x":570,"y":224,"asset":"blockHeavy","mass":12},{"x":666,"y":368,"asset":"blockLight","mass":5},{"x":666,"y":320,"asset":"blockLight","mass":5},{"x":666,"y":272,"asset":"blockLight","mass":5},{"x":666,"y":224,"asset":"blockLight","mass":5},{"x":762,"y":368,"asset":"blockHeavy","mass":12},{"x":762,"y":320,"asset":"blockHeavy","mass":12},{"x":762,"y":272,"asset":"blockHeavy","mass":12},{"x":762,"y":224,"asset":"blockHeavy","mass":12},{"x":762,"y":176,"asset":"blockHeavy","mass":12},{"x":858,"y":368,"asset":"blockLight","mass":5},{"x":858,"y":320,"asset":"blockLight","mass":5},{"x":858,"y":272,"asset":"blockLight","mass":5},{"x":858,"y":224,"asset":"blockLight","mass":5},{"x":954,"y":368,"asset":"blockHeavy","mass":12},{"x":954,"y":320,"asset":"blockHeavy","mass":12},{"x":954,"y":272,"asset":"blockHeavy","mass":12},{"x":954,"y":224,"asset":"blockHeavy","mass":12}],"enemies":[{"x":666,"y":176,"asset":"enemyFox"},{"x":762,"y":128,"asset":"enemyFox"},{"x":858,"y":176,"asset":"enemyFox"},{"x":954,"y":176,"asset":"enemyFox"}]};
+		var level12 = {"blocks":[{"x":570,"y":368,"asset":"blockHeavy","mass":12},{"x":570,"y":320,"asset":"blockHeavy","mass":12},{"x":570,"y":272,"asset":"blockHeavy","mass":12},{"x":570,"y":224,"asset":"blockHeavy","mass":12},{"x":666,"y":368,"asset":"blockLight","mass":5},{"x":666,"y":320,"asset":"blockLight","mass":5},{"x":666,"y":272,"asset":"blockLight","mass":5},{"x":666,"y":224,"asset":"blockLight","mass":5},{"x":714,"y":368,"asset":"blockLight","mass":5},{"x":714,"y":320,"asset":"blockLight","mass":5},{"x":762,"y":368,"asset":"blockHeavy","mass":12},{"x":762,"y":320,"asset":"blockHeavy","mass":12},{"x":762,"y":272,"asset":"blockHeavy","mass":12},{"x":762,"y":224,"asset":"blockHeavy","mass":12},{"x":762,"y":176,"asset":"blockHeavy","mass":12},{"x":810,"y":368,"asset":"blockLight","mass":5},{"x":810,"y":320,"asset":"blockLight","mass":5},{"x":858,"y":368,"asset":"blockLight","mass":5},{"x":858,"y":320,"asset":"blockLight","mass":5},{"x":858,"y":272,"asset":"blockLight","mass":5},{"x":858,"y":224,"asset":"blockLight","mass":5},{"x":954,"y":368,"asset":"blockHeavy","mass":12},{"x":954,"y":320,"asset":"blockHeavy","mass":12},{"x":954,"y":272,"asset":"blockHeavy","mass":12},{"x":954,"y":224,"asset":"blockHeavy","mass":12}],"enemies":[{"x":666,"y":176,"asset":"enemyFox"},{"x":762,"y":128,"asset":"enemyFox"},{"x":858,"y":176,"asset":"enemyFox"},{"x":954,"y":176,"asset":"enemyFox"}]};
 
 		// LOADING THE LEVELS
 		this.load.text("level1", "data:application/json;base64," + btoa(JSON.stringify(level1)));
@@ -915,7 +915,6 @@ AngryBirds.Game = function (game)
 	this.toastShadow = null;
 	this.MAX_SPEED_SHOOT = null;
 	this.SHOOT_FACTOR = null;
-	this.KILL_DIFF = null;
 	this.backgroundImage = null;
 	this.blocksCollisionGroup = null;
 	this.enemiesCollisionGroup = null;
@@ -954,14 +953,19 @@ AngryBirds.Game = function (game)
 	this.debugWinLabel = null;
 	this.winOverlay = null;
 	this.loseOverlay = null;
+	this.winPanel = null;
+	this.losePanel = null;
 	this.winToastText = null;
 	this.winStars = null;
 	this.winContinueButton = null;
 	this.winContinueHandler = null;
+	this.loseRestartButton = null;
+	this.loseRestartHandler = null;
 	this.winOverlayTransitioning = null;
 	this.turnInProgress = null;
 	this.currentLevel = null;
 	this.birdPierceRemaining = null;
+	this.remainingBirdKeys = null;
 
 	// SCALING THE CANVAS SIZE FOR THE GAME
 	function resizeF()
@@ -987,10 +991,46 @@ AngryBirds.Game.prototype = {
 		this.toastShadow = null;
 		this.MAX_SPEED_SHOOT = 1000;
 		this.SHOOT_FACTOR = 8;
-		this.KILL_DIFF = 8;
 		this.ENEMY_BIRD_KILL_DIFF = 6;
 		this.ENEMY_BLOCK_KILL_DIFF = 7;
 		this.ENEMY_GROUND_KILL_DIFF = 7;
+		this.BIRD_CONFIGS = {
+			"heroKolobokDefault": {
+				destroys: [],
+				pushDiff: 7,
+				pushXFactor: 0.14,
+				pushYFactor: 0.06,
+				pushAngular: 0.7,
+				minRetainedSpeedX: 130,
+				pierceCount: 0,
+				bodyMass: 1,
+				bodyDamping: 0.12,
+				bodyAngularDamping: 0.08,
+				flyAudioKey: "sfxFly"
+				},
+			"heroKolobokWreath": {
+				destroys: ["blockLight"],
+				blockKillDiff: 8,
+				pierceCount: 0,
+				bodyMass: 1.1,
+				bodyDamping: 0.12,
+				bodyAngularDamping: 0.08,
+				flyAudioKey: "sfxFly"
+				},
+			"heroKolobokBogatyr": {
+				destroys: ["blockLight", "blockHeavy"],
+				blockKillDiff: 8,
+				pierceCount: 4,
+				pierceLightVelocityFactor: 0.10,
+				pierceHeavyVelocityFactor: 0.10,
+				pierceLightAngularFactor: 0.10,
+				pierceHeavyAngularFactor: 0.10,
+				bodyMass: 6,
+				bodyDamping: 0.08,
+				bodyAngularDamping: 0.05,
+				flyAudioKey: "sfxFlyBogatyr"
+				}
+			};
 		this.backgroundImage = null;
 		this.blocksCollisionGroup = null;
 		this.enemiesCollisionGroup = null;
@@ -1029,10 +1069,14 @@ AngryBirds.Game.prototype = {
 		this.debugWinLabel = null;
 		this.winOverlay = null;
 		this.loseOverlay = null;
+		this.winPanel = null;
+		this.losePanel = null;
 		this.winToastText = null;
 		this.winStars = [];
 		this.winContinueButton = null;
 		this.winContinueHandler = null;
+		this.loseRestartButton = null;
+		this.loseRestartHandler = null;
 		this.winOverlayTransitioning = false;
 		this.turnInProgress = false;
 		this.currentLevel = null;
@@ -1040,6 +1084,7 @@ AngryBirds.Game.prototype = {
 		this.birdLandedAt = null;
 		this.birdPierceRemaining = 0;
 		this.birdPierceDirectionX = 1;
+		this.remainingBirdKeys = [];
 		},
 
 	getCurrentBackgroundKey: function()
@@ -1058,6 +1103,16 @@ AngryBirds.Game.prototype = {
 			return "gameBackground2";
 			}
 		return "gameBackground1";
+		},
+
+	getBirdConfig: function(birdKey)
+		{
+		return this.BIRD_CONFIGS[birdKey] || this.BIRD_CONFIGS["heroKolobokDefault"];
+		},
+
+	getCurrentBirdConfig: function()
+		{
+		return this.getBirdConfig(this.currentBirdKey);
 		},
 
 	getCurrentWinMessage: function()
@@ -1476,7 +1531,7 @@ AngryBirds.Game.prototype = {
 		if (this.bird.body!=null)
 			{
 			// KILL THE BIRD 4 SECONDS AFTER THE FIRST GROUND LANDING IF IT STILL EXISTS
-			if (this.birdLandedAt!=null && this.bird.alpha==1 && game.time.now - this.birdLandedAt >= 4000)
+			if (this.birdLandedAt!=null && this.bird.alpha==1 && game.time.now - this.birdLandedAt >= 2000)
 				{
 				// FLAGGING THE BIRD
 				this.bird.alpha = 0.99;
@@ -1600,6 +1655,7 @@ AngryBirds.Game.prototype = {
 		{
 		var gameState = game.state.states["AngryBirds.Game"];
 		var birdBody = gameState.bird && gameState.bird.body ? gameState.bird.body : null;
+		var birdConfig = gameState.getCurrentBirdConfig();
 		if (birdBody==null || bodyA==null || bodyB==null || equation==null || equation[0]==null)
 			{
 			return;
@@ -1610,17 +1666,51 @@ AngryBirds.Game.prototype = {
 			return;
 			}
 
-		var canDestroyBlock =
-			(gameState.currentBirdKey=="heroKolobokWreath" && this.assetKey=="blockLight") ||
-			(gameState.currentBirdKey=="heroKolobokBogatyr" && (this.assetKey=="blockLight" || this.assetKey=="blockHeavy"));
+		var canDestroyBlock = birdConfig.destroys.indexOf(this.assetKey)!=-1;
+
+		var velocityDiff = Phaser.Point.distance(new Phaser.Point(equation[0].bodyA.velocity[0], equation[0].bodyA.velocity[1]), new Phaser.Point(equation[0].bodyB.velocity[0], equation[0].bodyB.velocity[1]));
+
+		if (gameState.currentBirdKey=="heroKolobokDefault")
+			{
+			if (velocityDiff > birdConfig.pushDiff)
+				{
+				if (this.lastPushAt==null || game.time.now - this.lastPushAt > 80)
+					{
+					this.lastPushAt = game.time.now;
+					var pushDirectionX = gameState.bird.body.velocity.x<0 ? -1 : 1;
+					var pushedVelocityX = gameState.bird.body.velocity.x * birdConfig.pushXFactor;
+					var pushedVelocityY = gameState.bird.body.velocity.y * birdConfig.pushYFactor;
+					this.body.velocity.x = this.body.velocity.x + pushedVelocityX;
+					this.body.velocity.y = this.body.velocity.y + pushedVelocityY;
+					this.body.angularVelocity = this.body.angularVelocity + (birdConfig.pushAngular * pushDirectionX);
+
+					game.time.events.add(20, function()
+						{
+						if (gameState.bird!=null && gameState.bird.body!=null)
+							{
+							if (Math.abs(gameState.bird.body.velocity.x)<birdConfig.minRetainedSpeedX)
+								{
+								gameState.bird.body.velocity.x = birdConfig.minRetainedSpeedX * pushDirectionX;
+								}
+							}
+						});
+					}
+				}
+
+			return;
+			}
 
 		if (canDestroyBlock==false)
 			{
 			return;
 			}
 
-		var velocityDiff = Phaser.Point.distance(new Phaser.Point(equation[0].bodyA.velocity[0], equation[0].bodyA.velocity[1]), new Phaser.Point(equation[0].bodyB.velocity[0], equation[0].bodyB.velocity[1]));
-		if (velocityDiff <= gameState.KILL_DIFF)
+		if (gameState.currentBirdKey=="heroKolobokBogatyr" && gameState.birdPierceRemaining<=0)
+			{
+			return;
+			}
+
+		if (velocityDiff <= birdConfig.blockKillDiff)
 			{
 			return;
 			}
@@ -1631,24 +1721,25 @@ AngryBirds.Game.prototype = {
 		this.explosion.visible = true;
 		this.kill();
 
-		if (gameState.currentBirdKey=="heroKolobokBogatyr" && gameState.birdPierceRemaining > 0)
+		if (gameState.currentBirdKey=="heroKolobokBogatyr")
 			{
-			var retainedVelocityFactor = this.assetKey=="blockHeavy" ? 0.96 : 0.985;
-			var retainedAngularFactor = this.assetKey=="blockHeavy" ? 0.94 : 0.97;
+			var retainedVelocityFactor = this.assetKey=="blockHeavy" ? birdConfig.pierceHeavyVelocityFactor : birdConfig.pierceLightVelocityFactor;
+			var retainedAngularFactor = this.assetKey=="blockHeavy" ? birdConfig.pierceHeavyAngularFactor : birdConfig.pierceLightAngularFactor;
 			var retainedDirectionX = gameState.birdPierceDirectionX || 1;
+			var impactVelocityX = gameState.bird.body.velocity.x;
+			var impactVelocityY = gameState.bird.body.velocity.y;
+			var impactAngularVelocity = gameState.bird.body.angularVelocity;
 			gameState.birdPierceRemaining = gameState.birdPierceRemaining - 1;
-			game.time.events.add(20, function()
+			game.time.events.add(1, function()
 				{
 				if (gameState.bird!=null && gameState.bird.body!=null)
 					{
-					var retainedSpeedX = Math.abs(gameState.bird.body.velocity.x) * retainedVelocityFactor;
-					if (retainedSpeedX < 300)
-						{
-						retainedSpeedX = 300;
-						}
+					var targetSpeedX = Math.abs(impactVelocityX) * retainedVelocityFactor;
+					var currentSpeedX = Math.abs(gameState.bird.body.velocity.x);
+					var retainedSpeedX = currentSpeedX + Math.max(0, targetSpeedX - currentSpeedX) * 0.35;
 					gameState.bird.body.velocity.x = retainedSpeedX * retainedDirectionX;
-					gameState.bird.body.velocity.y = gameState.bird.body.velocity.y * retainedVelocityFactor;
-					gameState.bird.body.angularVelocity = gameState.bird.body.angularVelocity * retainedAngularFactor;
+					gameState.bird.body.velocity.y = gameState.bird.body.velocity.y + ((impactVelocityY * retainedVelocityFactor) - gameState.bird.body.velocity.y) * 0.35;
+					gameState.bird.body.angularVelocity = gameState.bird.body.angularVelocity + ((impactAngularVelocity * retainedAngularFactor) - gameState.bird.body.angularVelocity) * 0.35;
 					}
 				});
 			}
@@ -1717,12 +1808,26 @@ AngryBirds.Game.prototype = {
 		block.body.mass = data.mass;
 		block.assetKey = data.asset;
 
+		// HEAVY LOG BLOCKS SHOULD FEEL MORE STABLE THAN LIGHT HOLLOW ONES
+		if (data.asset=="blockHeavy")
+			{
+			block.body.mass = data.mass * 1.8;
+			block.body.damping = 0.22;
+			block.body.angularDamping = 0.65;
+			}
+			else
+			{
+			block.body.damping = 0.08;
+			block.body.angularDamping = 0.25;
+			}
+
 		// SETTING THE COLLISION GROUP
 		block.body.setCollisionGroup(this.blocksCollisionGroup);
 
 		// SETTING THAT THE BLOCK WILL COLLIDE WITH ENEMIES, BIRDS AND OTHER BLOCKS
 		block.body.collides([this.blocksCollisionGroup, this.enemiesCollisionGroup, this.birdsCollisionGroup]);
 		block.body.onBeginContact.add(this.hitBlock, block);
+		block.lastPushAt = 0;
 
 		// ADDING THE EXPLOSION SPRITE
 		block.explosion = game.add.sprite(420, 307, "effectExplosion");
@@ -1808,13 +1913,52 @@ AngryBirds.Game.prototype = {
 		return "heroKolobokDefault";
 		},
 
+	buildInitialBirdQueue: function()
+		{
+		return [
+			"heroKolobokDefault",
+			"heroKolobokWreath",
+			"heroKolobokBogatyr"
+		];
+		},
+
+	selectQueuedBird: function(queueIndex)
+		{
+		if (this.isBirdReady!==true || this.turnInProgress===true || this.bird==null || this.bird.body!=null)
+			{
+			return;
+			}
+
+		if (queueIndex<1 || queueIndex>=this.remainingBirdKeys.length)
+			{
+			return;
+			}
+
+		var currentActiveBirdKey = this.remainingBirdKeys[0];
+		this.remainingBirdKeys[0] = this.remainingBirdKeys[queueIndex];
+		this.remainingBirdKeys[queueIndex] = currentActiveBirdKey;
+
+		if (this.bird.explosion!=null)
+			{
+			this.bird.explosion.destroy();
+			}
+		this.bird.destroy();
+
+		this.addBird();
+		},
+
 	addBird: function()
 		{
-		var activeBirdIndex = Math.max(0, 3 - this.availableBirdsCounter);
-		var activeBirdKey = this.getBirdAssetKey(activeBirdIndex);
+		if (this.remainingBirdKeys.length==0)
+			{
+			this.remainingBirdKeys = this.buildInitialBirdQueue();
+			}
+
+		var activeBirdKey = this.remainingBirdKeys[0];
+		var activeBirdConfig = this.getBirdConfig(activeBirdKey);
 		this.currentBirdKey = activeBirdKey;
 		this.birdLandedAt = null;
-		this.birdPierceRemaining = activeBirdKey=="heroKolobokBogatyr" ? 4 : 0;
+		this.birdPierceRemaining = activeBirdConfig.pierceCount;
 		this.birdPierceDirectionX = 1;
 
 		// ADDING A BIRD NEAR THE SLINGSHOT AND TWEENING IT INTO PLACE
@@ -1841,13 +1985,17 @@ AngryBirds.Game.prototype = {
 		this.birds.removeAll();
 
 		// LOOPING ALL THE AVAILABLE BIRDS
-		for (var i = this.availableBirdsCounter - 2; i > -1; i--)
+		for (var i = 1; i < this.remainingBirdKeys.length; i++)
 			{
-			// ADDING THE BIRD
-			var queueBirdIndex = activeBirdIndex + i + 1;
-			var queueBirdKey = this.getBirdAssetKey(queueBirdIndex);
-			var queueBird = this.birds.create(84 - i * 78, 0, queueBirdKey);
+			var queueBirdKey = this.remainingBirdKeys[i];
+			var queueBird = this.birds.create(84 - (i - 1) * 78, 0, queueBirdKey);
 			queueBird.y = this.game.world.height - 48 - queueBird.height;
+			queueBird.queueIndex = i;
+			queueBird.inputEnabled = true;
+			queueBird.events.onInputUp.add(function(queueBirdSprite)
+				{
+				this.selectQueuedBird(queueBirdSprite.queueIndex);
+				}, this);
 			}
 
 		// MAKING THE CAMERA TO NOT FOLLOW THE BIRD
@@ -1898,14 +2046,16 @@ AngryBirds.Game.prototype = {
 
 		// ENABLING PHYSICS TO THE BIRD
 		this.game.physics.p2.enable(this.bird);
+		var currentBirdConfig = this.getCurrentBirdConfig();
 
 		// USE A ROUND BODY SO THE KOLOBOK ROLLS NATURALLY AFTER LANDING
 		var birdRadius = Math.floor(Math.min(this.bird.width, this.bird.height) * 0.42);
 		this.bird.body.clearShapes();
 		this.bird.body.setCircle(birdRadius);
 		this.bird.body.fixedRotation = false;
-		this.bird.body.damping = 0.12;
-		this.bird.body.angularDamping = 0.08;
+		this.bird.body.mass = currentBirdConfig.bodyMass;
+		this.bird.body.damping = currentBirdConfig.bodyDamping;
+		this.bird.body.angularDamping = currentBirdConfig.bodyAngularDamping;
 		this.bird.body.onBeginContact.add(this.handleBirdLandingContact, this);
 
 		// SETTING THE COLLISION GROUP
@@ -1931,7 +2081,7 @@ AngryBirds.Game.prototype = {
 		// CHECKING IF THE SOUND IS ENABLED
 		if (GAME_SOUND_ENABLED==true)
 			{
-			var flyAudioKey = this.currentBirdKey=="heroKolobokBogatyr" ? "sfxFlyBogatyr" : "sfxFly";
+			var flyAudioKey = this.getCurrentBirdConfig().flyAudioKey;
 
 			// LOADING THE AUDIO FLY
 			this.audioPlayer = this.add.audio(flyAudioKey);
@@ -2001,6 +2151,11 @@ AngryBirds.Game.prototype = {
 
 	killBird: function()
 		{
+		if (this.remainingBirdKeys.length>0)
+			{
+			this.remainingBirdKeys.shift();
+			}
+
 		// UPDATING THE AVAILABLE BIRDS COUNTER
 		this.availableBirdsCounter = this.availableBirdsCounter - 1;
 
@@ -2174,14 +2329,17 @@ AngryBirds.Game.prototype = {
 			return;
 			}
 
-		this.winOverlay = game.add.graphics();
-		this.winOverlay.beginFill(0x000000, 0.45);
-		this.winOverlay.drawRect(0, 0, game.width, game.height);
-		this.winOverlay.fixedToCamera = true;
 		this.returnCameraToSceneStart();
+		this.winOverlay = game.add.graphics();
+		this.winOverlay.fixedToCamera = true;
+		this.winPanel = game.add.graphics();
+		this.winPanel.lineStyle(4, 0x5b2410, 0.9);
+		this.winPanel.beginFill(0xf3d58e, 0.78);
+		this.winPanel.drawRect(Math.floor(game.width / 2 - 170), 78, 340, 208);
+		this.winPanel.fixedToCamera = true;
 		this.winToastText = game.add.text(0, 0, this.getCurrentWinMessage(), {font: "28px Semlor", fill: "#fff3cf"});
 		this.winToastText.position.x = Math.floor(game.width / 2 - this.winToastText.width / 2);
-		this.winToastText.position.y = Math.floor(game.height / 2 - this.winToastText.height / 2 - 138);
+		this.winToastText.position.y = 104;
 		this.winToastText.fixedToCamera = true;
 
 		if (earnedStars==null)
@@ -2200,13 +2358,13 @@ AngryBirds.Game.prototype = {
 		var starAssetKey = "gameStar" + earnedStars;
 		var winStarSprite = game.add.sprite(0, 0, starAssetKey);
 		winStarSprite.position.x = Math.floor(game.width / 2 - winStarSprite.width / 2);
-		winStarSprite.position.y = this.winToastText.position.y + this.winToastText.height + 14;
+		winStarSprite.position.y = this.winToastText.position.y + this.winToastText.height + 18;
 		winStarSprite.fixedToCamera = true;
 		this.winStars.push(winStarSprite);
 
 		this.winContinueButton = game.add.sprite(0, 0, "uiForwardButton");
-		this.winContinueButton.position.x = game.width - this.winContinueButton.width - 10;
-		this.winContinueButton.position.y = game.height - this.winContinueButton.height - 10;
+		this.winContinueButton.position.x = Math.floor(game.width / 2 - this.winContinueButton.width / 2);
+		this.winContinueButton.position.y = winStarSprite.position.y + winStarSprite.height + 18;
 		this.winContinueButton.fixedToCamera = true;
 
 		this.winContinueHandler = game.add.graphics();
@@ -2265,12 +2423,32 @@ AngryBirds.Game.prototype = {
 			return;
 			}
 
-		this.loseOverlay = game.add.graphics();
-		this.loseOverlay.beginFill(0x000000, 0.45);
-		this.loseOverlay.drawRect(0, 0, game.width, game.height);
-		this.loseOverlay.fixedToCamera = true;
 		this.returnCameraToSceneStart();
+		this.loseOverlay = game.add.graphics();
+		this.loseOverlay.fixedToCamera = true;
+		this.losePanel = game.add.graphics();
+		this.losePanel.lineStyle(4, 0x5b2410, 0.9);
+		this.losePanel.beginFill(0xf3d58e, 0.78);
+		this.losePanel.drawRect(Math.floor(game.width / 2 - 170), 78, 340, 176);
+		this.losePanel.fixedToCamera = true;
 		this.showToast(STRING_YOULOSE);
+		this.loseRestartButton = game.add.sprite(0, 0, "hudRestartButton");
+		this.loseRestartButton.position.x = Math.floor(game.width / 2 - this.loseRestartButton.width / 2);
+		this.loseRestartButton.position.y = this.toastText.position.y + this.toastText.height + 26;
+		this.loseRestartButton.fixedToCamera = true;
+
+		this.loseRestartHandler = game.add.graphics();
+		this.loseRestartHandler.beginFill(0x000000, 0);
+		this.loseRestartHandler.drawRect(this.loseRestartButton.x, this.loseRestartButton.y, this.loseRestartButton.width, this.loseRestartButton.height);
+		this.loseRestartHandler.fixedToCamera = true;
+		this.loseRestartHandler.inputEnabled = true;
+		this.loseRestartHandler.events.onInputUp.add(this.handleLoseRestart, this);
+		this.bringHudToTop();
+		},
+
+	handleLoseRestart: function()
+		{
+		this.restartGame(true);
 		},
 
 	bringHudToTop: function()
@@ -2356,7 +2534,7 @@ AngryBirds.Game.prototype = {
 		// Bitmap fonts in this project do not contain Cyrillic glyphs.
 		this.toastText = game.add.text(0, 0, myText, {font: "28px Semlor", fill: "#fff3cf"});
 		this.toastText.position.x = Math.floor(game.width / 2 - this.toastText.width / 2);
-		this.toastText.position.y = Math.floor(game.height / 2 - this.toastText.height / 2 - 138);
+		this.toastText.position.y = 104;
 		this.toastText.fixedToCamera = true;
 		this.toastText.alpha = 0;
 
