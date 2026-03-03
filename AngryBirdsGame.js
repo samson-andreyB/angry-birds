@@ -964,6 +964,9 @@ AngryBirds.Game.prototype = {
 		this.MAX_SPEED_SHOOT = 1000;
 		this.SHOOT_FACTOR = 8;
 		this.KILL_DIFF = 8;
+		this.ENEMY_BIRD_KILL_DIFF = 6;
+		this.ENEMY_BLOCK_KILL_DIFF = 7;
+		this.ENEMY_GROUND_KILL_DIFF = 7;
 		this.backgroundImage = null;
 		this.blocksCollisionGroup = null;
 		this.enemiesCollisionGroup = null;
@@ -1474,13 +1477,29 @@ AngryBirds.Game.prototype = {
 	hitEnemy: function(bodyA, bodyB, shapeA, shapeB, equation)
 		{
 		var gameState = game.state.states["AngryBirds.Game"];
-		if (bodyA==null || bodyB==null || equation==null || equation[0]==null)
+		if (bodyA==null || bodyB==null || equation==null || equation[0]==null || this.alpha<1)
 			{
 			return;
 			}
 
+		var enemyBody = this.body;
+		var otherBody = bodyA===enemyBody ? bodyB : bodyA;
 		var birdBody = gameState.bird && gameState.bird.body ? gameState.bird.body : null;
-		if (birdBody==null || bodyA!=birdBody && bodyB!=birdBody)
+		var impactThreshold = null;
+
+		if (birdBody!=null && otherBody===birdBody)
+			{
+			impactThreshold = gameState.ENEMY_BIRD_KILL_DIFF;
+			}
+		else if (gameState.floor!=null && otherBody===gameState.floor.body)
+			{
+			impactThreshold = gameState.ENEMY_GROUND_KILL_DIFF;
+			}
+		else if (otherBody!=null && otherBody.sprite!=null && (otherBody.sprite.assetKey=="blockLight" || otherBody.sprite.assetKey=="blockHeavy"))
+			{
+			impactThreshold = gameState.ENEMY_BLOCK_KILL_DIFF;
+			}
+		else
 			{
 			return;
 			}
@@ -1489,7 +1508,7 @@ AngryBirds.Game.prototype = {
 		var velocityDiff = Phaser.Point.distance(new Phaser.Point(equation[0].bodyA.velocity[0], equation[0].bodyA.velocity[1]), new Phaser.Point(equation[0].bodyB.velocity[0], equation[0].bodyB.velocity[1]));
 
 		// CHECKING IF THE VELOCITY IS ENOUGH TO KILL THE ENEMY
-		if (velocityDiff > game.state.states["AngryBirds.Game"].KILL_DIFF)
+		if (velocityDiff > impactThreshold)
 			{
 			// PLACING THE EXPLOSION SPRITE WHERE ENEMY IS LOCATED
 			this.explosion.position.x = this.position.x - 24;
@@ -1511,20 +1530,20 @@ AngryBirds.Game.prototype = {
 			if (GAME_SOUND_ENABLED==true)
 				{
 				// LOADING THE AUDIO EXPLOSION
-				game.state.states["AngryBirds.Game"].audioPlayer = game.state.states["AngryBirds.Game"].add.audio("sfxExplosion");
+				gameState.audioPlayer = gameState.add.audio("sfxExplosion");
 
 				// SETTING THE AUDIO EXPLOSION VOLUME
-				game.state.states["AngryBirds.Game"].audioPlayer.volume = 1;
+				gameState.audioPlayer.volume = 1;
 
 				// SETTING THAT THE AUDIO EXPLOSION WON'T BE LOOPING
-				game.state.states["AngryBirds.Game"].audioPlayer.loop = false;
+				gameState.audioPlayer.loop = false;
 
 				// PLAYING THE AUDIO EXPLOSION
-				game.state.states["AngryBirds.Game"].audioPlayer.play();
+				gameState.audioPlayer.play();
 				}
 
 			// UPDATING THE DEAD COUNT
-			game.state.states["AngryBirds.Game"].updateDeadCount();
+			gameState.updateDeadCount();
 			}
 		},
 
