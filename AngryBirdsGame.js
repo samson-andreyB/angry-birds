@@ -97,13 +97,17 @@ AngryBirds.Preloader.prototype = {
 		var levelSelectStar1 = "assets/img/level-selector/star-1.png";
 		var levelSelectStar2 = "assets/img/level-selector/star-2.png";
 		var levelSelectStar3 = "assets/img/level-selector/star-3.png";
-		var levelSelectBackButton = "assets/img/level-selector/back-button.png";
+		var levelSelectBackButton = "assets/img/ui/back-button.png";
+		var uiForwardButton = "assets/img/ui/forward-button.png";
 		var gameBackground1 = "assets/img/game/background-1.png";
 		var gameBackground2 = "assets/img/game/background-2.png";
 		var gameBackground3 = "assets/img/game/background-3.png";
 		var gameFloor = "assets/img/game/floor.png";
 		var gameGrassBack = "assets/img/game/grass-back.png";
 		var gameGrassFront = "assets/img/game/grass-front.png";
+		var gameStar1 = "assets/img/game/star-1.png";
+		var gameStar2 = "assets/img/game/star-2.png";
+		var gameStar3 = "assets/img/game/star-3.png";
 		var slingshotBase = "assets/img/game/slingshot/base.png";
 		var slingshotFront = "assets/img/game/slingshot/front.png";
 		var slingshotBack = "assets/img/game/slingshot/back.png";
@@ -160,12 +164,16 @@ AngryBirds.Preloader.prototype = {
 		this.load.image("levelSelectStar2", levelSelectStar2);
 		this.load.image("levelSelectStar3", levelSelectStar3);
 		this.load.image("levelSelectBackButton", levelSelectBackButton);
+		this.load.image("uiForwardButton", uiForwardButton);
 		this.load.image("gameBackground1", gameBackground1);
 		this.load.image("gameBackground2", gameBackground2);
 		this.load.image("gameBackground3", gameBackground3);
 		this.load.image("gameFloor", gameFloor);
 		this.load.image("gameGrassBack", gameGrassBack);
 		this.load.image("gameGrassFront", gameGrassFront);
+		this.load.image("gameStar1", gameStar1);
+		this.load.image("gameStar2", gameStar2);
+		this.load.image("gameStar3", gameStar3);
 		this.load.image("slingshotBase", slingshotBase);
 		this.load.image("slingshotFront", slingshotFront);
 		this.load.image("slingshotBack", slingshotBack);
@@ -936,6 +944,13 @@ AngryBirds.Game = function (game)
 	this.soundHandler = null;
 	this.debugWinButton = null;
 	this.debugWinLabel = null;
+	this.winOverlay = null;
+	this.loseOverlay = null;
+	this.winToastText = null;
+	this.winStars = null;
+	this.winContinueButton = null;
+	this.winContinueHandler = null;
+	this.winOverlayTransitioning = null;
 	this.turnInProgress = null;
 	this.currentLevel = null;
 	this.birdPierceRemaining = null;
@@ -1004,6 +1019,13 @@ AngryBirds.Game.prototype = {
 		this.soundHandler = null;
 		this.debugWinButton = null;
 		this.debugWinLabel = null;
+		this.winOverlay = null;
+		this.loseOverlay = null;
+		this.winToastText = null;
+		this.winStars = [];
+		this.winContinueButton = null;
+		this.winContinueHandler = null;
+		this.winOverlayTransitioning = false;
 		this.turnInProgress = false;
 		this.currentLevel = null;
 		this.currentBirdKey = null;
@@ -1155,6 +1177,8 @@ AngryBirds.Game.prototype = {
 		this.debugWinLabel.position.x = 205 + Math.floor((74 - this.debugWinLabel.width) / 2);
 		this.debugWinLabel.position.y = 20 + Math.floor((30 - this.debugWinLabel.height) / 2) - 1;
 		this.debugWinLabel.fixedToCamera = true;
+
+		this.bringHudToTop();
 
 
 		// ADDING THE BIRD LAUNCHER
@@ -1373,19 +1397,7 @@ AngryBirds.Game.prototype = {
 
 			// BRINGING THE LEFT SIDE OF THE POLE TO THE TOP
 			this.game.world.bringToTop(this.poleLeft);
-
-			// BRINGING THE MENU ICON TO THE TOP
-			this.game.world.bringToTop(this.menuIcon);
-
-			// BRINGING THE RESTART ICON TO THE TOP
-			this.game.world.bringToTop(this.restartIcon);
-
-			// BRINGING THE SOUND ICON TO THE TOP
-			this.game.world.bringToTop(this.soundIcon);
-
-			// BRINGING THE DEBUG WIN BUTTON TO THE TOP
-			this.game.world.bringToTop(this.debugWinButton);
-			this.game.world.bringToTop(this.debugWinLabel);
+			this.bringHudToTop();
 
 			// GETTING THE DISTANCE BETWEEN THE BIRD AND THE POLE
 			var distance = Phaser.Point.distance(this.bird.position, this.pole.position);
@@ -1928,9 +1940,6 @@ AngryBirds.Game.prototype = {
 			// MAKING THE CAMERA TO NOT FOLLOW THE BIRD
 			game.camera.follow(null);
 
-			// SHOWING THE 'YOU WIN' TOAST
-			this.showToast(STRING_YOUWIN);
-
 			// CHECKING IF THE SOUND IS ENABLED
 			if (GAME_SOUND_ENABLED==true)
 				{
@@ -1947,50 +1956,15 @@ AngryBirds.Game.prototype = {
 				this.audioPlayer.play();
 				}
 
-			// CHECKING IF THE NEXT LEVEL EXISTS
-			if (game.state.states["AngryBirds.Game"].nextLevelExists()==true)
-				{
-				// CHECKING IF THE CURRENT LEVEL AS SOLVED MUST BE SAVED
-				if (parseInt(game.state.states["AngryBirds.SplashGame"].getSolvedLevels())<parseInt(GAME_LEVEL_SELECTED))
-					{
-					// SAVING THE CURRENT LEVEL AS SOLVED
-					game.state.states["AngryBirds.SplashGame"].setSolvedLevels(GAME_LEVEL_SELECTED);
-					}
-				game.state.states["AngryBirds.SplashGame"].setLevelStars(GAME_LEVEL_SELECTED, earnedStars);
-
-				// UPDATING THE SELECTED LEVEL NUMBER
-				GAME_LEVEL_SELECTED = "" + (parseInt(GAME_LEVEL_SELECTED) + 1);
-
-				// WAITING 5000 MS
-				game.time.events.add(5000, function()
-					{
-					// RESTARTING THE GAME
-					game.state.states["AngryBirds.Game"].restartGame(false);
-					});
-				}
-				else
+			// CHECKING IF THE CURRENT LEVEL AS SOLVED MUST BE SAVED
+			if (parseInt(game.state.states["AngryBirds.SplashGame"].getSolvedLevels())<parseInt(GAME_LEVEL_SELECTED))
 				{
 				// SAVING THE CURRENT LEVEL AS SOLVED
 				game.state.states["AngryBirds.SplashGame"].setSolvedLevels(GAME_LEVEL_SELECTED);
-				game.state.states["AngryBirds.SplashGame"].setLevelStars(GAME_LEVEL_SELECTED, earnedStars);
-
-				// WAITING 5000 MS
-				game.time.events.add(5000, function()
-					{
-					// REMOVING THE TOAST MESSAGE
-					if (game.state.states["AngryBirds.Game"].toastShadow!=null)
-						{
-						game.state.states["AngryBirds.Game"].toastShadow.destroy();
-						}
-					if (game.state.states["AngryBirds.Game"].toastText!=null)
-						{
-						game.state.states["AngryBirds.Game"].toastText.destroy();
-						}
-
-					// SHOWING THE FINAL SCREEN
-					game.state.start("AngryBirds.FinalScreen", Phaser.Plugin.StateTransition.Out.SlideLeft);
-					});
 				}
+
+			game.state.states["AngryBirds.SplashGame"].setLevelStars(GAME_LEVEL_SELECTED, earnedStars);
+			this.showWinOverlay(earnedStars);
 			}
 		},
 
@@ -2063,8 +2037,8 @@ AngryBirds.Game.prototype = {
 				// MAKING THE CAMERA TO NOT FOLLOW THE BIRD
 				game.camera.follow(null);
 
-				// SHOWING THE 'YOU LOSE' TOAST
-				this.showToast(STRING_YOULOSE);
+				// SHOWING THE 'YOU LOSE' OVERLAY
+				this.showLoseOverlay();
 
 				// LOOPING ALL THE ENEMIES
 				for (var i=0;i<this.enemies.children.length;i++)
@@ -2089,12 +2063,6 @@ AngryBirds.Game.prototype = {
 					this.audioPlayer.play();
 					}
 
-				// WAITING 5000 MS
-				game.time.events.add(5000, function()
-					{
-					// RESTARTING THE GAME
-					game.state.states["AngryBirds.Game"].restartGame(false);
-					});
 				}
 			}
 		},
@@ -2176,6 +2144,116 @@ AngryBirds.Game.prototype = {
 		this.updateDeadCount();
 		},
 
+	showWinOverlay: function(earnedStars)
+		{
+		if (this.winOverlay!=null)
+			{
+			return;
+			}
+
+		this.winOverlay = game.add.graphics();
+		this.winOverlay.beginFill(0x000000, 0.45);
+		this.winOverlay.drawRect(0, 0, game.width, game.height);
+		this.winOverlay.fixedToCamera = true;
+		this.winToastText = game.add.text(0, 0, STRING_YOUWIN, {font: "28px Semlor", fill: "#fff3cf"});
+		this.winToastText.position.x = Math.floor(game.width / 2 - this.winToastText.width / 2);
+		this.winToastText.position.y = Math.floor(game.height / 2 - this.winToastText.height / 2 - 138);
+		this.winToastText.fixedToCamera = true;
+
+		if (earnedStars==null)
+			{
+			earnedStars = parseInt(game.state.states["AngryBirds.SplashGame"].getLevelStars(GAME_LEVEL_SELECTED), 10);
+			}
+		if (isNaN(earnedStars)==true || earnedStars<1)
+			{
+			earnedStars = 1;
+			}
+		if (earnedStars>3)
+			{
+			earnedStars = 3;
+			}
+
+		var starAssetKey = "gameStar" + earnedStars;
+		var winStarSprite = game.add.sprite(0, 0, starAssetKey);
+		winStarSprite.position.x = Math.floor(game.width / 2 - winStarSprite.width / 2);
+		winStarSprite.position.y = this.winToastText.position.y + this.winToastText.height + 14;
+		winStarSprite.fixedToCamera = true;
+		this.winStars.push(winStarSprite);
+
+		this.winContinueButton = game.add.sprite(0, 0, "uiForwardButton");
+		this.winContinueButton.position.x = game.width - this.winContinueButton.width - 10;
+		this.winContinueButton.position.y = game.height - this.winContinueButton.height - 10;
+		this.winContinueButton.fixedToCamera = true;
+
+		this.winContinueHandler = game.add.graphics();
+		this.winContinueHandler.beginFill(0x000000, 0);
+		this.winContinueHandler.drawRect(this.winContinueButton.x, this.winContinueButton.y, this.winContinueButton.width, this.winContinueButton.height);
+		this.winContinueHandler.fixedToCamera = true;
+		this.winContinueHandler.inputEnabled = true;
+		this.winContinueHandler.events.onInputUp.add(this.handleWinContinue, this);
+		this.bringHudToTop();
+		},
+
+	handleWinContinue: function()
+		{
+		if (this.winOverlayTransitioning===true)
+			{
+			return;
+			}
+
+		this.winOverlayTransitioning = true;
+		this.winContinueHandler.inputEnabled = false;
+
+		game.add.tween(this.winContinueButton).to({x: this.winContinueButton.x + 10}, 90, Phaser.Easing.Sinusoidal.Out, true);
+
+		game.time.events.add(90, function()
+			{
+			if (this.nextLevelExists()==true)
+				{
+				GAME_LEVEL_SELECTED = "" + (parseInt(GAME_LEVEL_SELECTED) + 1);
+				if (this.audioPlayer!=null)
+					{
+					this.audioPlayer.pause();
+					}
+				if (MUSIC_PLAYER!=null)
+					{
+					MUSIC_PLAYER.pause();
+					}
+				game.state.start("AngryBirds.Game", Phaser.Plugin.StateTransition.Out.SlideLeft);
+				}
+			else
+				{
+				game.state.start("AngryBirds.FinalScreen", Phaser.Plugin.StateTransition.Out.SlideLeft);
+				}
+			}, this);
+		},
+
+	showLoseOverlay: function()
+		{
+		if (this.loseOverlay!=null)
+			{
+			return;
+			}
+
+		this.loseOverlay = game.add.graphics();
+		this.loseOverlay.beginFill(0x000000, 0.45);
+		this.loseOverlay.drawRect(0, 0, game.width, game.height);
+		this.loseOverlay.fixedToCamera = true;
+		this.showToast(STRING_YOULOSE);
+		},
+
+	bringHudToTop: function()
+		{
+		if (this.menuHandler!=null){this.game.world.bringToTop(this.menuHandler);}
+		if (this.restartHandler!=null){this.game.world.bringToTop(this.restartHandler);}
+		if (this.soundHandler!=null){this.game.world.bringToTop(this.soundHandler);}
+		if (this.debugWinButton!=null){this.game.world.bringToTop(this.debugWinButton);}
+		if (this.debugWinLabel!=null){this.game.world.bringToTop(this.debugWinLabel);}
+		if (this.menuIcon!=null){this.game.world.bringToTop(this.menuIcon);}
+		if (this.restartIcon!=null){this.game.world.bringToTop(this.restartIcon);}
+		if (this.soundIcon!=null){this.game.world.bringToTop(this.soundIcon);}
+		},
+
 	nextLevelExists: function()
 		{
 		// GETTING THE NEXT LEVEL KEY
@@ -2244,27 +2322,16 @@ AngryBirds.Game.prototype = {
 
 	showToast: function(myText)
 		{
-		// CREATING THE TOAST BACKGROUND
-		this.toastShadow = game.add.graphics();
-		this.toastShadow.beginFill(0x2c7f83, 0.72);
-		this.toastShadow.fixedToCamera = true;
-		this.toastShadow.alpha = 0;
-
 		// Bitmap fonts in this project do not contain Cyrillic glyphs.
 		this.toastText = game.add.text(0, 0, myText, {font: "28px Semlor", fill: "#fff3cf"});
 		this.toastText.position.x = Math.floor(game.width / 2 - this.toastText.width / 2);
-		this.toastText.position.y = 18;
+		this.toastText.position.y = Math.floor(game.height / 2 - this.toastText.height / 2 + 14);
 		this.toastText.fixedToCamera = true;
 		this.toastText.alpha = 0;
 
-		// DRAWING THE TOAST BACKGROUND
-		this.toastShadow.drawRoundedRect(Math.floor(game.width / 2 - this.toastText.width / 2 - 18), 8, Math.ceil(this.toastText.width + 36), 52, 14);
-
-		// FADING IN THE TOAST BACKGROUND
-		game.add.tween(this.toastShadow).to({alpha: 1}, 300, Phaser.Easing.Linear.None, true);
-
 		// FADING IN THE TOAST TEST
 		game.add.tween(this.toastText).to({alpha: 1}, 300, Phaser.Easing.Linear.None, true);
+		this.bringHudToTop();
 		}
 	};
 
