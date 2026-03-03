@@ -102,6 +102,7 @@ AngryBirds.Preloader.prototype = {
 		var gameBackground1 = "assets/img/game/background-1.png";
 		var gameBackground2 = "assets/img/game/background-2.png";
 		var gameBackground3 = "assets/img/game/background-3.png";
+		var gameBackground4 = "assets/img/game/background-4.png";
 		var gameFloor = "assets/img/game/floor.png";
 		var gameGrassBack = "assets/img/game/grass-back.png";
 		var gameGrassFront = "assets/img/game/grass-front.png";
@@ -168,6 +169,7 @@ AngryBirds.Preloader.prototype = {
 		this.load.image("gameBackground1", gameBackground1);
 		this.load.image("gameBackground2", gameBackground2);
 		this.load.image("gameBackground3", gameBackground3);
+		this.load.image("gameBackground4", gameBackground4);
 		this.load.image("gameFloor", gameFloor);
 		this.load.image("gameGrassBack", gameGrassBack);
 		this.load.image("gameGrassFront", gameGrassFront);
@@ -207,18 +209,18 @@ AngryBirds.Preloader.prototype = {
 		this.load.audio("sfxYouLose", sfxYouLose);
 
 		// ALL THE LEVELS THAT ARE GOING TO BE USED ARE STORED IN JSON FORMAT
-		var level1 = {"blocks":[{"x":330,"y":368,"asset":"blockHeavy","mass":12},{"x":426,"y":368,"asset":"blockLight","mass":5},{"x":426,"y":320,"asset":"blockLight","mass":5},{"x":426,"y":272,"asset":"blockLight","mass":5}],"enemies":[{"x":426,"y":224,"asset":"enemyBear"}]};
-		var level2 = {"blocks":[{"x":330,"y":368,"asset":"blockHeavy","mass":12},{"x":330,"y":320,"asset":"blockHeavy","mass":12},{"x":426,"y":368,"asset":"blockLight","mass":5},{"x":426,"y":320,"asset":"blockLight","mass":5},{"x":426,"y":272,"asset":"blockLight","mass":5},{"x":522,"y":368,"asset":"blockLight","mass":5},{"x":522,"y":320,"asset":"blockLight","mass":5},{"x":522,"y":272,"asset":"blockLight","mass":5}],"enemies":[{"x":426,"y":224,"asset":"enemyBear"},{"x":522,"y":224,"asset":"enemyBear"}]};
-		var level3 = {"blocks":[{"x":330,"y":368,"asset":"blockHeavy","mass":12},{"x":330,"y":320,"asset":"blockHeavy","mass":12},{"x":426,"y":368,"asset":"blockLight","mass":5},{"x":426,"y":320,"asset":"blockLight","mass":5},{"x":426,"y":272,"asset":"blockLight","mass":5},{"x":522,"y":368,"asset":"blockHeavy","mass":12},{"x":522,"y":320,"asset":"blockHeavy","mass":12},{"x":618,"y":368,"asset":"blockLight","mass":5},{"x":618,"y":320,"asset":"blockLight","mass":5},{"x":618,"y":272,"asset":"blockLight","mass":5},{"x":618,"y":224,"asset":"blockLight","mass":5}],"enemies":[{"x":426,"y":224,"asset":"enemyBear"},{"x":618,"y":176,"asset":"enemyBear"}]};
-		var level4 = {"blocks":[{"x":330,"y":368,"asset":"blockHeavy","mass":12},{"x":330,"y":320,"asset":"blockHeavy","mass":12},{"x":330,"y":272,"asset":"blockHeavy","mass":12},{"x":426,"y":368,"asset":"blockLight","mass":5},{"x":426,"y":320,"asset":"blockLight","mass":5},{"x":426,"y":272,"asset":"blockLight","mass":5},{"x":522,"y":368,"asset":"blockLight","mass":5},{"x":522,"y":320,"asset":"blockLight","mass":5},{"x":522,"y":272,"asset":"blockLight","mass":5},{"x":522,"y":224,"asset":"blockLight","mass":5},{"x":618,"y":368,"asset":"blockHeavy","mass":12},{"x":618,"y":320,"asset":"blockHeavy","mass":12},{"x":618,"y":272,"asset":"blockHeavy","mass":12}],"enemies":[{"x":426,"y":224,"asset":"enemyBear"},{"x":522,"y":176,"asset":"enemyBear"},{"x":618,"y":224,"asset":"enemyBear"}]};
-		var level5 = {"blocks":[{"x":330,"y":368,"asset":"blockHeavy","mass":12},{"x":330,"y":320,"asset":"blockHeavy","mass":12},{"x":330,"y":272,"asset":"blockHeavy","mass":12},{"x":426,"y":368,"asset":"blockLight","mass":5},{"x":426,"y":320,"asset":"blockLight","mass":5},{"x":426,"y":272,"asset":"blockLight","mass":5},{"x":426,"y":224,"asset":"blockLight","mass":5},{"x":522,"y":368,"asset":"blockHeavy","mass":12},{"x":522,"y":320,"asset":"blockHeavy","mass":12},{"x":522,"y":272,"asset":"blockHeavy","mass":12},{"x":618,"y":368,"asset":"blockLight","mass":5},{"x":618,"y":320,"asset":"blockLight","mass":5},{"x":618,"y":272,"asset":"blockLight","mass":5},{"x":618,"y":224,"asset":"blockLight","mass":5},{"x":714,"y":368,"asset":"blockHeavy","mass":12},{"x":714,"y":320,"asset":"blockHeavy","mass":12},{"x":714,"y":272,"asset":"blockHeavy","mass":12}],"enemies":[{"x":426,"y":176,"asset":"enemyBear"},{"x":618,"y":176,"asset":"enemyBear"},{"x":714,"y":224,"asset":"enemyBear"}]};
-		var level6 = {"blocks":[{"x":330,"y":368,"asset":"blockHeavy","mass":12},{"x":330,"y":320,"asset":"blockHeavy","mass":12},{"x":330,"y":272,"asset":"blockHeavy","mass":12},{"x":426,"y":368,"asset":"blockLight","mass":5},{"x":426,"y":320,"asset":"blockLight","mass":5},{"x":426,"y":272,"asset":"blockLight","mass":5},{"x":426,"y":224,"asset":"blockLight","mass":5},{"x":522,"y":368,"asset":"blockHeavy","mass":12},{"x":522,"y":320,"asset":"blockHeavy","mass":12},{"x":522,"y":272,"asset":"blockHeavy","mass":12},{"x":522,"y":224,"asset":"blockHeavy","mass":12},{"x":618,"y":368,"asset":"blockLight","mass":5},{"x":618,"y":320,"asset":"blockLight","mass":5},{"x":618,"y":272,"asset":"blockLight","mass":5},{"x":618,"y":224,"asset":"blockLight","mass":5},{"x":714,"y":368,"asset":"blockHeavy","mass":12},{"x":714,"y":320,"asset":"blockHeavy","mass":12},{"x":714,"y":272,"asset":"blockHeavy","mass":12}],"enemies":[{"x":426,"y":176,"asset":"enemyBear"},{"x":522,"y":176,"asset":"enemyBear"},{"x":618,"y":176,"asset":"enemyBear"}]};
+		var level1 = {"blocks":[{"x":330,"y":368,"asset":"blockHeavy","mass":12},{"x":426,"y":368,"asset":"blockLight","mass":5},{"x":426,"y":320,"asset":"blockLight","mass":5},{"x":426,"y":272,"asset":"blockLight","mass":5}],"enemies":[{"x":426,"y":224,"asset":"enemyRabbit"}]};
+		var level2 = {"blocks":[{"x":330,"y":368,"asset":"blockHeavy","mass":12},{"x":330,"y":320,"asset":"blockHeavy","mass":12},{"x":426,"y":368,"asset":"blockLight","mass":5},{"x":426,"y":320,"asset":"blockLight","mass":5},{"x":426,"y":272,"asset":"blockLight","mass":5},{"x":522,"y":368,"asset":"blockLight","mass":5},{"x":522,"y":320,"asset":"blockLight","mass":5},{"x":522,"y":272,"asset":"blockLight","mass":5}],"enemies":[{"x":426,"y":224,"asset":"enemyRabbit"},{"x":522,"y":224,"asset":"enemyRabbit"}]};
+		var level3 = {"blocks":[{"x":330,"y":368,"asset":"blockHeavy","mass":12},{"x":330,"y":320,"asset":"blockHeavy","mass":12},{"x":426,"y":368,"asset":"blockLight","mass":5},{"x":426,"y":320,"asset":"blockLight","mass":5},{"x":426,"y":272,"asset":"blockLight","mass":5},{"x":522,"y":368,"asset":"blockHeavy","mass":12},{"x":522,"y":320,"asset":"blockHeavy","mass":12},{"x":618,"y":368,"asset":"blockLight","mass":5},{"x":618,"y":320,"asset":"blockLight","mass":5},{"x":618,"y":272,"asset":"blockLight","mass":5},{"x":618,"y":224,"asset":"blockLight","mass":5}],"enemies":[{"x":426,"y":224,"asset":"enemyRabbit"},{"x":618,"y":176,"asset":"enemyRabbit"}]};
+		var level4 = {"blocks":[{"x":330,"y":368,"asset":"blockHeavy","mass":12},{"x":330,"y":320,"asset":"blockHeavy","mass":12},{"x":330,"y":272,"asset":"blockHeavy","mass":12},{"x":426,"y":368,"asset":"blockLight","mass":5},{"x":426,"y":320,"asset":"blockLight","mass":5},{"x":426,"y":272,"asset":"blockLight","mass":5},{"x":522,"y":368,"asset":"blockLight","mass":5},{"x":522,"y":320,"asset":"blockLight","mass":5},{"x":522,"y":272,"asset":"blockLight","mass":5},{"x":522,"y":224,"asset":"blockLight","mass":5},{"x":618,"y":368,"asset":"blockHeavy","mass":12},{"x":618,"y":320,"asset":"blockHeavy","mass":12},{"x":618,"y":272,"asset":"blockHeavy","mass":12}],"enemies":[{"x":426,"y":224,"asset":"enemyWolf"},{"x":522,"y":176,"asset":"enemyWolf"},{"x":618,"y":224,"asset":"enemyWolf"}]};
+		var level5 = {"blocks":[{"x":330,"y":368,"asset":"blockHeavy","mass":12},{"x":330,"y":320,"asset":"blockHeavy","mass":12},{"x":330,"y":272,"asset":"blockHeavy","mass":12},{"x":426,"y":368,"asset":"blockLight","mass":5},{"x":426,"y":320,"asset":"blockLight","mass":5},{"x":426,"y":272,"asset":"blockLight","mass":5},{"x":426,"y":224,"asset":"blockLight","mass":5},{"x":522,"y":368,"asset":"blockHeavy","mass":12},{"x":522,"y":320,"asset":"blockHeavy","mass":12},{"x":522,"y":272,"asset":"blockHeavy","mass":12},{"x":618,"y":368,"asset":"blockLight","mass":5},{"x":618,"y":320,"asset":"blockLight","mass":5},{"x":618,"y":272,"asset":"blockLight","mass":5},{"x":618,"y":224,"asset":"blockLight","mass":5},{"x":714,"y":368,"asset":"blockHeavy","mass":12},{"x":714,"y":320,"asset":"blockHeavy","mass":12},{"x":714,"y":272,"asset":"blockHeavy","mass":12}],"enemies":[{"x":426,"y":176,"asset":"enemyWolf"},{"x":618,"y":176,"asset":"enemyWolf"},{"x":714,"y":224,"asset":"enemyWolf"}]};
+		var level6 = {"blocks":[{"x":330,"y":368,"asset":"blockHeavy","mass":12},{"x":330,"y":320,"asset":"blockHeavy","mass":12},{"x":330,"y":272,"asset":"blockHeavy","mass":12},{"x":426,"y":368,"asset":"blockLight","mass":5},{"x":426,"y":320,"asset":"blockLight","mass":5},{"x":426,"y":272,"asset":"blockLight","mass":5},{"x":426,"y":224,"asset":"blockLight","mass":5},{"x":522,"y":368,"asset":"blockHeavy","mass":12},{"x":522,"y":320,"asset":"blockHeavy","mass":12},{"x":522,"y":272,"asset":"blockHeavy","mass":12},{"x":522,"y":224,"asset":"blockHeavy","mass":12},{"x":618,"y":368,"asset":"blockLight","mass":5},{"x":618,"y":320,"asset":"blockLight","mass":5},{"x":618,"y":272,"asset":"blockLight","mass":5},{"x":618,"y":224,"asset":"blockLight","mass":5},{"x":714,"y":368,"asset":"blockHeavy","mass":12},{"x":714,"y":320,"asset":"blockHeavy","mass":12},{"x":714,"y":272,"asset":"blockHeavy","mass":12}],"enemies":[{"x":426,"y":176,"asset":"enemyWolf"},{"x":522,"y":176,"asset":"enemyWolf"},{"x":618,"y":176,"asset":"enemyWolf"}]};
 		var level7 = {"blocks":[{"x":330,"y":368,"asset":"blockHeavy","mass":12},{"x":330,"y":320,"asset":"blockHeavy","mass":12},{"x":330,"y":272,"asset":"blockHeavy","mass":12},{"x":426,"y":368,"asset":"blockLight","mass":5},{"x":426,"y":320,"asset":"blockLight","mass":5},{"x":426,"y":272,"asset":"blockLight","mass":5},{"x":426,"y":224,"asset":"blockLight","mass":5},{"x":522,"y":368,"asset":"blockHeavy","mass":12},{"x":522,"y":320,"asset":"blockHeavy","mass":12},{"x":522,"y":272,"asset":"blockHeavy","mass":12},{"x":618,"y":368,"asset":"blockLight","mass":5},{"x":618,"y":320,"asset":"blockLight","mass":5},{"x":618,"y":272,"asset":"blockLight","mass":5},{"x":618,"y":224,"asset":"blockLight","mass":5},{"x":714,"y":368,"asset":"blockHeavy","mass":12},{"x":714,"y":320,"asset":"blockHeavy","mass":12},{"x":714,"y":272,"asset":"blockHeavy","mass":12}],"enemies":[{"x":330,"y":224,"asset":"enemyBear"},{"x":426,"y":176,"asset":"enemyBear"},{"x":618,"y":176,"asset":"enemyBear"},{"x":714,"y":224,"asset":"enemyBear"}]};
 		var level8 = {"blocks":[{"x":330,"y":368,"asset":"blockHeavy","mass":12},{"x":330,"y":320,"asset":"blockHeavy","mass":12},{"x":330,"y":272,"asset":"blockHeavy","mass":12},{"x":330,"y":224,"asset":"blockHeavy","mass":12},{"x":426,"y":368,"asset":"blockLight","mass":5},{"x":426,"y":320,"asset":"blockLight","mass":5},{"x":426,"y":272,"asset":"blockLight","mass":5},{"x":426,"y":224,"asset":"blockLight","mass":5},{"x":522,"y":368,"asset":"blockHeavy","mass":12},{"x":522,"y":320,"asset":"blockHeavy","mass":12},{"x":522,"y":272,"asset":"blockHeavy","mass":12},{"x":522,"y":224,"asset":"blockHeavy","mass":12},{"x":618,"y":368,"asset":"blockLight","mass":5},{"x":618,"y":320,"asset":"blockLight","mass":5},{"x":618,"y":272,"asset":"blockLight","mass":5},{"x":618,"y":224,"asset":"blockLight","mass":5},{"x":714,"y":368,"asset":"blockHeavy","mass":12},{"x":714,"y":320,"asset":"blockHeavy","mass":12},{"x":714,"y":272,"asset":"blockHeavy","mass":12}],"enemies":[{"x":330,"y":176,"asset":"enemyBear"},{"x":426,"y":176,"asset":"enemyBear"},{"x":618,"y":176,"asset":"enemyBear"},{"x":714,"y":224,"asset":"enemyBear"}]};
 		var level9 = {"blocks":[{"x":330,"y":368,"asset":"blockHeavy","mass":12},{"x":330,"y":320,"asset":"blockHeavy","mass":12},{"x":330,"y":272,"asset":"blockHeavy","mass":12},{"x":330,"y":224,"asset":"blockHeavy","mass":12},{"x":426,"y":368,"asset":"blockHeavy","mass":12},{"x":426,"y":320,"asset":"blockHeavy","mass":12},{"x":426,"y":272,"asset":"blockHeavy","mass":12},{"x":522,"y":368,"asset":"blockLight","mass":5},{"x":522,"y":320,"asset":"blockLight","mass":5},{"x":522,"y":272,"asset":"blockLight","mass":5},{"x":522,"y":224,"asset":"blockLight","mass":5},{"x":618,"y":368,"asset":"blockHeavy","mass":12},{"x":618,"y":320,"asset":"blockHeavy","mass":12},{"x":618,"y":272,"asset":"blockHeavy","mass":12},{"x":714,"y":368,"asset":"blockHeavy","mass":12},{"x":714,"y":320,"asset":"blockHeavy","mass":12},{"x":714,"y":272,"asset":"blockHeavy","mass":12},{"x":714,"y":224,"asset":"blockHeavy","mass":12}],"enemies":[{"x":330,"y":176,"asset":"enemyBear"},{"x":522,"y":176,"asset":"enemyBear"},{"x":618,"y":224,"asset":"enemyBear"},{"x":714,"y":176,"asset":"enemyBear"}]};
-		var level10 = {"blocks":[{"x":330,"y":368,"asset":"blockHeavy","mass":12},{"x":330,"y":320,"asset":"blockHeavy","mass":12},{"x":330,"y":272,"asset":"blockHeavy","mass":12},{"x":426,"y":368,"asset":"blockLight","mass":5},{"x":426,"y":320,"asset":"blockLight","mass":5},{"x":426,"y":272,"asset":"blockLight","mass":5},{"x":426,"y":224,"asset":"blockLight","mass":5},{"x":522,"y":368,"asset":"blockHeavy","mass":12},{"x":522,"y":320,"asset":"blockHeavy","mass":12},{"x":522,"y":272,"asset":"blockHeavy","mass":12},{"x":522,"y":224,"asset":"blockLight","mass":5},{"x":522,"y":176,"asset":"blockLight","mass":5},{"x":618,"y":368,"asset":"blockLight","mass":5},{"x":618,"y":320,"asset":"blockLight","mass":5},{"x":618,"y":272,"asset":"blockLight","mass":5},{"x":618,"y":224,"asset":"blockLight","mass":5},{"x":714,"y":368,"asset":"blockHeavy","mass":12},{"x":714,"y":320,"asset":"blockHeavy","mass":12},{"x":714,"y":272,"asset":"blockHeavy","mass":12}],"enemies":[{"x":426,"y":176,"asset":"enemyBear"},{"x":522,"y":128,"asset":"enemyBear"},{"x":618,"y":176,"asset":"enemyBear"},{"x":714,"y":224,"asset":"enemyBear"}]};
-		var level11 = {"blocks":[{"x":330,"y":368,"asset":"blockHeavy","mass":12},{"x":330,"y":320,"asset":"blockHeavy","mass":12},{"x":330,"y":272,"asset":"blockHeavy","mass":12},{"x":330,"y":224,"asset":"blockHeavy","mass":12},{"x":426,"y":368,"asset":"blockLight","mass":5},{"x":426,"y":320,"asset":"blockLight","mass":5},{"x":426,"y":272,"asset":"blockLight","mass":5},{"x":426,"y":224,"asset":"blockLight","mass":5},{"x":522,"y":368,"asset":"blockHeavy","mass":12},{"x":522,"y":320,"asset":"blockHeavy","mass":12},{"x":522,"y":272,"asset":"blockHeavy","mass":12},{"x":522,"y":224,"asset":"blockHeavy","mass":12},{"x":522,"y":176,"asset":"blockHeavy","mass":12},{"x":618,"y":368,"asset":"blockLight","mass":5},{"x":618,"y":320,"asset":"blockLight","mass":5},{"x":618,"y":272,"asset":"blockLight","mass":5},{"x":618,"y":224,"asset":"blockLight","mass":5},{"x":714,"y":368,"asset":"blockHeavy","mass":12},{"x":714,"y":320,"asset":"blockHeavy","mass":12},{"x":714,"y":272,"asset":"blockHeavy","mass":12},{"x":714,"y":224,"asset":"blockHeavy","mass":12}],"enemies":[{"x":426,"y":176,"asset":"enemyBear"},{"x":522,"y":128,"asset":"enemyBear"},{"x":618,"y":176,"asset":"enemyBear"},{"x":714,"y":176,"asset":"enemyBear"}]};
-		var level12 = {"blocks":[{"x":330,"y":368,"asset":"blockHeavy","mass":12},{"x":330,"y":320,"asset":"blockHeavy","mass":12},{"x":330,"y":272,"asset":"blockHeavy","mass":12},{"x":330,"y":224,"asset":"blockHeavy","mass":12},{"x":426,"y":368,"asset":"blockLight","mass":5},{"x":426,"y":320,"asset":"blockLight","mass":5},{"x":426,"y":272,"asset":"blockLight","mass":5},{"x":426,"y":224,"asset":"blockLight","mass":5},{"x":474,"y":368,"asset":"blockLight","mass":5},{"x":474,"y":320,"asset":"blockLight","mass":5},{"x":522,"y":368,"asset":"blockHeavy","mass":12},{"x":522,"y":320,"asset":"blockHeavy","mass":12},{"x":522,"y":272,"asset":"blockHeavy","mass":12},{"x":522,"y":224,"asset":"blockHeavy","mass":12},{"x":522,"y":176,"asset":"blockHeavy","mass":12},{"x":570,"y":368,"asset":"blockLight","mass":5},{"x":570,"y":320,"asset":"blockLight","mass":5},{"x":618,"y":368,"asset":"blockLight","mass":5},{"x":618,"y":320,"asset":"blockLight","mass":5},{"x":618,"y":272,"asset":"blockLight","mass":5},{"x":618,"y":224,"asset":"blockLight","mass":5},{"x":714,"y":368,"asset":"blockHeavy","mass":12},{"x":714,"y":320,"asset":"blockHeavy","mass":12},{"x":714,"y":272,"asset":"blockHeavy","mass":12},{"x":714,"y":224,"asset":"blockHeavy","mass":12}],"enemies":[{"x":426,"y":176,"asset":"enemyBear"},{"x":522,"y":128,"asset":"enemyBear"},{"x":618,"y":176,"asset":"enemyBear"},{"x":714,"y":176,"asset":"enemyBear"}]};
+		var level10 = {"blocks":[{"x":330,"y":368,"asset":"blockHeavy","mass":12},{"x":330,"y":320,"asset":"blockHeavy","mass":12},{"x":330,"y":272,"asset":"blockHeavy","mass":12},{"x":426,"y":368,"asset":"blockLight","mass":5},{"x":426,"y":320,"asset":"blockLight","mass":5},{"x":426,"y":272,"asset":"blockLight","mass":5},{"x":426,"y":224,"asset":"blockLight","mass":5},{"x":522,"y":368,"asset":"blockHeavy","mass":12},{"x":522,"y":320,"asset":"blockHeavy","mass":12},{"x":522,"y":272,"asset":"blockHeavy","mass":12},{"x":522,"y":224,"asset":"blockLight","mass":5},{"x":522,"y":176,"asset":"blockLight","mass":5},{"x":618,"y":368,"asset":"blockLight","mass":5},{"x":618,"y":320,"asset":"blockLight","mass":5},{"x":618,"y":272,"asset":"blockLight","mass":5},{"x":618,"y":224,"asset":"blockLight","mass":5},{"x":714,"y":368,"asset":"blockHeavy","mass":12},{"x":714,"y":320,"asset":"blockHeavy","mass":12},{"x":714,"y":272,"asset":"blockHeavy","mass":12}],"enemies":[{"x":426,"y":176,"asset":"enemyFox"},{"x":522,"y":128,"asset":"enemyFox"},{"x":618,"y":176,"asset":"enemyFox"},{"x":714,"y":224,"asset":"enemyFox"}]};
+		var level11 = {"blocks":[{"x":330,"y":368,"asset":"blockHeavy","mass":12},{"x":330,"y":320,"asset":"blockHeavy","mass":12},{"x":330,"y":272,"asset":"blockHeavy","mass":12},{"x":330,"y":224,"asset":"blockHeavy","mass":12},{"x":426,"y":368,"asset":"blockLight","mass":5},{"x":426,"y":320,"asset":"blockLight","mass":5},{"x":426,"y":272,"asset":"blockLight","mass":5},{"x":426,"y":224,"asset":"blockLight","mass":5},{"x":522,"y":368,"asset":"blockHeavy","mass":12},{"x":522,"y":320,"asset":"blockHeavy","mass":12},{"x":522,"y":272,"asset":"blockHeavy","mass":12},{"x":522,"y":224,"asset":"blockHeavy","mass":12},{"x":522,"y":176,"asset":"blockHeavy","mass":12},{"x":618,"y":368,"asset":"blockLight","mass":5},{"x":618,"y":320,"asset":"blockLight","mass":5},{"x":618,"y":272,"asset":"blockLight","mass":5},{"x":618,"y":224,"asset":"blockLight","mass":5},{"x":714,"y":368,"asset":"blockHeavy","mass":12},{"x":714,"y":320,"asset":"blockHeavy","mass":12},{"x":714,"y":272,"asset":"blockHeavy","mass":12},{"x":714,"y":224,"asset":"blockHeavy","mass":12}],"enemies":[{"x":426,"y":176,"asset":"enemyFox"},{"x":522,"y":128,"asset":"enemyFox"},{"x":618,"y":176,"asset":"enemyFox"},{"x":714,"y":176,"asset":"enemyFox"}]};
+		var level12 = {"blocks":[{"x":330,"y":368,"asset":"blockHeavy","mass":12},{"x":330,"y":320,"asset":"blockHeavy","mass":12},{"x":330,"y":272,"asset":"blockHeavy","mass":12},{"x":330,"y":224,"asset":"blockHeavy","mass":12},{"x":426,"y":368,"asset":"blockLight","mass":5},{"x":426,"y":320,"asset":"blockLight","mass":5},{"x":426,"y":272,"asset":"blockLight","mass":5},{"x":426,"y":224,"asset":"blockLight","mass":5},{"x":474,"y":368,"asset":"blockLight","mass":5},{"x":474,"y":320,"asset":"blockLight","mass":5},{"x":522,"y":368,"asset":"blockHeavy","mass":12},{"x":522,"y":320,"asset":"blockHeavy","mass":12},{"x":522,"y":272,"asset":"blockHeavy","mass":12},{"x":522,"y":224,"asset":"blockHeavy","mass":12},{"x":522,"y":176,"asset":"blockHeavy","mass":12},{"x":570,"y":368,"asset":"blockLight","mass":5},{"x":570,"y":320,"asset":"blockLight","mass":5},{"x":618,"y":368,"asset":"blockLight","mass":5},{"x":618,"y":320,"asset":"blockLight","mass":5},{"x":618,"y":272,"asset":"blockLight","mass":5},{"x":618,"y":224,"asset":"blockLight","mass":5},{"x":714,"y":368,"asset":"blockHeavy","mass":12},{"x":714,"y":320,"asset":"blockHeavy","mass":12},{"x":714,"y":272,"asset":"blockHeavy","mass":12},{"x":714,"y":224,"asset":"blockHeavy","mass":12}],"enemies":[{"x":426,"y":176,"asset":"enemyFox"},{"x":522,"y":128,"asset":"enemyFox"},{"x":618,"y":176,"asset":"enemyFox"},{"x":714,"y":176,"asset":"enemyFox"}]};
 
 		// LOADING THE LEVELS
 		this.load.text("level1", "data:application/json;base64," + btoa(JSON.stringify(level1)));
@@ -1037,15 +1039,37 @@ AngryBirds.Game.prototype = {
 	getCurrentBackgroundKey: function()
 		{
 		var levelNumber = parseInt(this.currentLevel, 10);
-		if (levelNumber>=9)
+		if (levelNumber>=10)
+			{
+			return "gameBackground4";
+			}
+		if (levelNumber>=7)
 			{
 			return "gameBackground3";
 			}
-		if (levelNumber>=5)
+		if (levelNumber>=4)
 			{
 			return "gameBackground2";
 			}
 		return "gameBackground1";
+		},
+
+	getCurrentWinMessage: function()
+		{
+		var levelNumber = parseInt(this.currentLevel, 10);
+		if (levelNumber>=10)
+			{
+			return "Колобок ушёл от лисы";
+			}
+		if (levelNumber>=7)
+			{
+			return "Колобок ушёл от медведя";
+			}
+		if (levelNumber>=4)
+			{
+			return "Колобок ушёл от волка";
+			}
+		return "Колобок ушёл от зайца";
 		},
 
 	create: function()
@@ -1707,23 +1731,6 @@ AngryBirds.Game.prototype = {
 		{
 		var enemyAssetKey = data.asset;
 
-		if (data.asset=="enemyBear")
-			{
-			var enemyIndex = this.enemies.children.length;
-			if (enemyIndex % 4==1)
-				{
-				enemyAssetKey = "enemyFox";
-				}
-			else if (enemyIndex % 4==2)
-				{
-				enemyAssetKey = "enemyWolf";
-				}
-			else if (enemyIndex % 4==3)
-				{
-				enemyAssetKey = "enemyRabbit";
-				}
-			}
-
 		var enemyY = data.y;
 		var enemyHeight = this.cache.getImage(enemyAssetKey).height;
 		var supportTopY = Number.POSITIVE_INFINITY;
@@ -2155,7 +2162,7 @@ AngryBirds.Game.prototype = {
 		this.winOverlay.beginFill(0x000000, 0.45);
 		this.winOverlay.drawRect(0, 0, game.width, game.height);
 		this.winOverlay.fixedToCamera = true;
-		this.winToastText = game.add.text(0, 0, STRING_YOUWIN, {font: "28px Semlor", fill: "#fff3cf"});
+		this.winToastText = game.add.text(0, 0, this.getCurrentWinMessage(), {font: "28px Semlor", fill: "#fff3cf"});
 		this.winToastText.position.x = Math.floor(game.width / 2 - this.winToastText.width / 2);
 		this.winToastText.position.y = Math.floor(game.height / 2 - this.winToastText.height / 2 - 138);
 		this.winToastText.fixedToCamera = true;
