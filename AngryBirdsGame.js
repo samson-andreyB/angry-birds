@@ -938,6 +938,7 @@ AngryBirds.Game = function (game)
 	this.debugWinLabel = null;
 	this.turnInProgress = null;
 	this.currentLevel = null;
+	this.birdPierceRemaining = null;
 
 	// SCALING THE CANVAS SIZE FOR THE GAME
 	function resizeF()
@@ -1007,6 +1008,8 @@ AngryBirds.Game.prototype = {
 		this.currentLevel = null;
 		this.currentBirdKey = null;
 		this.birdLandedAt = null;
+		this.birdPierceRemaining = 0;
+		this.birdPierceDirectionX = 1;
 		},
 
 	getCurrentBackgroundKey: function()
@@ -1582,6 +1585,28 @@ AngryBirds.Game.prototype = {
 		this.explosion.visible = true;
 		this.kill();
 
+		if (gameState.currentBirdKey=="heroKolobokBogatyr" && gameState.birdPierceRemaining > 0)
+			{
+			var retainedVelocityFactor = this.assetKey=="blockHeavy" ? 0.96 : 0.985;
+			var retainedAngularFactor = this.assetKey=="blockHeavy" ? 0.94 : 0.97;
+			var retainedDirectionX = gameState.birdPierceDirectionX || 1;
+			gameState.birdPierceRemaining = gameState.birdPierceRemaining - 1;
+			game.time.events.add(20, function()
+				{
+				if (gameState.bird!=null && gameState.bird.body!=null)
+					{
+					var retainedSpeedX = Math.abs(gameState.bird.body.velocity.x) * retainedVelocityFactor;
+					if (retainedSpeedX < 300)
+						{
+						retainedSpeedX = 300;
+						}
+					gameState.bird.body.velocity.x = retainedSpeedX * retainedDirectionX;
+					gameState.bird.body.velocity.y = gameState.bird.body.velocity.y * retainedVelocityFactor;
+					gameState.bird.body.angularVelocity = gameState.bird.body.angularVelocity * retainedAngularFactor;
+					}
+				});
+			}
+
 		if (GAME_SOUND_ENABLED==true)
 			{
 			var blockExplosionSound = this.assetKey=="blockHeavy" ? "sfxExplosionHeavy" : "sfxExplosionLight";
@@ -1754,6 +1779,8 @@ AngryBirds.Game.prototype = {
 		var activeBirdKey = this.getBirdAssetKey(activeBirdIndex);
 		this.currentBirdKey = activeBirdKey;
 		this.birdLandedAt = null;
+		this.birdPierceRemaining = activeBirdKey=="heroKolobokBogatyr" ? 4 : 0;
+		this.birdPierceDirectionX = 1;
 
 		// ADDING A BIRD NEAR THE SLINGSHOT AND TWEENING IT INTO PLACE
 		this.bird = this.add.sprite(this.pole.x - 70, this.pole.y + 36, activeBirdKey);
@@ -1861,6 +1888,7 @@ AngryBirds.Game.prototype = {
 		// SETTING THE BIRD VELOCITY ACCORDING THE DIFFERENCE VECTOR
 		this.bird.body.velocity.x = Math.abs(diff.x * this.SHOOT_FACTOR)/(diff.x * this.SHOOT_FACTOR) * Math.min(Math.abs(diff.x * this.SHOOT_FACTOR), this.MAX_SPEED_SHOOT);
 		this.bird.body.velocity.y = Math.abs(diff.y * this.SHOOT_FACTOR)/(diff.y * this.SHOOT_FACTOR) * Math.min(Math.abs(diff.y * this.SHOOT_FACTOR), this.MAX_SPEED_SHOOT);
+		this.birdPierceDirectionX = this.bird.body.velocity.x < 0 ? -1 : 1;
 
 		// MAKING THE CAMERA TO FOLLOW THE BIRD
 		game.camera.follow(this.bird);
