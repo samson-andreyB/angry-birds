@@ -74,6 +74,12 @@ AngryBirds.Preloader.prototype = {
 
 	preload: function()
 		{
+		if (!this.deferMainAssets)
+			{
+			this.load.image("splashScreen", "assets/img/splash/screen.png");
+			return;
+			}
+
 		// ALL THE IMAGES THAT ARE GOING TO BE USED ARE LOADED FROM THE ASSETS FOLDER
 		var splashScreen = "assets/img/splash/screen.png";
 		var menuTitle = "assets/img/menu/title.png";
@@ -142,7 +148,10 @@ AngryBirds.Preloader.prototype = {
 		var sfxYouLose = "assets/audio/you-lose.mp3";
 
 		// LOADING THE IMAGES
-		this.load.image("splashScreen", splashScreen);
+		if (!this.deferMainAssets)
+			{
+			this.load.image("splashScreen", splashScreen);
+			}
 		this.load.image("menuTitle", menuTitle);
 		this.load.image("menuPlayButton", menuPlayButton);
 		this.load.image("menuSoundOn", menuSoundOn);
@@ -258,32 +267,55 @@ AngryBirds.SplashGame.prototype = {
 
 	init: function()
 		{
+		this.splashLoadingText = null;
+		this.splashLoadingStep = 0;
+		this.splashLoadingLastTick = 0;
 		this.splashContinueText = null;
 		this.splashContinueHandler = null;
 		},
 
 	preload: function()
 		{
+		this.stage.backgroundColor = "#FFFFFF";
 		this.splashScreen = null;
+		this.splashLoadingText = null;
+		this.splashLoadingStep = 0;
+		this.splashLoadingLastTick = this.game.time.now;
 		this.splashContinueText = null;
 		this.splashContinueHandler = null;
+		this.splashScreen = game.add.sprite(0, 0, "splashScreen");
+		this.splashLoadingText = game.add.text(0, 0, "Загрузка", {font: "28px Semlor", fill: "#fff3cf"});
+		this.splashLoadingText.position.x = Math.floor(game.width / 2 - this.splashLoadingText.width / 2);
+		this.splashLoadingText.position.y = Math.floor(game.height - 58);
+		this.splashLoadingText.fixedToCamera = true;
+		this.deferMainAssets = true;
+		AngryBirds.Preloader.prototype.preload.call(this);
+		},
+
+	loadUpdate: function()
+		{
+		if (this.splashLoadingText && this.game.time.now - this.splashLoadingLastTick >= 350)
+			{
+			this.splashLoadingStep = (this.splashLoadingStep + 1) % 4;
+			this.splashLoadingLastTick = this.game.time.now;
+			this.splashLoadingText.text = "Загрузка" + new Array(this.splashLoadingStep + 1).join(".");
+			this.splashLoadingText.position.x = Math.floor(game.width / 2 - this.splashLoadingText.width / 2);
+			}
 		},
 
 	create: function()
 		{
-		// SETTING THE BACKGROUND COLOR
-		this.stage.backgroundColor = "#FFFFFF";
-
-		// ADDING THE IMAGE SPLASH
-		this.splashScreen = game.add.sprite(0, 0, "splashScreen");
-
-		// SHOWING THE CONTINUE PROMPT AFTER A SHORT DELAY
-		game.time.events.add(3000, function()
+		if (this.splashLoadingText)
 			{
-		this.splashContinueText = game.add.text(0, 0, "Нажмите, чтобы продолжить", {font: "28px Semlor", fill: "#fff3cf"});
+			this.splashLoadingText.destroy();
+			this.splashLoadingText = null;
+			}
+
+			this.splashContinueText = game.add.text(0, 0, "Нажмите, чтобы продолжить", {font: "28px Semlor", fill: "#fff3cf"});
 			this.splashContinueText.position.x = Math.floor(game.width / 2 - this.splashContinueText.width / 2);
 			this.splashContinueText.position.y = Math.floor(game.height - 58);
 			this.splashContinueText.fixedToCamera = true;
+			this.add.tween(this.splashContinueText).to({alpha: 0.35}, 650, Phaser.Easing.Sinusoidal.InOut, true, 0, -1, true);
 
 			this.splashContinueHandler = game.add.graphics();
 			this.splashContinueHandler.beginFill(0x000000, 0);
@@ -298,7 +330,6 @@ AngryBirds.SplashGame.prototype = {
 
 				game.state.start("AngryBirds.Menu", Phaser.Plugin.StateTransition.Out.SlideLeft);
 				}, this);
-			}, this);
 		},
 
 	getBooleanSetting: function(settingName)
