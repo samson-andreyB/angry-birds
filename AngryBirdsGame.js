@@ -539,7 +539,7 @@ AngryBirds.Menu.prototype = {
 	create: function()
 		{
 		// ADDING THE BACKGROUND
-		this.menuBackgroundImage = this.add.tileSprite(0, 0, this.game.world.width, this.game.world.height, "gameBackground1");
+		this.menuBackgroundImage = this.add.tileSprite(0, 0, this.game.world.width, this.game.world.height, this.getRandomMenuBackgroundKey());
 
 		// ADDING THE FLOOR
 		this.menuFloor = this.add.tileSprite(0, this.game.world.height - 48, this.game.world.width, 48, "gameFloor");
@@ -599,6 +599,12 @@ AngryBirds.Menu.prototype = {
 			this.unlockAndPlayMenuMusic();
 			}.bind(this);
 		this.game.input.onDown.addOnce(this.menuMusicUnlockHandler, this);
+		},
+
+	getRandomMenuBackgroundKey: function()
+		{
+		var backgroundKeys = ["gameBackground1", "gameBackground2", "gameBackground3", "gameBackground4"];
+		return backgroundKeys[this.game.rnd.integerInRange(0, backgroundKeys.length - 1)];
 		},
 
 	update: function()
