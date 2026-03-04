@@ -1012,7 +1012,7 @@ Kolobok.Menu.prototype = {
 	toggleSound: function()
 		{
 		// CHECKING IF THE SOUND IS ENABLED
-		if (this.canPlaySceneSfx())
+		if (GAME_SOUND_ENABLED==true)
 			{
 			// DISABLING THE SOUND
 			GAME_SOUND_ENABLED = false;
