@@ -46,6 +46,93 @@ var GAME_SOUND_ENABLED = true;
 var GAME_LEVEL_SELECTED = "";
 
 var MUSIC_PLAYER = null;
+var LEVEL_PLAYLIST_KEYS = ["musicPlaylist01", "musicPlaylist02", "musicPlaylist03", "musicPlaylist04", "musicPlaylist05"];
+var LAST_LEVEL_PLAYLIST_KEY = null;
+
+function isLevelPlaylistTrack(musicKey)
+	{
+	return LEVEL_PLAYLIST_KEYS.indexOf(musicKey)>=0;
+	}
+
+function destroyCurrentMusicPlayer()
+	{
+	if (MUSIC_PLAYER==null)
+		{
+		return;
+		}
+
+	if (MUSIC_PLAYER.onStop!=null)
+		{
+		MUSIC_PLAYER.onStop.removeAll();
+		}
+
+	if (MUSIC_PLAYER.isPlaying===true)
+		{
+		MUSIC_PLAYER.stop();
+		}
+	else if (typeof MUSIC_PLAYER.pause=="function" && MUSIC_PLAYER.paused===true && typeof MUSIC_PLAYER.resume=="function")
+		{
+		MUSIC_PLAYER.stop();
+		}
+
+	if (typeof MUSIC_PLAYER.destroy=="function")
+		{
+		MUSIC_PLAYER.destroy();
+		}
+
+	MUSIC_PLAYER = null;
+	}
+
+function getNextRandomLevelPlaylistKey()
+	{
+	var availableKeys = LEVEL_PLAYLIST_KEYS.slice();
+
+	if (availableKeys.length>1)
+		{
+		availableKeys = availableKeys.filter(function(playlistKey)
+			{
+			return playlistKey!==LAST_LEVEL_PLAYLIST_KEY;
+			});
+		}
+
+	return availableKeys[Math.floor(Math.random() * availableKeys.length)];
+	}
+
+function playRandomLevelPlaylistTrack()
+	{
+	var nextPlaylistKey = null;
+
+	if (GAME_SOUND_ENABLED!==true || typeof game=="undefined" || game==null)
+		{
+		return;
+		}
+
+	nextPlaylistKey = getNextRandomLevelPlaylistKey();
+	if (nextPlaylistKey==null)
+		{
+		return;
+		}
+
+	destroyCurrentMusicPlayer();
+
+	MUSIC_PLAYER = game.add.audio(nextPlaylistKey);
+	MUSIC_PLAYER.volume = 1;
+	MUSIC_PLAYER.loop = false;
+	LAST_LEVEL_PLAYLIST_KEY = nextPlaylistKey;
+	MUSIC_PLAYER.onStop.addOnce(function()
+		{
+		if (MUSIC_PLAYER!=null && typeof MUSIC_PLAYER.destroy=="function")
+			{
+			MUSIC_PLAYER.destroy();
+			}
+		MUSIC_PLAYER = null;
+		if (GAME_SOUND_ENABLED===true)
+			{
+			playRandomLevelPlaylistTrack();
+			}
+		});
+	MUSIC_PLAYER.play();
+	}
 
 var Kolobok = {};
 
@@ -143,6 +230,11 @@ Kolobok.Preloader.prototype = {
 		var musicIntro = "assets/audio/intro.mp3";
 		var musicMenu = "assets/audio/menu.mp3";
 		var musicBackground = "assets/audio/background.mp3";
+		var musicPlaylist01 = "assets/audio/playlist/01.mp3";
+		var musicPlaylist02 = "assets/audio/playlist/02.mp3";
+		var musicPlaylist03 = "assets/audio/playlist/03.mp3";
+		var musicPlaylist04 = "assets/audio/playlist/04.mp3";
+		var musicPlaylist05 = "assets/audio/playlist/05.mp3";
 		var sfxSlingshot = "assets/audio/slingshot.mp3";
 		var sfxFly = "assets/audio/fly.mp3";
 		var sfxFlyBogatyr = "assets/audio/hero-3.mp3";
@@ -216,6 +308,11 @@ Kolobok.Preloader.prototype = {
 		this.load.audio("musicIntro", musicIntro);
 		this.load.audio("musicMenu", musicMenu);
 		this.load.audio("musicBackground", musicBackground);
+		this.load.audio("musicPlaylist01", musicPlaylist01);
+		this.load.audio("musicPlaylist02", musicPlaylist02);
+		this.load.audio("musicPlaylist03", musicPlaylist03);
+		this.load.audio("musicPlaylist04", musicPlaylist04);
+		this.load.audio("musicPlaylist05", musicPlaylist05);
 		this.load.audio("sfxSlingshot", sfxSlingshot);
 		this.load.audio("sfxFly", sfxFly);
 		this.load.audio("sfxFlyBogatyr", sfxFlyBogatyr);
@@ -791,7 +888,7 @@ Kolobok.Menu.prototype = {
 
 		if (MUSIC_PLAYER!=null)
 			{
-			MUSIC_PLAYER.stop();
+			destroyCurrentMusicPlayer();
 			}
 
 		MUSIC_PLAYER = this.add.audio("musicMenu");
@@ -843,8 +940,7 @@ Kolobok.Menu.prototype = {
 			// CHECKING IF THERE IS A MUSIC PLAYER
 			if (MUSIC_PLAYER!=null)
 				{
-				// STOPPING THE INTRO MUSIC
-				MUSIC_PLAYER.stop();
+				destroyCurrentMusicPlayer();
 				}
 			}
 			else
@@ -971,8 +1067,7 @@ Kolobok.LevelSelector.prototype = {
 		// CHECKING IF THERE IS A MUSIC PLAYER
 		if (MUSIC_PLAYER!=null)
 			{
-			// STOPPING THE INTRO MUSIC
-			MUSIC_PLAYER.stop();
+			destroyCurrentMusicPlayer();
 			}
 
 		// LOADING THE GAME DIRECTLY
@@ -1386,17 +1481,10 @@ Kolobok.Game.prototype = {
 		// CHECKING IF THE SOUND IS ENABLED
 		if (GAME_SOUND_ENABLED==true)
 			{
-			// LOADING THE INTRO MUSIC
-			MUSIC_PLAYER = this.add.audio("musicBackground");
-
-			// SETTING THE INTRO MUSIC VOLUME
-			MUSIC_PLAYER.volume = 1;
-
-			// SETTING THAT THE INTRO MUSIC WILL BE LOOPING
-			MUSIC_PLAYER.loop = true;
-
-			// PLAYING THE INTRO MUSIC
-			MUSIC_PLAYER.play();
+			if (MUSIC_PLAYER==null || isLevelPlaylistTrack(MUSIC_PLAYER.key)==false)
+				{
+				playRandomLevelPlaylistTrack();
+				}
 			}
 
 		// WAITING 200 MS
@@ -1832,8 +1920,10 @@ Kolobok.Game.prototype = {
 		// CHECKING IF THERE IS A MUSIC PLAYER CREATED
 		if (MUSIC_PLAYER!=null)
 			{
-			// PAUSING THE MUSIC PLAYER
-			MUSIC_PLAYER.pause();
+			if (isLevelPlaylistTrack(MUSIC_PLAYER.key)==false)
+				{
+				MUSIC_PLAYER.pause();
+				}
 			}
 
 		// RESTARTING THE STATE
@@ -2334,11 +2424,7 @@ Kolobok.Game.prototype = {
 			// CHECKING IF THERE IS A MUSIC PLAYER CREATED
 			if (MUSIC_PLAYER!=null)
 				{
-				// PAUSING THE MUSIC PLAYER
-				MUSIC_PLAYER.pause();
-
-				// DESTROYING THE MUSIC PLAYER
-				MUSIC_PLAYER.destroy();
+				destroyCurrentMusicPlayer();
 				}
 			}
 			else
@@ -2355,24 +2441,10 @@ Kolobok.Game.prototype = {
 			// CHECKING IF THERE IS A MUSIC PLAYER CREATED
 			if (MUSIC_PLAYER!=null)
 				{
-				// PAUSING THE MUSIC PLAYER
-				MUSIC_PLAYER.pause();
-
-				// DESTROYING THE MUSIC PLAYER
-				MUSIC_PLAYER.destroy();
+				destroyCurrentMusicPlayer();
 				}
 
-			// LOADING THE INTRO MUSIC
-			MUSIC_PLAYER = this.add.audio("musicBackground");
-
-			// SETTING THE INTRO MUSIC VOLUME
-			MUSIC_PLAYER.volume = 1;
-
-			// SETTING THAT THE INTRO MUSIC WILL BE LOOPING
-			MUSIC_PLAYER.loop = true;
-
-			// PLAYING THE INTRO MUSIC
-			MUSIC_PLAYER.play();
+			playRandomLevelPlaylistTrack();
 			}
 		},
 
@@ -2466,7 +2538,7 @@ Kolobok.Game.prototype = {
 					{
 					this.audioPlayer.pause();
 					}
-				if (MUSIC_PLAYER!=null)
+				if (MUSIC_PLAYER!=null && isLevelPlaylistTrack(MUSIC_PLAYER.key)==false)
 					{
 					MUSIC_PLAYER.pause();
 					}
@@ -2564,8 +2636,7 @@ Kolobok.Game.prototype = {
 		// CHECKING IF THERE IS A MUSIC PLAYER CREATED
 		if (MUSIC_PLAYER!=null)
 			{
-			// PAUSING THE MUSIC PLAYER
-			MUSIC_PLAYER.pause();
+			destroyCurrentMusicPlayer();
 			}
 
 		// CHECKING IF THE SOUND IS ENABLED
