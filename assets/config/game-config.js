@@ -52,7 +52,12 @@ var KOLOBOK_GAME_CONFIG = {
 			loadingTickMs: 350
 		},
 		final: {
-			continueButtonBottomOffset: 18
+			bottomOffset: 18,
+			bottomGap: 16,
+			awardsTextOffsetX: 50,
+			awardsTextOffsetY: 21,
+			awardsTextColor: "#ffff38",
+			awardsTextFontSize: 16
 		},
 		menu: {
 			titleTop: 25,
@@ -89,6 +94,11 @@ var KOLOBOK_GAME_CONFIG = {
 			}
 		},
 		game: {
+			tutorial: {
+				firstLevelText: "Схвати колобка и попади в зверя",
+				textBottomOffset: 48,
+				textFontSize: 24
+			},
 			floor: {
 				centerYOffset: 24,
 				height: 48

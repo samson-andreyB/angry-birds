@@ -105,7 +105,7 @@ Kolobok.Preloader.prototype = {
 		var levelSelectStar2 = "assets/img/level-selector/star-2.png";
 		var levelSelectStar3 = "assets/img/level-selector/star-3.png";
 		var levelSelectBackButton = "assets/img/ui/back-button.png";
-		var uiContinueButton = "assets/img/ui/continue.png";
+		var uiContinueButton = "assets/img/ui/continue-button.png";
 		var gameBackground1 = "assets/img/game/background-1.png";
 		var gameBackground2 = "assets/img/game/background-2.png";
 		var gameBackground3 = "assets/img/game/background-3.png";
@@ -133,9 +133,11 @@ Kolobok.Preloader.prototype = {
 		var hudMenuButton = "assets/img/ui/menu-button.png";
 		var hudRestartButton = "assets/img/ui/restart-button.png";
 		var uiRepeatButton = "assets/img/ui/repeat-button.png";
+		var uiRepeatButtonShadow = "assets/img/ui/repeat-button-shadow.png";
 		var hudSoundOn = "assets/img/ui/sound-on.png";
 		var hudSoundOff = "assets/img/ui/sound-off.png";
 		var finalScreen = "assets/img/splash/final.png";
+		var finalAwards = "assets/img/splash/awards.png";
 
 		// ALL THE SOUNDS THAT ARE GOING TO BE USED ARE LOADED FROM THE ASSETS FOLDER
 		var musicIntro = "assets/audio/intro.mp3";
@@ -204,9 +206,11 @@ Kolobok.Preloader.prototype = {
 		this.load.image("hudMenuButton", hudMenuButton);
 		this.load.image("hudRestartButton", hudRestartButton);
 		this.load.image("uiRepeatButton", uiRepeatButton);
+		this.load.image("uiRepeatButtonShadow", uiRepeatButtonShadow);
 		this.load.image("hudSoundOn", hudSoundOn);
 		this.load.image("hudSoundOff", hudSoundOff);
 		this.load.image("finalScreen", finalScreen);
+		this.load.image("finalAwards", finalAwards);
 
 		// LOADING THE AUDIOS
 		this.load.audio("musicIntro", musicIntro);
@@ -521,6 +525,8 @@ Kolobok.FinalScreen.prototype = {
 	init: function()
 		{
 		this.finalBackground = null;
+		this.finalAwardsPanel = null;
+		this.finalAwardsText = null;
 		this.finalContinueButton = null;
 		this.finalContinueHandler = null;
 		},
@@ -528,16 +534,50 @@ Kolobok.FinalScreen.prototype = {
 	create: function()
 		{
 		var finalLayout = KOLOBOK_GAME_CONFIG.ui.final;
+		var splashState = game.state.states["Kolobok.SplashGame"];
+		var totalStars = 0;
+		var maxStars = 36;
+		var levelNumber = 0;
+		var pairWidth = 0;
+		var pairX = 0;
+		var awardsY = 0;
+		var continueY = 0;
+
+		for (levelNumber = 1; levelNumber <= 12; levelNumber++)
+			{
+			totalStars += parseInt(splashState.getLevelStars(levelNumber), 10) || 0;
+			}
+
 		// SETTING THE BACKGROUND COLOR
 		this.stage.backgroundColor = "#FFFFFF";
 
 		// ADDING THE FINAL IMAGE
 		this.finalBackground = game.add.sprite(0, 0, "finalScreen");
 
-		// ADDING THE CONTINUE BUTTON IMMEDIATELY
-		this.finalContinueButton = game.add.sprite(0, 0, "uiRepeatButton");
-		this.finalContinueButton.position.x = Math.floor(game.width / 2 - this.finalContinueButton.width / 2);
-		this.finalContinueButton.position.y = game.height - this.finalContinueButton.height - finalLayout.continueButtonBottomOffset;
+		// ADDING THE AWARDS PANEL AND THE BUTTON AS A SINGLE BOTTOM BLOCK
+		this.finalAwardsPanel = game.add.sprite(0, 0, "finalAwards");
+		this.finalContinueButton = game.add.sprite(0, 0, "uiRepeatButtonShadow");
+		pairWidth = this.finalAwardsPanel.width + finalLayout.bottomGap + this.finalContinueButton.width;
+		pairX = Math.floor((game.width - pairWidth) / 2);
+		awardsY = game.height - this.finalAwardsPanel.height - finalLayout.bottomOffset;
+		continueY = game.height - this.finalContinueButton.height - finalLayout.bottomOffset;
+
+		this.finalAwardsPanel.position.x = pairX;
+		this.finalAwardsPanel.position.y = awardsY;
+
+		this.finalAwardsText = game.add.text(
+			this.finalAwardsPanel.x + finalLayout.awardsTextOffsetX,
+			this.finalAwardsPanel.y + finalLayout.awardsTextOffsetY,
+			totalStars + " из " + maxStars,
+			{
+				font: "bold " + finalLayout.awardsTextFontSize + "px Semlor",
+				fill: finalLayout.awardsTextColor,
+				align: "center"
+			}
+		);
+
+		this.finalContinueButton.position.x = pairX + this.finalAwardsPanel.width + finalLayout.bottomGap;
+		this.finalContinueButton.position.y = continueY;
 
 		this.finalContinueHandler = game.add.graphics();
 		this.finalContinueHandler.beginFill(0x000000, 0);
@@ -995,6 +1035,7 @@ Kolobok.Game = function (game)
 	this.currentLevel = null;
 	this.kolobokPierceRemaining = null;
 	this.remainingKolobokKeys = null;
+	this.firstLevelTutorialText = null;
 
 	// SCALING THE CANVAS SIZE FOR THE GAME
 	function resizeF()
@@ -1077,6 +1118,7 @@ Kolobok.Game.prototype = {
 		this.kolobokPierceRemaining = 0;
 		this.kolobokPierceDirectionX = 1;
 		this.remainingKolobokKeys = [];
+		this.firstLevelTutorialText = null;
 		},
 
 	getCurrentBackgroundKey: function()
@@ -1128,6 +1170,8 @@ Kolobok.Game.prototype = {
 	create: function()
 		{
 		var gameLayout = this.GAME_CONFIG.ui.game;
+		var splashLayout = this.GAME_CONFIG.ui.splash;
+		var tutorialLayout = gameLayout.tutorial;
 		var floorLayout = gameLayout.floor;
 		var grassBackLayout = gameLayout.grassBack;
 		var grassFrontLayout = gameLayout.grassFront;
@@ -1321,6 +1365,23 @@ Kolobok.Game.prototype = {
 
 		// ADDING A KOLOBOK
 		this.addKolobok();
+
+		if (parseInt(this.currentLevel, 10)===1)
+			{
+			this.firstLevelTutorialText = game.add.text(
+				0,
+				game.height - tutorialLayout.textBottomOffset,
+				tutorialLayout.firstLevelText,
+				{
+					font: "bold " + tutorialLayout.textFontSize + "px Semlor",
+					fill: "#fff3cf",
+					align: "center"
+				}
+			);
+			this.firstLevelTutorialText.position.x = Math.floor(game.width / 2 - this.firstLevelTutorialText.width / 2);
+			this.firstLevelTutorialText.fixedToCamera = true;
+			this.add.tween(this.firstLevelTutorialText).to({alpha: splashLayout.blinkAlpha}, splashLayout.blinkDuration, Phaser.Easing.Sinusoidal.InOut, true, 0, -1, true);
+			}
 
 		// CHECKING IF THE SOUND IS ENABLED
 		if (GAME_SOUND_ENABLED==true)
@@ -2022,6 +2083,12 @@ Kolobok.Game.prototype = {
 
 	throwKolobok: function()
 		{
+		if (this.firstLevelTutorialText!=null)
+			{
+			this.firstLevelTutorialText.destroy();
+			this.firstLevelTutorialText = null;
+			}
+
 		// CHECKING IF THE FIRST LINE FOR THE POLE EXISTS
 		if (this.poleLine1!=null)
 			{
