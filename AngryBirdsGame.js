@@ -529,8 +529,9 @@ AngryBirds.FinalScreen.prototype = {
 		this.finalBackground = game.add.sprite(0, 0, "finalScreen");
 
 		// ADDING THE CONTINUE BUTTON IMMEDIATELY
-		this.finalContinueButton = game.add.sprite(0, 175, "menuPlayButton");
-		this.finalContinueButton.position.x = game.width / 2 - this.finalContinueButton.width / 2;
+		this.finalContinueButton = game.add.sprite(0, 0, "uiRepeatButton");
+		this.finalContinueButton.position.x = Math.floor(game.width / 2 - this.finalContinueButton.width / 2);
+		this.finalContinueButton.position.y = game.height - this.finalContinueButton.height - 18;
 
 		this.finalContinueHandler = game.add.graphics();
 		this.finalContinueHandler.beginFill(0x000000, 0);
@@ -543,7 +544,7 @@ AngryBirds.FinalScreen.prototype = {
 				this.game.sound.context.resume();
 				}
 
-			game.state.start("AngryBirds.Menu", Phaser.Plugin.StateTransition.Out.SlideLeft);
+			game.state.start("AngryBirds.LevelSelector", Phaser.Plugin.StateTransition.Out.SlideLeft);
 			}, this);
 		}
 	};
