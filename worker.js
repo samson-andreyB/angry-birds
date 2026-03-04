@@ -3,7 +3,6 @@ const APP_CACHE = "kolobok-v4";
 const filesToCache = [
 	"index.html",
 	"Kolobok.json",
-	"assets/meta/Kolobok.png",
 	"assets/meta/KolobokFavIcon_16x16.png",
 	"assets/meta/KolobokFavIcon_192x192.png",
 	"assets/meta/KolobokFavIcon_512x512.png",
