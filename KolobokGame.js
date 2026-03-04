@@ -1209,6 +1209,7 @@ Kolobok.Game = function (game)
 	this.loseRestartHandler = null;
 	this.winOverlayTransitioning = null;
 	this.turnInProgress = null;
+	this.launchedKoloboksCounter = null;
 	this.currentLevel = null;
 	this.kolobokPierceRemaining = null;
 	this.remainingKolobokKeys = null;
@@ -1287,6 +1288,7 @@ Kolobok.Game.prototype = {
 		this.loseRestartHandler = null;
 		this.winOverlayTransitioning = false;
 		this.turnInProgress = false;
+		this.launchedKoloboksCounter = 0;
 		this.currentLevel = null;
 		this.currentKolobokKey = null;
 		this.kolobokLandedAt = null;
@@ -2288,6 +2290,12 @@ Kolobok.Game.prototype = {
 			this.poleLine2.destroy();
 			}
 
+		// COUNT THIS SHOT ONCE PER TURN (STAR CALCULATION USES SHOTS, NOT SURVIVAL TIME)
+		if (this.turnInProgress==false)
+			{
+			this.launchedKoloboksCounter = this.launchedKoloboksCounter + 1;
+			}
+
 		// RESUMING THE PHYSICS
 		game.physics.p2.resume();
 
@@ -2355,7 +2363,8 @@ Kolobok.Game.prototype = {
 		// CHECKING IF ALL THE ENEMIES ARE DEAD
 		if (this.countDeadEnemies == this.totalNumEnemies)
 			{
-			var earnedStars = Math.max(1, Math.min(3, this.availableKoloboksCounter));
+			var shotsUsed = Math.max(1, this.launchedKoloboksCounter || 0);
+			var earnedStars = Math.max(1, Math.min(3, 4 - shotsUsed));
 
 			// SETTING THAT THE USER WON THE GAME
 			this.gameWon = true;
