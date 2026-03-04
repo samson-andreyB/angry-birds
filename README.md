@@ -1,4 +1,4 @@
-# Angry Birds Clone (Static Web)
+# Колобок Clone (Static Web)
 
 Локальная веб-игра на Phaser 2.
 
@@ -24,7 +24,7 @@
 Чтобы заменить визуал/звук:
 
 1. Положи свой файл в `assets/embedded/`.
-2. Сохрани исходное имя файла (или обнови путь в `AngryBirdsGame.js`).
+2. Сохрани исходное имя файла (или обнови путь в `KolobokGame.js`).
 3. Обнови страницу с жёсткой очисткой кэша (`Ctrl+F5`).
 
 ## Уровни
@@ -39,7 +39,7 @@
 ## Проверка перед push
 
 ```bash
-node --check AngryBirdsGame.js
+node --check KolobokGame.js
 python3 scripts/validate_project.py
 ```
 

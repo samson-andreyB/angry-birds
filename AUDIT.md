@@ -1,4 +1,4 @@
-# Аудит проекта Angry Birds (frontend/game)
+# Аудит проекта Колобок (frontend/game)
 
 Дата: 2026-02-27
 
@@ -7,7 +7,7 @@
 Проект рабочий, но технически перегружен одним большим файлом и дублирующими ресурсами.
 Ключевые риски перед production-публикацией:
 
-- Монолитный `AngryBirdsGame.js` (движок + логика + base64-ресурсы) сильно усложняет поддержку.
+- Монолитный `KolobokGame.js` (движок + логика + base64-ресурсы) сильно усложняет поддержку.
 - Дубли/лишние ассеты занимают ~16.5 МБ (`assets/resources` + `resources.zip`), при этом не нужны в рантайме.
 - Механика хранения настроек местами использует `Secure` cookie, что ломает локальный сценарий на `http://`.
 - Service Worker кеширует все same-origin ответы без ограничений (риск разрастания кеша и устаревших ресурсов).
@@ -20,8 +20,8 @@
 ### 2.1 Файловая структура
 
 - Точка входа оболочки: `index.html` (iframe-обертка, SW, manifest).
-- Игровая страница: `AngryBirdsGame.htm`.
-- Вся игровая логика: `AngryBirdsGame.js`.
+- Игровая страница: `KolobokGame.htm`.
+- Вся игровая логика: `KolobokGame.js`.
 - Runtime-ассеты: `assets/embedded/*`.
 - Нерабочие/референс ассеты: `assets/resources/*` + `resources.zip`.
 
@@ -34,13 +34,13 @@
 
 ### 2.3 Использование ассетов
 
-Проверка соответствия `assets/embedded` и ссылок из `AngryBirdsGame.js`:
+Проверка соответствия `assets/embedded` и ссылок из `KolobokGame.js`:
 
 - Файлов в `assets/embedded`: 40.
 - Ссылок на `assets/embedded/*` в JS: 32.
 - Лишние (неиспользуемые) 8 файлов: все `audio*.mp3`.
 
-Причина: аудио сейчас грузится из `data:audio/...` внутри `AngryBirdsGame.js`, а не из `assets/embedded`.
+Причина: аудио сейчас грузится из `data:audio/...` внутри `KolobokGame.js`, а не из `assets/embedded`.
 
 ---
 
@@ -49,19 +49,19 @@
 ## Critical
 
 1. Монолитный JS и смешение ответственности
-- Файл: `AngryBirdsGame.js`.
+- Файл: `KolobokGame.js`.
 - Включает: Phaser/Pixi/p2 + game states + уровни + base64-ресурсы.
 - Риск: крайне дорогая поддержка и высокий риск регрессий при точечных правках.
 
 2. Неправильная конфигурация манифеста для форка/нового Pages
-- Файл: `AngryBirds.json`.
+- Файл: `Kolobok.json`.
 - `start_url` и `icons.src` должны быть относительными и привязанными к текущему репозиторию.
 - Риск: в вашем репозитории PWA/иконки будут ссылаться на чужой origin.
 
 ## High
 
 1. Дублированная и частично неконсистентная логика настроек
-- Файл: `AngryBirdsGame.js`.
+- Файл: `KolobokGame.js`.
 - `setBooleanSetting` дублируется в разных state и использует `Secure` cookie (минимум в двух местах).
 - Риск: локальный запуск и поведение настроек могут отличаться по экрану/сценарию.
 
@@ -71,13 +71,13 @@
 - Риск: рост кеша, сложность инвалидации, неочевидное устаревание статических ресурсов.
 
 3. Debug-кнопка в production-коде
-- Файл: `AngryBirdsGame.js` (`debugPassLevel*`).
+- Файл: `KolobokGame.js` (`debugPassLevel*`).
 - Риск: пользователь может ломать progression в релизной версии.
 
 ## Medium
 
 1. Мертвый код после отключения заставок
-- Файл: `AngryBirdsGame.js`.
+- Файл: `KolobokGame.js`.
 - `Preloader` сразу идет в `SplashGame`, но `Splash`/`Disclaimer` state остаются в коде и регистрируются.
 - Риск: лишняя поддержка, шум в файле.
 
@@ -121,7 +121,7 @@
 
 ### Этап B — Декомпозиция
 
-1. Разбить `AngryBirdsGame.js`:
+1. Разбить `KolobokGame.js`:
 - `vendor/phaser-bundle.js` (движок).
 - `src/game/states/*.js`.
 - `src/game/levels/*.json`.
@@ -202,7 +202,7 @@ git push -u origin main
 
 ## 8) GitHub Pages (публикация)
 
-1. Исправить `AngryBirds.json`:
+1. Исправить `Kolobok.json`:
 - `start_url` -> относительный (`"./index.html"`).
 - `icons.src` -> относительные пути.
 

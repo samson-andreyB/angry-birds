@@ -4,12 +4,12 @@ import re
 import sys
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-JS_PATH = ROOT / "AngryBirdsGame.js"
+JS_PATH = ROOT / "KolobokGame.js"
 
 REQUIRED_FILES = [
     ROOT / "index.html",
-    ROOT / "AngryBirdsGame.htm",
-    ROOT / "AngryBirdsGame.js",
+    ROOT / "KolobokGame.htm",
+    ROOT / "KolobokGame.js",
     ROOT / "worker.js",
 ]
 
@@ -30,7 +30,7 @@ def main() -> int:
     refs = sorted(set(re.findall(r"assets/(?:img|audio|fonts)/[A-Za-z0-9_./-]+", js)))
     missing = [p for p in refs if not (ROOT / p).exists()]
     if missing:
-        print("[FAIL] Missing assets referenced in AngryBirdsGame.js:")
+        print("[FAIL] Missing assets referenced in KolobokGame.js:")
         for p in missing:
             print(f"  - {p}")
         return 1
@@ -50,7 +50,7 @@ def main() -> int:
         fail(f"Loaded levels mismatch. Expected {expected}, got {loaded}")
 
     # 3) Ensure no legacy states are still registered.
-    if 'game.state.add("AngryBirds.Splash"' in js or 'game.state.add("AngryBirds.Disclaimer"' in js:
+    if 'game.state.add("Kolobok.Splash"' in js or 'game.state.add("Kolobok.Disclaimer"' in js:
         fail("Legacy Splash/Disclaimer states are still registered")
 
     print("[OK] Project validation passed")

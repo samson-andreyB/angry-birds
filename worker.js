@@ -1,15 +1,15 @@
-const APP_CACHE = "angrybirds-v4";
+const APP_CACHE = "kolobok-v4";
 
 const filesToCache = [
 	"index.html",
-	"AngryBirds.json",
-	"AngryBirds.png",
-	"AngryBirdsFavIcon_16x16.png",
-	"AngryBirdsFavIcon_192x192.png",
-	"AngryBirdsFavIcon_512x512.png",
-	"AngryBirdsGame.htm",
-	"AngryBirdsGame.js",
-	"AngryBirdsShare.png"
+	"Kolobok.json",
+	"Kolobok.png",
+	"KolobokFavIcon_16x16.png",
+	"KolobokFavIcon_192x192.png",
+	"KolobokFavIcon_512x512.png",
+	"KolobokGame.htm",
+	"KolobokGame.js",
+	"KolobokShare.png"
 ];
 
 self.addEventListener("install", event => {
