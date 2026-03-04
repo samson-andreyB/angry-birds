@@ -10,12 +10,12 @@ git commit -m "chore: cleanup, local server, pages workflow"
 
 ## 2) Создание удалённого репозитория на GitHub
 
-Создай пустой репозиторий, например `angry-birds`.
+Создай пустой репозиторий, например `kolobok`.
 
 ## 3) Подключение remote и push
 
 ```bash
-git remote add origin git@github.com:<YOUR_USER>/angry-birds.git
+git remote add origin git@github.com:<YOUR_USER>/kolobok.git
 git push -u origin main
 ```
 
@@ -29,7 +29,7 @@ git push -u origin main
 
 После успешного workflow сайт будет доступен по адресу:
 
-- `https://<YOUR_USER>.github.io/angry-birds/index.html`
+- `https://<YOUR_USER>.github.io/kolobok/index.html`
 
 ## Примечание
 

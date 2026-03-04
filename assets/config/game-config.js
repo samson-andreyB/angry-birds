@@ -1,4 +1,8 @@
 var KOLOBOK_GAME_CONFIG = {
+	audio: {
+		menuMusicVolume: 1,
+		gameplayMusicVolume: 0.2
+	},
 	gameplay: {
 		maxSpeedShoot: 1000,
 		shootFactor: 8,

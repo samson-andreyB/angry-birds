@@ -26,6 +26,16 @@ var LEVEL_PLAYLIST_KEYS = ["musicPlaylist01", "musicPlaylist02", "musicPlaylist0
 var LAST_LEVEL_PLAYLIST_KEY = null;
 var LEVEL_PLAYLIST_WATCHDOG_ID = null;
 
+function getMenuMusicVolume()
+	{
+	return KOLOBOK_GAME_CONFIG.audio.menuMusicVolume;
+	}
+
+function getGameplayMusicVolume()
+	{
+	return KOLOBOK_GAME_CONFIG.audio.gameplayMusicVolume;
+	}
+
 function isLevelPlaylistTrack(musicKey)
 	{
 	return LEVEL_PLAYLIST_KEYS.indexOf(musicKey)>=0;
@@ -181,7 +191,7 @@ function playRandomLevelPlaylistTrack()
 	destroyCurrentMusicPlayer();
 
 	MUSIC_PLAYER = game.add.audio(nextPlaylistKey);
-	MUSIC_PLAYER.volume = 1;
+	MUSIC_PLAYER.volume = getGameplayMusicVolume();
 	MUSIC_PLAYER.loop = false;
 	LAST_LEVEL_PLAYLIST_KEY = nextPlaylistKey;
 	MUSIC_PLAYER.play();
@@ -293,8 +303,6 @@ Kolobok.Preloader.prototype = {
 		var sfxFly = "assets/audio/fly.mp3";
 		var sfxFlyBogatyr = "assets/audio/hero-3.mp3";
 		var sfxExplosion = "assets/audio/explosion.mp3";
-		var sfxExplosionLight = "assets/audio/explosion-2.mp3";
-		var sfxExplosionHeavy = "assets/audio/explosion-3.mp3";
 		var sfxYouWin = "assets/audio/you-win.mp3";
 		var sfxYouLose = "assets/audio/you-lose.mp3";
 
@@ -371,8 +379,6 @@ Kolobok.Preloader.prototype = {
 		this.load.audio("sfxFly", sfxFly);
 		this.load.audio("sfxFlyBogatyr", sfxFlyBogatyr);
 		this.load.audio("sfxExplosion", sfxExplosion);
-		this.load.audio("sfxExplosionLight", sfxExplosionLight);
-		this.load.audio("sfxExplosionHeavy", sfxExplosionHeavy);
 		this.load.audio("sfxYouWin", sfxYouWin);
 		this.load.audio("sfxYouLose", sfxYouLose);
 
@@ -749,7 +755,7 @@ Kolobok.FinalScreen.prototype = {
 			if (GAME_SOUND_ENABLED==true)
 				{
 				MUSIC_PLAYER = game.state.states["Kolobok.SplashGame"].add.audio("musicMenu");
-				MUSIC_PLAYER.volume = 1;
+				MUSIC_PLAYER.volume = getMenuMusicVolume();
 				MUSIC_PLAYER.loop = true;
 				MUSIC_PLAYER.play();
 				}
@@ -959,7 +965,7 @@ Kolobok.Menu.prototype = {
 			}
 
 		MUSIC_PLAYER = this.add.audio("musicMenu");
-		MUSIC_PLAYER.volume = 1;
+		MUSIC_PLAYER.volume = getMenuMusicVolume();
 		MUSIC_PLAYER.loop = true;
 		MUSIC_PLAYER.play();
 		},
@@ -1940,8 +1946,7 @@ Kolobok.Game.prototype = {
 
 		if (GAME_SOUND_ENABLED==true)
 			{
-			var blockExplosionSound = this.assetKey=="blockHeavy" ? "sfxExplosionHeavy" : "sfxExplosionLight";
-			gameState.audioPlayer = gameState.add.audio(blockExplosionSound);
+			gameState.audioPlayer = gameState.add.audio("sfxExplosion");
 			gameState.audioPlayer.volume = 1;
 			gameState.audioPlayer.loop = false;
 			gameState.audioPlayer.play();
@@ -2699,7 +2704,7 @@ Kolobok.Game.prototype = {
 			MUSIC_PLAYER = game.state.states["Kolobok.SplashGame"].add.audio("musicMenu");
 
 			// SETTING THE MENU MUSIC VOLUME
-			MUSIC_PLAYER.volume = 1;
+			MUSIC_PLAYER.volume = getMenuMusicVolume();
 
 			// SETTING THAT THE MENU MUSIC WILL BE LOOPING
 			MUSIC_PLAYER.loop = true;
