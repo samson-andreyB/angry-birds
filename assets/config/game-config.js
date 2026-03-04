@@ -32,12 +32,12 @@ var KOLOBOK_GAME_CONFIG = {
 		heroKolobokBogatyr: {
 			destroys: ["blockLight", "blockHeavy"],
 			blockKillDiff: 8,
-			pierceCount: 4,
-			pierceLightVelocityFactor: 0.10,
-			pierceHeavyVelocityFactor: 0.10,
-			pierceLightAngularFactor: 0.10,
-			pierceHeavyAngularFactor: 0.10,
-			bodyMass: 6,
+			pierceCount: 7,
+			pierceLightVelocityFactor: 0.50,
+			pierceHeavyVelocityFactor: 0.50,
+			pierceLightAngularFactor: 0.50,
+			pierceHeavyAngularFactor: 0.50,
+			bodyMass: 8,
 			bodyDamping: 0.08,
 			bodyAngularDamping: 0.05,
 			flyAudioKey: "sfxFlyBogatyr"
@@ -122,12 +122,12 @@ var KOLOBOK_GAME_CONFIG = {
 			hud: {
 				menu: { x: 5, y: 5, width: 60, height: 60 },
 				restart: { x: 70, y: 5, width: 60, height: 60 },
-				sound: { x: 135, y: 5, width: 60, height: 60 },
-				debugWin: { x: 205, y: 20, width: 74, height: 30, labelOffsetY: -1 }
+				sound: { x: 135, y: 5, width: 60, height: 60 }
 			},
 			overlays: {
 				panel: { width: 480, height: 361 },
 				dimAlpha: 0.50,
+				fadeDuration: 220,
 				win: {
 					textOffsetY: 168,
 					starsOffsetY: 78,

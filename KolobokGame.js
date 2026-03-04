@@ -13,34 +13,10 @@ function isMobileDevice(){return!!(navigator.userAgent.match(/Android/i)||naviga
 // GETTING THE USER LANGUAGE
 var userLanguage = window.navigator.userLanguage || window.navigator.language;
 
-var STRING_PLAY = "";
-var STRING_PLAYWIDTH = "";
-var STRING_YOUWIN = "";
 var STRING_YOULOSE = "";
-var STRING_DISCLAIMER1 = "";
-var STRING_DISCLAIMER2 = "";
-var STRING_DISCLAIMER3 = "";
-var STRING_DISCLAIMER4 = "";
-var STRING_DISCLAIMER5 = "";
-var STRING_DISCLAIMER6 = "";
-var STRING_DISCLAIMER7 = "";
-var STRING_DISCLAIMER8_DESKTOP = "";
-var STRING_DISCLAIMER8_MOBILE = "";
 
 // CURRENTLY USING A SINGLE RUSSIAN UI COPY
-STRING_PLAY = "Играть";
-STRING_PLAYWIDTH = 150;
-STRING_YOUWIN = "Колобки празднуют!";
 STRING_YOULOSE = "Эх, попробуй ещё раз!";
-STRING_DISCLAIMER1 = "СЛУЖЕБНАЯ ЗАМЕТКА";
-STRING_DISCLAIMER2 = "Материалы Колобок";
-STRING_DISCLAIMER3 = "(изображения, шрифты, музыка и звуки)";
-STRING_DISCLAIMER4 = "используются здесь только";
-STRING_DISCLAIMER5 = "в учебных и демонстрационных целях.";
-STRING_DISCLAIMER6 = "Этот проект не связан";
-STRING_DISCLAIMER7 = "с правообладателями оригинала.";
-STRING_DISCLAIMER8_DESKTOP = "Нажмите, чтобы продолжить";
-STRING_DISCLAIMER8_MOBILE = "Коснитесь, чтобы продолжить";
 
 var GAME_SOUND_ENABLED = true;
 var GAME_LEVEL_SELECTED = "";
@@ -48,6 +24,7 @@ var GAME_LEVEL_SELECTED = "";
 var MUSIC_PLAYER = null;
 var LEVEL_PLAYLIST_KEYS = ["musicPlaylist01", "musicPlaylist02", "musicPlaylist03", "musicPlaylist04", "musicPlaylist05"];
 var LAST_LEVEL_PLAYLIST_KEY = null;
+var LEVEL_PLAYLIST_WATCHDOG_ID = null;
 
 function isLevelPlaylistTrack(musicKey)
 	{
@@ -56,6 +33,12 @@ function isLevelPlaylistTrack(musicKey)
 
 function destroyCurrentMusicPlayer()
 	{
+	if (LEVEL_PLAYLIST_WATCHDOG_ID!=null)
+		{
+		window.clearTimeout(LEVEL_PLAYLIST_WATCHDOG_ID);
+		LEVEL_PLAYLIST_WATCHDOG_ID = null;
+		}
+
 	if (MUSIC_PLAYER==null)
 		{
 		return;
@@ -81,6 +64,88 @@ function destroyCurrentMusicPlayer()
 		}
 
 	MUSIC_PLAYER = null;
+	}
+
+function stopLevelPlaylistWatchdog()
+	{
+	if (LEVEL_PLAYLIST_WATCHDOG_ID!=null)
+		{
+		window.clearTimeout(LEVEL_PLAYLIST_WATCHDOG_ID);
+		LEVEL_PLAYLIST_WATCHDOG_ID = null;
+		}
+	}
+
+function getLevelPlaylistTrackDurationMs(expectedPlaylistKey)
+	{
+	var soundData = null;
+	var durationSeconds = 0;
+
+	if (MUSIC_PLAYER!=null && MUSIC_PLAYER.key===expectedPlaylistKey)
+		{
+		if (typeof MUSIC_PLAYER.totalDuration=="number" && isFinite(MUSIC_PLAYER.totalDuration) && MUSIC_PLAYER.totalDuration>0)
+			{
+			durationSeconds = MUSIC_PLAYER.totalDuration;
+			}
+		else if (typeof MUSIC_PLAYER.duration=="number" && isFinite(MUSIC_PLAYER.duration) && MUSIC_PLAYER.duration>0)
+			{
+			durationSeconds = MUSIC_PLAYER.duration;
+			}
+		else if (MUSIC_PLAYER._sound && typeof MUSIC_PLAYER._sound.duration=="number" && isFinite(MUSIC_PLAYER._sound.duration) && MUSIC_PLAYER._sound.duration>0)
+			{
+			durationSeconds = MUSIC_PLAYER._sound.duration;
+			}
+		}
+
+	if (durationSeconds<=0 && typeof game!="undefined" && game!=null && game.cache && typeof game.cache.getSoundData=="function")
+		{
+		soundData = game.cache.getSoundData(expectedPlaylistKey);
+		if (soundData instanceof Array && soundData.length>0)
+			{
+			soundData = soundData[0];
+			}
+		if (soundData && typeof soundData.duration=="number" && isFinite(soundData.duration) && soundData.duration>0)
+			{
+			durationSeconds = soundData.duration;
+			}
+		}
+
+	if (durationSeconds<=0)
+		{
+		return null;
+		}
+
+	return Math.ceil(durationSeconds * 1000) + 250;
+	}
+
+function startLevelPlaylistWatchdog(expectedPlaylistKey)
+	{
+	var durationMs = null;
+
+	stopLevelPlaylistWatchdog();
+
+	durationMs = getLevelPlaylistTrackDurationMs(expectedPlaylistKey);
+	if (durationMs==null)
+		{
+		LEVEL_PLAYLIST_WATCHDOG_ID = window.setTimeout(function()
+			{
+			startLevelPlaylistWatchdog(expectedPlaylistKey);
+			}, 500);
+		return;
+		}
+
+	LEVEL_PLAYLIST_WATCHDOG_ID = window.setTimeout(function()
+		{
+		if (MUSIC_PLAYER==null || MUSIC_PLAYER.key!==expectedPlaylistKey || isLevelPlaylistTrack(expectedPlaylistKey)==false)
+			{
+			return;
+			}
+
+		destroyCurrentMusicPlayer();
+		if (GAME_SOUND_ENABLED===true)
+			{
+			playRandomLevelPlaylistTrack();
+			}
+		}, durationMs);
 	}
 
 function getNextRandomLevelPlaylistKey()
@@ -119,19 +184,8 @@ function playRandomLevelPlaylistTrack()
 	MUSIC_PLAYER.volume = 1;
 	MUSIC_PLAYER.loop = false;
 	LAST_LEVEL_PLAYLIST_KEY = nextPlaylistKey;
-	MUSIC_PLAYER.onStop.addOnce(function()
-		{
-		if (MUSIC_PLAYER!=null && typeof MUSIC_PLAYER.destroy=="function")
-			{
-			MUSIC_PLAYER.destroy();
-			}
-		MUSIC_PLAYER = null;
-		if (GAME_SOUND_ENABLED===true)
-			{
-			playRandomLevelPlaylistTrack();
-			}
-		});
 	MUSIC_PLAYER.play();
+	startLevelPlaylistWatchdog(nextPlaylistKey);
 	}
 
 var Kolobok = {};
@@ -687,6 +741,19 @@ Kolobok.FinalScreen.prototype = {
 				this.game.sound.context.resume();
 				}
 
+			if (MUSIC_PLAYER!=null)
+				{
+				destroyCurrentMusicPlayer();
+				}
+
+			if (GAME_SOUND_ENABLED==true)
+				{
+				MUSIC_PLAYER = game.state.states["Kolobok.SplashGame"].add.audio("musicMenu");
+				MUSIC_PLAYER.volume = 1;
+				MUSIC_PLAYER.loop = true;
+				MUSIC_PLAYER.play();
+				}
+
 			game.state.start("Kolobok.LevelSelector", Phaser.Plugin.StateTransition.Out.SlideLeft);
 			}, this);
 		}
@@ -984,8 +1051,6 @@ Kolobok.LevelSelector.prototype = {
 			{
 			solvedLevels = 0;
 			}
-		solvedLevels = 11;
-
 		levelSelectorLayout.buttons.forEach(function(levelButtonLayout)
 			{
 			this.createLevelButton(levelButtonLayout.x, levelButtonLayout.y, levelButtonLayout.level, solvedLevels);
@@ -1113,8 +1178,6 @@ Kolobok.Game = function (game)
 	this.restartHandler = null;
 	this.soundIcon = null;
 	this.soundHandler = null;
-	this.debugWinButton = null;
-	this.debugWinLabel = null;
 	this.winOverlay = null;
 	this.loseOverlay = null;
 	this.winPanel = null;
@@ -1193,8 +1256,6 @@ Kolobok.Game.prototype = {
 		this.restartHandler = null;
 		this.soundIcon = null;
 		this.soundHandler = null;
-		this.debugWinButton = null;
-		this.debugWinLabel = null;
 		this.winOverlay = null;
 		this.loseOverlay = null;
 		this.winPanel = null;
@@ -1385,20 +1446,6 @@ Kolobok.Game.prototype = {
 		this.soundHandler.fixedToCamera = true;
 		this.soundHandler.inputEnabled = true;
 		this.soundHandler.events.onInputUp.add(function(){this.toggleSound()},this);
-
-		// ADDING THE DEBUG WIN BUTTON
-		this.debugWinButton = game.add.graphics();
-		this.debugWinButton.beginFill(0x6A4E2D, 0.9);
-		this.debugWinButton.drawRoundedRect(hudLayout.debugWin.x, hudLayout.debugWin.y, hudLayout.debugWin.width, hudLayout.debugWin.height, 8);
-		this.debugWinButton.fixedToCamera = true;
-		this.debugWinButton.inputEnabled = true;
-		this.debugWinButton.events.onInputUp.add(function(){this.debugPassLevel()},this);
-
-		// ADDING THE DEBUG WIN LABEL
-		this.debugWinLabel = game.add.text(0, 0, "WIN", {font: "20px Semlor", fill: "#fff3cf"});
-		this.debugWinLabel.position.x = hudLayout.debugWin.x + Math.floor((hudLayout.debugWin.width - this.debugWinLabel.width) / 2);
-		this.debugWinLabel.position.y = hudLayout.debugWin.y + Math.floor((hudLayout.debugWin.height - this.debugWinLabel.height) / 2) + hudLayout.debugWin.labelOffsetY;
-		this.debugWinLabel.fixedToCamera = true;
 
 		this.bringHudToTop();
 
@@ -2448,17 +2495,6 @@ Kolobok.Game.prototype = {
 			}
 		},
 
-	debugPassLevel: function()
-		{
-		if (this.gameWon==true || this.totalNumEnemies<=0)
-			{
-			return;
-			}
-
-		this.countDeadEnemies = this.totalNumEnemies - 1;
-		this.updateDeadCount();
-		},
-
 	showWinOverlay: function(earnedStars)
 		{
 		var overlayLayout = this.GAME_CONFIG.ui.game.overlays;
@@ -2476,14 +2512,16 @@ Kolobok.Game.prototype = {
 		this.winOverlay.beginFill(0x000000, overlayLayout.dimAlpha);
 		this.winOverlay.drawRect(0, 0, game.width, game.height);
 		this.winOverlay.fixedToCamera = true;
+		this.winOverlay.alpha = 0;
 		this.winPanel = game.add.image(0, 0, "gameModal");
 		this.winPanel.fixedToCamera = true;
 		this.winPanel.cameraOffset.setTo(panelX, panelY);
-		this.winPanel.alpha = 1;
+		this.winPanel.alpha = 0;
 
 		this.winToastText = game.add.text(0, 0, this.getCurrentWinMessage(), {font: "28px Semlor", fill: "#7a230d"});
 		this.winToastText.fixedToCamera = true;
 		this.winToastText.cameraOffset.setTo(Math.floor(game.width / 2 - this.winToastText.width / 2), panelY + winLayout.textOffsetY);
+		this.winToastText.alpha = 0;
 
 		if (earnedStars==null)
 			{
@@ -2502,11 +2540,13 @@ Kolobok.Game.prototype = {
 		var winStarSprite = game.add.sprite(0, 0, starAssetKey);
 		winStarSprite.fixedToCamera = true;
 		winStarSprite.cameraOffset.setTo(Math.floor(game.width / 2 - winStarSprite.width / 2), panelY + winLayout.starsOffsetY);
+		winStarSprite.alpha = 0;
 		this.winStars.push(winStarSprite);
 
 		this.winContinueButton = game.add.sprite(0, 0, "uiContinueButton");
 		this.winContinueButton.fixedToCamera = true;
 		this.winContinueButton.cameraOffset.setTo(Math.floor(game.width / 2 - this.winContinueButton.width / 2), panelY + winLayout.continueOffsetY);
+		this.winContinueButton.alpha = 0;
 
 		this.winContinueHandler = game.add.graphics();
 		this.winContinueHandler.beginFill(0x000000, 0);
@@ -2514,6 +2554,11 @@ Kolobok.Game.prototype = {
 		this.winContinueHandler.fixedToCamera = true;
 		this.winContinueHandler.inputEnabled = true;
 		this.winContinueHandler.events.onInputUp.add(this.handleWinContinue, this);
+		game.add.tween(this.winOverlay).to({alpha: 1}, overlayLayout.fadeDuration, Phaser.Easing.Sinusoidal.Out, true);
+		game.add.tween(this.winPanel).to({alpha: 1}, overlayLayout.fadeDuration, Phaser.Easing.Sinusoidal.Out, true);
+		game.add.tween(this.winToastText).to({alpha: 1}, overlayLayout.fadeDuration, Phaser.Easing.Sinusoidal.Out, true);
+		game.add.tween(winStarSprite).to({alpha: 1}, overlayLayout.fadeDuration, Phaser.Easing.Sinusoidal.Out, true);
+		game.add.tween(this.winContinueButton).to({alpha: 1}, overlayLayout.fadeDuration, Phaser.Easing.Sinusoidal.Out, true);
 		this.bringHudToTop();
 		},
 
@@ -2574,20 +2619,23 @@ Kolobok.Game.prototype = {
 		this.loseOverlay.beginFill(0x000000, overlayLayout.dimAlpha);
 		this.loseOverlay.drawRect(0, 0, game.width, game.height);
 		this.loseOverlay.fixedToCamera = true;
+		this.loseOverlay.alpha = 0;
 		this.losePanel = game.add.image(0, 0, "gameModal");
 		this.losePanel.fixedToCamera = true;
 		this.losePanel.cameraOffset.setTo(panelX, panelY);
-		this.losePanel.alpha = 1;
+		this.losePanel.alpha = 0;
 		this.showToast(STRING_YOULOSE);
 		if (this.toastText!=null)
 			{
 			this.toastText.fill = "#7a230d";
 			this.toastText.fixedToCamera = true;
 			this.toastText.cameraOffset.setTo(Math.floor(game.width / 2 - this.toastText.width / 2), panelY + loseLayout.textOffsetY);
+			this.toastText.alpha = 0;
 			}
 		this.loseRestartButton = game.add.sprite(0, 0, "uiRepeatButton");
 		this.loseRestartButton.fixedToCamera = true;
 		this.loseRestartButton.cameraOffset.setTo(Math.floor(game.width / 2 - this.loseRestartButton.width / 2), panelY + loseLayout.restartOffsetY);
+		this.loseRestartButton.alpha = 0;
 
 		this.loseRestartHandler = game.add.graphics();
 		this.loseRestartHandler.beginFill(0x000000, 0);
@@ -2595,6 +2643,13 @@ Kolobok.Game.prototype = {
 		this.loseRestartHandler.fixedToCamera = true;
 		this.loseRestartHandler.inputEnabled = true;
 		this.loseRestartHandler.events.onInputUp.add(this.handleLoseRestart, this);
+		game.add.tween(this.loseOverlay).to({alpha: 1}, overlayLayout.fadeDuration, Phaser.Easing.Sinusoidal.Out, true);
+		game.add.tween(this.losePanel).to({alpha: 1}, overlayLayout.fadeDuration, Phaser.Easing.Sinusoidal.Out, true);
+		if (this.toastText!=null)
+			{
+			game.add.tween(this.toastText).to({alpha: 1}, overlayLayout.fadeDuration, Phaser.Easing.Sinusoidal.Out, true);
+			}
+		game.add.tween(this.loseRestartButton).to({alpha: 1}, overlayLayout.fadeDuration, Phaser.Easing.Sinusoidal.Out, true);
 		this.bringHudToTop();
 		},
 
@@ -2608,8 +2663,6 @@ Kolobok.Game.prototype = {
 		if (this.menuHandler!=null){this.game.world.bringToTop(this.menuHandler);}
 		if (this.restartHandler!=null){this.game.world.bringToTop(this.restartHandler);}
 		if (this.soundHandler!=null){this.game.world.bringToTop(this.soundHandler);}
-		if (this.debugWinButton!=null){this.game.world.bringToTop(this.debugWinButton);}
-		if (this.debugWinLabel!=null){this.game.world.bringToTop(this.debugWinLabel);}
 		if (this.menuIcon!=null){this.game.world.bringToTop(this.menuIcon);}
 		if (this.restartIcon!=null){this.game.world.bringToTop(this.restartIcon);}
 		if (this.soundIcon!=null){this.game.world.bringToTop(this.soundIcon);}
