@@ -2740,10 +2740,7 @@ Kolobok.Game.prototype = {
 		this.toastText.position.x = Math.floor(game.width / 2 - this.toastText.width / 2);
 		this.toastText.position.y = 104;
 		this.toastText.fixedToCamera = true;
-		this.toastText.alpha = 0;
-
-		// FADING IN THE TOAST TEST
-		game.add.tween(this.toastText).to({alpha: 1}, 300, Phaser.Easing.Linear.None, true);
+		this.toastText.alpha = 1;
 		this.bringHudToTop();
 		}
 	};
