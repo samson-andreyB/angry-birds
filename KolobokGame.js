@@ -292,15 +292,16 @@ Kolobok.Preloader.prototype = {
 
 		// ALL THE SOUNDS THAT ARE GOING TO BE USED ARE LOADED FROM THE ASSETS FOLDER
 		var musicMenu = "assets/audio/menu.mp3";
-		var musicBackground = "assets/audio/background.mp3";
+		var musicFinal = "assets/audio/final.mp3";
 		var musicPlaylist01 = "assets/audio/playlist/01.mp3";
 		var musicPlaylist02 = "assets/audio/playlist/02.mp3";
 		var musicPlaylist03 = "assets/audio/playlist/03.mp3";
 		var musicPlaylist04 = "assets/audio/playlist/04.mp3";
 		var musicPlaylist05 = "assets/audio/playlist/05.mp3";
 		var sfxSlingshot = "assets/audio/slingshot.mp3";
-		var sfxFly = "assets/audio/fly.mp3";
-		var sfxFlyBogatyr = "assets/audio/hero-3.mp3";
+		var sfxFly1 = "assets/audio/hero-1.mp3";
+		var sfxFly2 = "assets/audio/hero-2.mp3";
+		var sfxFly3 = "assets/audio/hero-3.mp3";
 		var sfxExplosion = "assets/audio/explosion.mp3";
 		var sfxYouWin = "assets/audio/you-win.mp3";
 		var sfxYouLose = "assets/audio/you-lose.mp3";
@@ -367,15 +368,16 @@ Kolobok.Preloader.prototype = {
 
 		// LOADING THE AUDIOS
 		this.load.audio("musicMenu", musicMenu);
-		this.load.audio("musicBackground", musicBackground);
+		this.load.audio("musicFinal", musicFinal);
 		this.load.audio("musicPlaylist01", musicPlaylist01);
 		this.load.audio("musicPlaylist02", musicPlaylist02);
 		this.load.audio("musicPlaylist03", musicPlaylist03);
 		this.load.audio("musicPlaylist04", musicPlaylist04);
 		this.load.audio("musicPlaylist05", musicPlaylist05);
 		this.load.audio("sfxSlingshot", sfxSlingshot);
-		this.load.audio("sfxFly", sfxFly);
-		this.load.audio("sfxFlyBogatyr", sfxFlyBogatyr);
+		this.load.audio("sfxFly1", sfxFly1);
+		this.load.audio("sfxFly2", sfxFly2);
+		this.load.audio("sfxFly3", sfxFly3);
 		this.load.audio("sfxExplosion", sfxExplosion);
 		this.load.audio("sfxYouWin", sfxYouWin);
 		this.load.audio("sfxYouLose", sfxYouLose);
@@ -706,6 +708,19 @@ Kolobok.FinalScreen.prototype = {
 		// SETTING THE BACKGROUND COLOR
 		this.stage.backgroundColor = "#FFFFFF";
 
+		// FINAL SCREEN MUSIC
+		if (MUSIC_PLAYER!=null)
+			{
+			destroyCurrentMusicPlayer();
+			}
+		if (GAME_SOUND_ENABLED===true)
+			{
+			MUSIC_PLAYER = this.add.audio("musicFinal");
+			MUSIC_PLAYER.volume = getMenuMusicVolume();
+			MUSIC_PLAYER.loop = false;
+			MUSIC_PLAYER.play();
+			}
+
 		// ADDING THE FINAL IMAGE
 		this.finalBackground = game.add.sprite(0, 0, "finalScreen");
 
@@ -750,7 +765,7 @@ Kolobok.FinalScreen.prototype = {
 				destroyCurrentMusicPlayer();
 				}
 
-			if (GAME_SOUND_ENABLED==true)
+			if (GAME_SOUND_ENABLED===true)
 				{
 				MUSIC_PLAYER = game.state.states["Kolobok.SplashGame"].add.audio("musicMenu");
 				MUSIC_PLAYER.volume = getMenuMusicVolume();
@@ -997,7 +1012,7 @@ Kolobok.Menu.prototype = {
 	toggleSound: function()
 		{
 		// CHECKING IF THE SOUND IS ENABLED
-		if (GAME_SOUND_ENABLED==true)
+		if (this.canPlaySceneSfx())
 			{
 			// DISABLING THE SOUND
 			GAME_SOUND_ENABLED = false;
@@ -1279,6 +1294,7 @@ Kolobok.Game.prototype = {
 		this.kolobokPierceDirectionX = 1;
 		this.remainingKolobokKeys = [];
 		this.firstLevelTutorialText = null;
+		this.sceneSfxMuted = false;
 		},
 
 	getCurrentBackgroundKey: function()
@@ -1307,6 +1323,30 @@ Kolobok.Game.prototype = {
 	getCurrentKolobokConfig: function()
 		{
 		return this.getKolobokConfig(this.currentKolobokKey);
+		},
+
+	canPlaySceneSfx: function()
+		{
+		return GAME_SOUND_ENABLED==true && this.sceneSfxMuted!==true;
+		},
+
+	stopCurrentSceneSfx: function()
+		{
+		if (this.audioPlayer!=null)
+			{
+			if (this.audioPlayer.key=="sfxYouWin" || this.audioPlayer.key=="sfxYouLose")
+				{
+				return;
+				}
+			if (typeof this.audioPlayer.stop=="function")
+				{
+				this.audioPlayer.stop();
+				}
+			else if (typeof this.audioPlayer.pause=="function")
+				{
+				this.audioPlayer.pause();
+				}
+			}
 		},
 
 	getCurrentWinMessage: function()
@@ -1342,6 +1382,7 @@ Kolobok.Game.prototype = {
 
 		// GETTING THE CURRENT LEVEL FOR LATER USE
 		this.currentLevel = GAME_LEVEL_SELECTED;
+		this.sceneSfxMuted = false;
 
 		// STARTING THE PHYSICS SYSTEM
 		this.game.physics.startSystem(Phaser.Physics.P2JS);
@@ -1833,7 +1874,7 @@ Kolobok.Game.prototype = {
 			this.explosion.visible = true;
 
 			// CHECKING IF THE SOUND IS ENABLED
-			if (GAME_SOUND_ENABLED==true)
+			if (gameState.canPlaySceneSfx())
 				{
 				// LOADING THE AUDIO EXPLOSION
 				gameState.audioPlayer = gameState.add.audio("sfxExplosion");
@@ -1946,7 +1987,7 @@ Kolobok.Game.prototype = {
 				});
 			}
 
-		if (GAME_SOUND_ENABLED==true)
+		if (gameState.canPlaySceneSfx())
 			{
 			gameState.audioPlayer = gameState.add.audio("sfxExplosion");
 			gameState.audioPlayer.volume = 1;
@@ -2322,22 +2363,6 @@ Kolobok.Game.prototype = {
 			// MAKING THE CAMERA TO NOT FOLLOW THE KOLOBOK
 			game.camera.follow(null);
 
-			// CHECKING IF THE SOUND IS ENABLED
-			if (GAME_SOUND_ENABLED==true)
-				{
-				// LOADING THE AUDIO YOU WIN
-				this.audioPlayer = this.add.audio("sfxYouWin");
-
-				// SETTING THE AUDIO YOU WIN VOLUME
-				this.audioPlayer.volume = 1;
-
-				// SETTING THAT THE AUDIO YOU WIN WON'T BE LOOPING
-				this.audioPlayer.loop = false;
-
-				// PLAYING THE AUDIO YOU WIN
-				this.audioPlayer.play();
-				}
-
 			// CHECKING IF THE CURRENT LEVEL AS SOLVED MUST BE SAVED
 			if (parseInt(game.state.states["Kolobok.SplashGame"].getSolvedLevels())<parseInt(GAME_LEVEL_SELECTED))
 				{
@@ -2347,6 +2372,15 @@ Kolobok.Game.prototype = {
 
 			game.state.states["Kolobok.SplashGame"].setLevelStars(GAME_LEVEL_SELECTED, earnedStars);
 			this.showWinOverlay(earnedStars);
+
+			// PLAYING THE WIN AUDIO AFTER OVERLAY STARTS (SO SCENE SFX MUTING DOESN'T CUT IT)
+			if (GAME_SOUND_ENABLED==true)
+				{
+				this.audioPlayer = this.add.audio("sfxYouWin");
+				this.audioPlayer.volume = 1;
+				this.audioPlayer.loop = false;
+				this.audioPlayer.play();
+				}
 			}
 		},
 
@@ -2388,7 +2422,7 @@ Kolobok.Game.prototype = {
 		this.kolobok.alpha = 0.49;
 
 		// CHECKING IF THE SOUND IS ENABLED
-		if (GAME_SOUND_ENABLED==true)
+		if (this.canPlaySceneSfx())
 			{
 			// LOADING THE AUDIO EXPLOSION
 			this.audioPlayer = this.add.audio("sfxExplosion");
@@ -2511,6 +2545,8 @@ Kolobok.Game.prototype = {
 			{
 			return;
 			}
+		this.sceneSfxMuted = true;
+		this.stopCurrentSceneSfx();
 
 		if (MUSIC_PLAYER!=null && isLevelPlaylistTrack(MUSIC_PLAYER.key)==true && typeof MUSIC_PLAYER.pause=="function")
 			{
@@ -2588,17 +2624,18 @@ Kolobok.Game.prototype = {
 
 		game.time.events.add(90, function()
 			{
+			if (this.audioPlayer!=null)
+				{
+				this.audioPlayer.pause();
+				}
+			if (MUSIC_PLAYER!=null && isLevelPlaylistTrack(MUSIC_PLAYER.key)==false)
+				{
+				MUSIC_PLAYER.pause();
+				}
+
 			if (this.nextLevelExists()==true)
 				{
 				GAME_LEVEL_SELECTED = "" + (parseInt(GAME_LEVEL_SELECTED) + 1);
-				if (this.audioPlayer!=null)
-					{
-					this.audioPlayer.pause();
-					}
-				if (MUSIC_PLAYER!=null && isLevelPlaylistTrack(MUSIC_PLAYER.key)==false)
-					{
-					MUSIC_PLAYER.pause();
-					}
 				game.state.start("Kolobok.Game", Phaser.Plugin.StateTransition.Out.SlideLeft);
 				}
 			else
@@ -2623,6 +2660,8 @@ Kolobok.Game.prototype = {
 			{
 			return;
 			}
+		this.sceneSfxMuted = true;
+		this.stopCurrentSceneSfx();
 
 		if (MUSIC_PLAYER!=null && isLevelPlaylistTrack(MUSIC_PLAYER.key)==true && typeof MUSIC_PLAYER.pause=="function")
 			{

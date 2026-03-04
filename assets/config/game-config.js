@@ -22,7 +22,7 @@ var KOLOBOK_GAME_CONFIG = {
 			bodyMass: 1,
 			bodyDamping: 0.12,
 			bodyAngularDamping: 0.08,
-			flyAudioKey: "sfxFly"
+			flyAudioKey: "sfxFly1"
 		},
 		heroKolobokWreath: {
 			destroys: ["blockLight"],
@@ -31,7 +31,7 @@ var KOLOBOK_GAME_CONFIG = {
 			bodyMass: 1.1,
 			bodyDamping: 0.12,
 			bodyAngularDamping: 0.08,
-			flyAudioKey: "sfxFly"
+			flyAudioKey: "sfxFly2"
 		},
 		heroKolobokBogatyr: {
 			destroys: ["blockLight", "blockHeavy"],
@@ -44,7 +44,7 @@ var KOLOBOK_GAME_CONFIG = {
 			bodyMass: 8,
 			bodyDamping: 0.08,
 			bodyAngularDamping: 0.05,
-			flyAudioKey: "sfxFlyBogatyr"
+			flyAudioKey: "sfxFly3"
 		}
 	},
 	ui: {
