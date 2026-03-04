@@ -3,13 +3,13 @@ const APP_CACHE = "kolobok-v4";
 const filesToCache = [
 	"index.html",
 	"Kolobok.json",
-	"Kolobok.png",
-	"KolobokFavIcon_16x16.png",
-	"KolobokFavIcon_192x192.png",
-	"KolobokFavIcon_512x512.png",
+	"assets/meta/Kolobok.png",
+	"assets/meta/KolobokFavIcon_16x16.png",
+	"assets/meta/KolobokFavIcon_192x192.png",
+	"assets/meta/KolobokFavIcon_512x512.png",
 	"KolobokGame.htm",
 	"KolobokGame.js",
-	"KolobokShare.png"
+	"assets/meta/KolobokShare.png"
 ];
 
 self.addEventListener("install", event => {

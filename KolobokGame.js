@@ -566,7 +566,6 @@ Kolobok.Menu.prototype = {
 		this.menuFloorGrassFront = null;
 		this.menuTitle = null;
 		this.menuPlay = null;
-		this.menuPlayText = null;
 		this.menuPlayHandler = null;
 		this.menuSoundIcon = null;
 		this.menuSoundHandler = null;
@@ -824,8 +823,6 @@ Kolobok.LevelSelector.prototype = {
 	init: function()
 		{
 		this.levelSelectorBackgroundImage = null;
-		this.levelSelectorLeftImage = null;
-		this.levelSelectorRightImage = null;
 		this.levelSelectorGoBackImage = null;
 		this.levelSelectorGoBackImageHandler = null;
 		},
@@ -949,7 +946,6 @@ Kolobok.LevelSelector.prototype = {
 Kolobok.Game = function (game)
 	{
 	this.toastText = null;
-	this.toastShadow = null;
 	this.MAX_SPEED_SHOOT = null;
 	this.SHOOT_FACTOR = null;
 	this.backgroundImage = null;
@@ -975,7 +971,6 @@ Kolobok.Game = function (game)
 	this.poleLine2 = null;
 	this.kolobok = null;
 	this.kolobokLauncher = null;
-	this.scoreValue = null;
 	this.gameWon = null;
 	this.startX = null;
 	this.swipeCheckingEnabled = null;
@@ -1025,7 +1020,6 @@ Kolobok.Game.prototype = {
 	init: function()
 		{
 		this.toastText = null;
-		this.toastShadow = null;
 		this.MAX_SPEED_SHOOT = 1000;
 		this.SHOOT_FACTOR = 8;
 		this.ENEMY_KOLOBOK_KILL_DIFF = 6;
@@ -1091,7 +1085,6 @@ Kolobok.Game.prototype = {
 		this.poleLine2 = null;
 		this.kolobok = null;
 		this.kolobokLauncher = null;
-		this.scoreValue = 0;
 		this.gameWon = false;
 		this.startX = 0;
 		this.swipeCheckingEnabled = false;
