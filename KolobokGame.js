@@ -291,7 +291,6 @@ Kolobok.Preloader.prototype = {
 		var finalAwards = "assets/img/splash/awards.png";
 
 		// ALL THE SOUNDS THAT ARE GOING TO BE USED ARE LOADED FROM THE ASSETS FOLDER
-		var musicIntro = "assets/audio/intro.mp3";
 		var musicMenu = "assets/audio/menu.mp3";
 		var musicBackground = "assets/audio/background.mp3";
 		var musicPlaylist01 = "assets/audio/playlist/01.mp3";
@@ -367,7 +366,6 @@ Kolobok.Preloader.prototype = {
 		this.load.image("finalAwards", finalAwards);
 
 		// LOADING THE AUDIOS
-		this.load.audio("musicIntro", musicIntro);
 		this.load.audio("musicMenu", musicMenu);
 		this.load.audio("musicBackground", musicBackground);
 		this.load.audio("musicPlaylist01", musicPlaylist01);
