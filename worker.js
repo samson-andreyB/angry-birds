@@ -1,4 +1,4 @@
-const APP_CACHE = "angrybirds-v3";
+const APP_CACHE = "angrybirds-v4";
 
 const filesToCache = [
 	"index.html",

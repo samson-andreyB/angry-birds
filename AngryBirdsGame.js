@@ -77,6 +77,7 @@ AngryBirds.Preloader.prototype = {
 		if (!this.deferMainAssets)
 			{
 			this.load.image("splashScreen", "assets/img/splash/screen.png");
+			this.load.image("gameModal", "assets/img/game/modal.png");
 			return;
 			}
 
@@ -104,7 +105,7 @@ AngryBirds.Preloader.prototype = {
 		var levelSelectStar2 = "assets/img/level-selector/star-2.png";
 		var levelSelectStar3 = "assets/img/level-selector/star-3.png";
 		var levelSelectBackButton = "assets/img/ui/back-button.png";
-		var uiForwardButton = "assets/img/ui/forward-button.png";
+		var uiContinueButton = "assets/img/ui/continue.png";
 		var gameBackground1 = "assets/img/game/background-1.png";
 		var gameBackground2 = "assets/img/game/background-2.png";
 		var gameBackground3 = "assets/img/game/background-3.png";
@@ -128,8 +129,10 @@ AngryBirds.Preloader.prototype = {
 		var blockLight = "assets/img/game/blocks/box-light.png";
 		var blockHeavy = "assets/img/game/blocks/box-heavy.png";
 		var effectExplosion = "assets/img/game/effects/explosion.png";
+		var gameModal = "assets/img/game/modal.png";
 		var hudMenuButton = "assets/img/ui/menu-button.png";
 		var hudRestartButton = "assets/img/ui/restart-button.png";
+		var uiRepeatButton = "assets/img/ui/repeat-button.png";
 		var hudSoundOn = "assets/img/ui/sound-on.png";
 		var hudSoundOff = "assets/img/ui/sound-off.png";
 		var finalScreen = "assets/img/splash/final.png";
@@ -174,7 +177,7 @@ AngryBirds.Preloader.prototype = {
 		this.load.image("levelSelectStar2", levelSelectStar2);
 		this.load.image("levelSelectStar3", levelSelectStar3);
 		this.load.image("levelSelectBackButton", levelSelectBackButton);
-		this.load.image("uiForwardButton", uiForwardButton);
+		this.load.image("uiContinueButton", uiContinueButton);
 		this.load.image("gameBackground1", gameBackground1);
 		this.load.image("gameBackground2", gameBackground2);
 		this.load.image("gameBackground3", gameBackground3);
@@ -200,6 +203,7 @@ AngryBirds.Preloader.prototype = {
 		this.load.spritesheet("effectExplosion", effectExplosion, 48, 48, 5, 1, 2);
 		this.load.image("hudMenuButton", hudMenuButton);
 		this.load.image("hudRestartButton", hudRestartButton);
+		this.load.image("uiRepeatButton", uiRepeatButton);
 		this.load.image("hudSoundOn", hudSoundOn);
 		this.load.image("hudSoundOff", hudSoundOff);
 		this.load.image("finalScreen", finalScreen);
@@ -584,6 +588,7 @@ AngryBirds.Menu.prototype = {
 		// ADDING THE GAME TITLE
 		this.menuTitle = this.add.sprite(0, 25, "menuTitle");
 		this.menuTitle.position.x = game.width / 2 - this.menuTitle.width / 2;
+
 
 		// ADDING THE PLAY BUTTON
 		this.menuPlay = this.add.sprite(0, 175, "menuPlayButton");
@@ -2355,23 +2360,26 @@ AngryBirds.Game.prototype = {
 
 	showWinOverlay: function(earnedStars)
 		{
-		if (this.winOverlay!=null)
+		if (this.winPanel!=null)
 			{
 			return;
 			}
 
 		this.returnCameraToSceneStart();
+		var panelX = Math.floor((game.width - 480) / 2);
+		var panelY = Math.floor((game.height - 361) / 2);
 		this.winOverlay = game.add.graphics();
+		this.winOverlay.beginFill(0x000000, 0.18);
+		this.winOverlay.drawRect(0, 0, game.width, game.height);
 		this.winOverlay.fixedToCamera = true;
-		this.winPanel = game.add.graphics();
-		this.winPanel.lineStyle(4, 0x5b2410, 0.9);
-		this.winPanel.beginFill(0xf3d58e, 0.78);
-		this.winPanel.drawRect(Math.floor(game.width / 2 - 170), 78, 340, 208);
+		this.winPanel = game.add.image(0, 0, "gameModal");
 		this.winPanel.fixedToCamera = true;
-		this.winToastText = game.add.text(0, 0, this.getCurrentWinMessage(), {font: "28px Semlor", fill: "#fff3cf"});
-		this.winToastText.position.x = Math.floor(game.width / 2 - this.winToastText.width / 2);
-		this.winToastText.position.y = 104;
+		this.winPanel.cameraOffset.setTo(panelX, panelY);
+		this.winPanel.alpha = 1;
+
+		this.winToastText = game.add.text(0, 0, this.getCurrentWinMessage(), {font: "28px Semlor", fill: "#7a230d"});
 		this.winToastText.fixedToCamera = true;
+		this.winToastText.cameraOffset.setTo(Math.floor(game.width / 2 - this.winToastText.width / 2), panelY + 168);
 
 		if (earnedStars==null)
 			{
@@ -2388,19 +2396,17 @@ AngryBirds.Game.prototype = {
 
 		var starAssetKey = "gameStar" + earnedStars;
 		var winStarSprite = game.add.sprite(0, 0, starAssetKey);
-		winStarSprite.position.x = Math.floor(game.width / 2 - winStarSprite.width / 2);
-		winStarSprite.position.y = this.winToastText.position.y + this.winToastText.height + 18;
 		winStarSprite.fixedToCamera = true;
+		winStarSprite.cameraOffset.setTo(Math.floor(game.width / 2 - winStarSprite.width / 2), panelY + 78);
 		this.winStars.push(winStarSprite);
 
-		this.winContinueButton = game.add.sprite(0, 0, "uiForwardButton");
-		this.winContinueButton.position.x = Math.floor(game.width / 2 - this.winContinueButton.width / 2);
-		this.winContinueButton.position.y = winStarSprite.position.y + winStarSprite.height + 18;
+		this.winContinueButton = game.add.sprite(0, 0, "uiContinueButton");
 		this.winContinueButton.fixedToCamera = true;
+		this.winContinueButton.cameraOffset.setTo(Math.floor(game.width / 2 - this.winContinueButton.width / 2), panelY + 200);
 
 		this.winContinueHandler = game.add.graphics();
 		this.winContinueHandler.beginFill(0x000000, 0);
-		this.winContinueHandler.drawRect(this.winContinueButton.x, this.winContinueButton.y, this.winContinueButton.width, this.winContinueButton.height);
+		this.winContinueHandler.drawRect(this.winContinueButton.cameraOffset.x, this.winContinueButton.cameraOffset.y, this.winContinueButton.width, this.winContinueButton.height);
 		this.winContinueHandler.fixedToCamera = true;
 		this.winContinueHandler.inputEnabled = true;
 		this.winContinueHandler.events.onInputUp.add(this.handleWinContinue, this);
@@ -2449,28 +2455,36 @@ AngryBirds.Game.prototype = {
 
 	showLoseOverlay: function()
 		{
-		if (this.loseOverlay!=null)
+		if (this.losePanel!=null)
 			{
 			return;
 			}
 
 		this.returnCameraToSceneStart();
+		var panelX = Math.floor((game.width - 480) / 2);
+		var panelY = Math.floor((game.height - 361) / 2);
 		this.loseOverlay = game.add.graphics();
+		this.loseOverlay.beginFill(0x000000, 0.18);
+		this.loseOverlay.drawRect(0, 0, game.width, game.height);
 		this.loseOverlay.fixedToCamera = true;
-		this.losePanel = game.add.graphics();
-		this.losePanel.lineStyle(4, 0x5b2410, 0.9);
-		this.losePanel.beginFill(0xf3d58e, 0.78);
-		this.losePanel.drawRect(Math.floor(game.width / 2 - 170), 78, 340, 176);
+		this.losePanel = game.add.image(0, 0, "gameModal");
 		this.losePanel.fixedToCamera = true;
+		this.losePanel.cameraOffset.setTo(panelX, panelY);
+		this.losePanel.alpha = 1;
 		this.showToast(STRING_YOULOSE);
-		this.loseRestartButton = game.add.sprite(0, 0, "hudRestartButton");
-		this.loseRestartButton.position.x = Math.floor(game.width / 2 - this.loseRestartButton.width / 2);
-		this.loseRestartButton.position.y = this.toastText.position.y + this.toastText.height + 26;
+		if (this.toastText!=null)
+			{
+			this.toastText.fill = "#7a230d";
+			this.toastText.fixedToCamera = true;
+			this.toastText.cameraOffset.setTo(Math.floor(game.width / 2 - this.toastText.width / 2), panelY + 148);
+			}
+		this.loseRestartButton = game.add.sprite(0, 0, "uiRepeatButton");
 		this.loseRestartButton.fixedToCamera = true;
+		this.loseRestartButton.cameraOffset.setTo(Math.floor(game.width / 2 - this.loseRestartButton.width / 2), panelY + 200);
 
 		this.loseRestartHandler = game.add.graphics();
 		this.loseRestartHandler.beginFill(0x000000, 0);
-		this.loseRestartHandler.drawRect(this.loseRestartButton.x, this.loseRestartButton.y, this.loseRestartButton.width, this.loseRestartButton.height);
+		this.loseRestartHandler.drawRect(this.loseRestartButton.cameraOffset.x, this.loseRestartButton.cameraOffset.y, this.loseRestartButton.width, this.loseRestartButton.height);
 		this.loseRestartHandler.fixedToCamera = true;
 		this.loseRestartHandler.inputEnabled = true;
 		this.loseRestartHandler.events.onInputUp.add(this.handleLoseRestart, this);
