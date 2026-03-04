@@ -7,7 +7,7 @@ const filesToCache = [
 	"assets/meta/KolobokFavIcon_16x16.png",
 	"assets/meta/KolobokFavIcon_192x192.png",
 	"assets/meta/KolobokFavIcon_512x512.png",
-	"KolobokGame.htm",
+	"KolobokGame.html",
 	"KolobokGame.js",
 	"assets/meta/KolobokShare.png"
 ];

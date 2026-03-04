@@ -8,7 +8,7 @@ JS_PATH = ROOT / "KolobokGame.js"
 
 REQUIRED_FILES = [
     ROOT / "index.html",
-    ROOT / "KolobokGame.htm",
+    ROOT / "KolobokGame.html",
     ROOT / "KolobokGame.js",
     ROOT / "worker.js",
 ]

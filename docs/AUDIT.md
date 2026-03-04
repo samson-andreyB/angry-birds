@@ -20,7 +20,7 @@
 ### 2.1 Файловая структура
 
 - Точка входа оболочки: `index.html` (iframe-обертка, SW, manifest).
-- Игровая страница: `KolobokGame.htm`.
+- Игровая страница: `KolobokGame.html`.
 - Вся игровая логика: `KolobokGame.js`.
 - Runtime-ассеты: `assets/embedded/*`.
 - Нерабочие/референс ассеты: `assets/resources/*` + `resources.zip`.

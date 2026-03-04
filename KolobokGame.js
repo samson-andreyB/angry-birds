@@ -271,15 +271,18 @@ Kolobok.SplashGame.prototype = {
 
 	init: function()
 		{
+		var splashLayout = KOLOBOK_GAME_CONFIG.ui.splash;
 		this.splashLoadingText = null;
 		this.splashLoadingStep = 0;
 		this.splashLoadingLastTick = 0;
 		this.splashContinueText = null;
 		this.splashContinueHandler = null;
+		this.splashLayout = splashLayout;
 		},
 
 	preload: function()
 		{
+		var splashLayout = this.splashLayout || KOLOBOK_GAME_CONFIG.ui.splash;
 		this.stage.backgroundColor = "#FFFFFF";
 		this.splashScreen = null;
 		this.splashLoadingText = null;
@@ -288,9 +291,9 @@ Kolobok.SplashGame.prototype = {
 		this.splashContinueText = null;
 		this.splashContinueHandler = null;
 		this.splashScreen = game.add.sprite(0, 0, "splashScreen");
-		this.splashLoadingText = game.add.text(0, 0, "Загрузка", {font: "28px Semlor", fill: "#fff3cf"});
+		this.splashLoadingText = game.add.text(0, 0, "Загрузка", {font: splashLayout.textFontSize + "px Semlor", fill: "#fff3cf"});
 		this.splashLoadingText.position.x = Math.floor(game.width / 2 - this.splashLoadingText.width / 2);
-		this.splashLoadingText.position.y = Math.floor(game.height - 58);
+		this.splashLoadingText.position.y = Math.floor(game.height - splashLayout.textBottomOffset);
 		this.splashLoadingText.fixedToCamera = true;
 		this.deferMainAssets = true;
 		Kolobok.Preloader.prototype.preload.call(this);
@@ -298,7 +301,8 @@ Kolobok.SplashGame.prototype = {
 
 	loadUpdate: function()
 		{
-		if (this.splashLoadingText && this.game.time.now - this.splashLoadingLastTick >= 350)
+		var splashLayout = this.splashLayout || KOLOBOK_GAME_CONFIG.ui.splash;
+		if (this.splashLoadingText && this.game.time.now - this.splashLoadingLastTick >= splashLayout.loadingTickMs)
 			{
 			this.splashLoadingStep = (this.splashLoadingStep + 1) % 4;
 			this.splashLoadingLastTick = this.game.time.now;
@@ -309,17 +313,18 @@ Kolobok.SplashGame.prototype = {
 
 	create: function()
 		{
+		var splashLayout = this.splashLayout || KOLOBOK_GAME_CONFIG.ui.splash;
 		if (this.splashLoadingText)
 			{
 			this.splashLoadingText.destroy();
 			this.splashLoadingText = null;
 			}
 
-			this.splashContinueText = game.add.text(0, 0, "Нажмите, чтобы продолжить", {font: "28px Semlor", fill: "#fff3cf"});
+			this.splashContinueText = game.add.text(0, 0, "Нажмите, чтобы продолжить", {font: splashLayout.textFontSize + "px Semlor", fill: "#fff3cf"});
 			this.splashContinueText.position.x = Math.floor(game.width / 2 - this.splashContinueText.width / 2);
-			this.splashContinueText.position.y = Math.floor(game.height - 58);
+			this.splashContinueText.position.y = Math.floor(game.height - splashLayout.textBottomOffset);
 			this.splashContinueText.fixedToCamera = true;
-			this.add.tween(this.splashContinueText).to({alpha: 0.35}, 650, Phaser.Easing.Sinusoidal.InOut, true, 0, -1, true);
+			this.add.tween(this.splashContinueText).to({alpha: splashLayout.blinkAlpha}, splashLayout.blinkDuration, Phaser.Easing.Sinusoidal.InOut, true, 0, -1, true);
 
 			this.splashContinueHandler = game.add.graphics();
 			this.splashContinueHandler.beginFill(0x000000, 0);
@@ -522,6 +527,7 @@ Kolobok.FinalScreen.prototype = {
 
 	create: function()
 		{
+		var finalLayout = KOLOBOK_GAME_CONFIG.ui.final;
 		// SETTING THE BACKGROUND COLOR
 		this.stage.backgroundColor = "#FFFFFF";
 
@@ -531,7 +537,7 @@ Kolobok.FinalScreen.prototype = {
 		// ADDING THE CONTINUE BUTTON IMMEDIATELY
 		this.finalContinueButton = game.add.sprite(0, 0, "uiRepeatButton");
 		this.finalContinueButton.position.x = Math.floor(game.width / 2 - this.finalContinueButton.width / 2);
-		this.finalContinueButton.position.y = game.height - this.finalContinueButton.height - 18;
+		this.finalContinueButton.position.y = game.height - this.finalContinueButton.height - finalLayout.continueButtonBottomOffset;
 
 		this.finalContinueHandler = game.add.graphics();
 		this.finalContinueHandler.beginFill(0x000000, 0);
@@ -573,6 +579,8 @@ Kolobok.Menu.prototype = {
 
 	create: function()
 		{
+		var menuLayout = KOLOBOK_GAME_CONFIG.ui.menu;
+		var soundButtonLayout = menuLayout.soundButton;
 		// ADDING THE BACKGROUND
 		this.menuBackgroundImage = this.add.tileSprite(0, 0, this.game.world.width, this.game.world.height, this.getRandomMenuBackgroundKey());
 
@@ -586,12 +594,12 @@ Kolobok.Menu.prototype = {
 		this.menuFloorGrassFront = this.add.tileSprite(0, this.game.world.height - 60, this.game.world.width, this.game.world.height - 420, "gameGrassFront");
 
 		// ADDING THE GAME TITLE
-		this.menuTitle = this.add.sprite(0, 25, "menuTitle");
+		this.menuTitle = this.add.sprite(0, menuLayout.titleTop, "menuTitle");
 		this.menuTitle.position.x = game.width / 2 - this.menuTitle.width / 2;
 
 
 		// ADDING THE PLAY BUTTON
-		this.menuPlay = this.add.sprite(0, 175, "menuPlayButton");
+		this.menuPlay = this.add.sprite(0, menuLayout.playTop, "menuPlayButton");
 		this.menuPlay.position.x = game.width / 2 - this.menuPlay.width / 2;
 
 		// ADDING THE PLAY BUTTON HANDLER
@@ -609,19 +617,19 @@ Kolobok.Menu.prototype = {
 		if (GAME_SOUND_ENABLED==true)
 			{
 			// ADDING THE SOUND ON ICON
-			this.menuSoundIcon = this.add.sprite(5, 5, "menuSoundOn");
+			this.menuSoundIcon = this.add.sprite(soundButtonLayout.x, soundButtonLayout.y, "menuSoundOn");
 			}
 			else
 			{
 			// ADDING THE SOUND OFF ICON
-			this.menuSoundIcon = this.add.sprite(5, 5, "menuSoundOff");
+			this.menuSoundIcon = this.add.sprite(soundButtonLayout.x, soundButtonLayout.y, "menuSoundOff");
 			}
 		this.menuSoundIcon.fixedToCamera = true;
 
 		// ADDING THE SOUND ICON HANDLER
 		this.menuSoundHandler = game.add.graphics();
 		this.menuSoundHandler.beginFill(0x000000, 0);
-		this.menuSoundHandler.drawRect(5, 5, 60, 60);
+		this.menuSoundHandler.drawRect(soundButtonLayout.x, soundButtonLayout.y, soundButtonLayout.width, soundButtonLayout.height);
 		this.menuSoundHandler.inputEnabled = true;
 		this.menuSoundHandler.fixedToCamera = true;
 		this.menuSoundHandler.events.onInputUp.add(function(){this.toggleSound()},this);
@@ -829,6 +837,8 @@ Kolobok.LevelSelector.prototype = {
 
 	create: function()
 		{
+		var levelSelectorLayout = KOLOBOK_GAME_CONFIG.ui.levelSelector;
+		var backButtonLayout = levelSelectorLayout.backButton;
 		// ADDING THE BACKGROUND
 		this.levelSelectorBackgroundImage = this.add.sprite(0, 0, "levelSelectBackground");
 
@@ -840,31 +850,18 @@ Kolobok.LevelSelector.prototype = {
 			}
 		solvedLevels = 11;
 
-		// ADDING LEVEL BUTTONS FROM 1 TO 5
-		this.createLevelButton(50,   50,  "1", solvedLevels);
-		this.createLevelButton(200,  50,  "2", solvedLevels);
-		this.createLevelButton(350,  50,  "3", solvedLevels);
-		this.createLevelButton(500,  50,  "4", solvedLevels);
-		this.createLevelButton(650,  50,  "5", solvedLevels);
-
-		// ADDING LEVEL BUTTONS FROM 6 TO 10
-		this.createLevelButton(50,  150,  "6", solvedLevels);
-		this.createLevelButton(200, 150,  "7", solvedLevels);
-		this.createLevelButton(350, 150,  "8", solvedLevels);
-		this.createLevelButton(500, 150,  "9", solvedLevels);
-		this.createLevelButton(650, 150, "10", solvedLevels);
-
-		// ADDING LEVEL BUTTONS FROM 11 TO 12
-		this.createLevelButton(50,  250, "11", solvedLevels);
-		this.createLevelButton(200, 250, "12", solvedLevels);
+		levelSelectorLayout.buttons.forEach(function(levelButtonLayout)
+			{
+			this.createLevelButton(levelButtonLayout.x, levelButtonLayout.y, levelButtonLayout.level, solvedLevels);
+			}, this);
 
 		// ADDING THE GO BACK IMAGE
-		this.levelSelectorGoBackImage = this.add.sprite(10, 370, "levelSelectBackButton");
+		this.levelSelectorGoBackImage = this.add.sprite(backButtonLayout.x, backButtonLayout.y, "levelSelectBackButton");
 
 		// ADDING THE GO BACK HANDLER
 		this.levelSelectorGoBackImageHandler = game.add.graphics();
 		this.levelSelectorGoBackImageHandler.beginFill(0x000000, 0);
-		this.levelSelectorGoBackImageHandler.drawRect(0, 360, 90, 90);
+		this.levelSelectorGoBackImageHandler.drawRect(backButtonLayout.hitX, backButtonLayout.hitY, backButtonLayout.hitWidth, backButtonLayout.hitHeight);
 		this.levelSelectorGoBackImageHandler.inputEnabled = true;
 		this.levelSelectorGoBackImageHandler.events.onInputUp.add(function()
 			{
@@ -1019,49 +1016,14 @@ Kolobok.Game.prototype = {
 
 	init: function()
 		{
+		this.GAME_CONFIG = KOLOBOK_GAME_CONFIG;
 		this.toastText = null;
-		this.MAX_SPEED_SHOOT = 1000;
-		this.SHOOT_FACTOR = 8;
-		this.ENEMY_KOLOBOK_KILL_DIFF = 6;
-		this.ENEMY_BLOCK_KILL_DIFF = 7;
-		this.ENEMY_GROUND_KILL_DIFF = 7;
-		this.KOLOBOK_CONFIGS = {
-			"heroKolobokDefault": {
-				destroys: [],
-				pushDiff: 7,
-				pushXFactor: 0.14,
-				pushYFactor: 0.06,
-				pushAngular: 0.7,
-				minRetainedSpeedX: 130,
-				pierceCount: 0,
-				bodyMass: 1,
-				bodyDamping: 0.12,
-				bodyAngularDamping: 0.08,
-				flyAudioKey: "sfxFly"
-				},
-			"heroKolobokWreath": {
-				destroys: ["blockLight"],
-				blockKillDiff: 8,
-				pierceCount: 0,
-				bodyMass: 1.1,
-				bodyDamping: 0.12,
-				bodyAngularDamping: 0.08,
-				flyAudioKey: "sfxFly"
-				},
-			"heroKolobokBogatyr": {
-				destroys: ["blockLight", "blockHeavy"],
-				blockKillDiff: 8,
-				pierceCount: 4,
-				pierceLightVelocityFactor: 0.10,
-				pierceHeavyVelocityFactor: 0.10,
-				pierceLightAngularFactor: 0.10,
-				pierceHeavyAngularFactor: 0.10,
-				bodyMass: 6,
-				bodyDamping: 0.08,
-				bodyAngularDamping: 0.05,
-				flyAudioKey: "sfxFlyBogatyr"
-				}
-			};
+		this.MAX_SPEED_SHOOT = this.GAME_CONFIG.gameplay.maxSpeedShoot;
+		this.SHOOT_FACTOR = this.GAME_CONFIG.gameplay.shootFactor;
+		this.ENEMY_KOLOBOK_KILL_DIFF = this.GAME_CONFIG.gameplay.enemyKolobokKillDiff;
+		this.ENEMY_BLOCK_KILL_DIFF = this.GAME_CONFIG.gameplay.enemyBlockKillDiff;
+		this.ENEMY_GROUND_KILL_DIFF = this.GAME_CONFIG.gameplay.enemyGroundKillDiff;
+		this.KOLOBOK_CONFIGS = this.GAME_CONFIG.koloboks;
 		this.backgroundImage = null;
 		this.blocksCollisionGroup = null;
 		this.enemiesCollisionGroup = null;
@@ -1165,6 +1127,12 @@ Kolobok.Game.prototype = {
 
 	create: function()
 		{
+		var gameLayout = this.GAME_CONFIG.ui.game;
+		var floorLayout = gameLayout.floor;
+		var grassBackLayout = gameLayout.grassBack;
+		var grassFrontLayout = gameLayout.grassFront;
+		var slingshotLayout = gameLayout.slingshot;
+		var hudLayout = gameLayout.hud;
 		// SETTING THE WORLD BOUNDS
 		game.world.setBounds(0, 0, game.width * 2, game.height);
 
@@ -1206,51 +1174,51 @@ Kolobok.Game.prototype = {
 		this.blocks.physicsBodyType = Phaser.Physics.P2JS;
 
 		// ADDING THE FLOOR
-		this.floor = this.add.tileSprite(this.game.world.width / 2, this.game.world.height - 24, this.game.world.width * 3, 48, "gameFloor");
+		this.floor = this.add.tileSprite(this.game.world.width / 2, this.game.world.height - floorLayout.centerYOffset, this.game.world.width * 3, floorLayout.height, "gameFloor");
 		this.blocks.add(this.floor);
 		this.floor.body.setCollisionGroup(this.blocksCollisionGroup);
 		this.floor.body.collides([this.blocksCollisionGroup, this.enemiesCollisionGroup, this.koloboksCollisionGroup]);
 		this.floor.body.static = true;
 
 		// ADDING THE FLOOR GRASS BACK LAYER
-		this.floorGrassBack = this.add.tileSprite(-3, this.game.world.height - 65, this.game.world.width * 3, this.game.world.height - 418, "gameGrassBack");
+		this.floorGrassBack = this.add.tileSprite(grassBackLayout.x, this.game.world.height - grassBackLayout.bottomOffset, this.game.world.width * 3, this.game.world.height - grassBackLayout.heightOffset, "gameGrassBack");
 
 		// ADDING THE FLOOR GRASS FRONT FRONT
-		this.floorGrassFront = this.add.tileSprite(-3, this.game.world.height - 60, this.game.world.width * 3, this.game.world.height - 420, "gameGrassFront");
+		this.floorGrassFront = this.add.tileSprite(grassFrontLayout.x, this.game.world.height - grassFrontLayout.bottomOffset, this.game.world.width * 3, this.game.world.height - grassFrontLayout.heightOffset, "gameGrassFront");
 
 		// ADDING THE POLE
-		this.pole = this.add.sprite(180, 300, "slingshotBase");
-		this.pole.anchor.setTo(0.5, 0);
+		this.pole = this.add.sprite(slingshotLayout.base.x, slingshotLayout.base.y, "slingshotBase");
+		this.pole.anchor.setTo(slingshotLayout.base.anchorX, slingshotLayout.base.anchorY);
 		this.pole.alpha = 0;
-		this.poleRight = this.add.sprite(180, 294, "slingshotBack");
-		this.poleRight.width = this.poleRight.width * 0.5;
-		this.poleRight.height = this.poleRight.height * 0.5;
-		this.poleLeft = this.add.sprite(166, 291, "slingshotFront");
-		this.poleLeft.width = this.poleLeft.width * 0.5;
-		this.poleLeft.height = this.poleLeft.height * 0.5;
+		this.poleRight = this.add.sprite(slingshotLayout.back.x, slingshotLayout.back.y, "slingshotBack");
+		this.poleRight.width = this.poleRight.width * slingshotLayout.back.scale;
+		this.poleRight.height = this.poleRight.height * slingshotLayout.back.scale;
+		this.poleLeft = this.add.sprite(slingshotLayout.front.x, slingshotLayout.front.y, "slingshotFront");
+		this.poleLeft.width = this.poleLeft.width * slingshotLayout.front.scale;
+		this.poleLeft.height = this.poleLeft.height * slingshotLayout.front.scale;
 
 		// ADDING THE MENU ICON
-		this.menuIcon = this.add.sprite(5, 5, "hudMenuButton");
+		this.menuIcon = this.add.sprite(hudLayout.menu.x, hudLayout.menu.y, "hudMenuButton");
 		this.menuIcon.alpha = 1;
 		this.menuIcon.fixedToCamera = true;
 
 		// ADDING THE MENU ICON HANDLER
 		this.menuHandler = game.add.graphics();
 		this.menuHandler.beginFill(0x000000, 0);
-		this.menuHandler.drawRect(5, 5, 60, 60);
+		this.menuHandler.drawRect(hudLayout.menu.x, hudLayout.menu.y, hudLayout.menu.width, hudLayout.menu.height);
 		this.menuHandler.fixedToCamera = true;
 		this.menuHandler.inputEnabled = true;
 		this.menuHandler.events.onInputUp.add(function(){this.goBackToLevelSelector()},this);
 
 		// ADDING THE RESTART ICON
-		this.restartIcon = this.add.sprite(70, 5, "hudRestartButton");
+		this.restartIcon = this.add.sprite(hudLayout.restart.x, hudLayout.restart.y, "hudRestartButton");
 		this.restartIcon.alpha = 1;
 		this.restartIcon.fixedToCamera = true;
 
 		// ADDING THE RESTART HANDLER
 		this.restartHandler = game.add.graphics();
 		this.restartHandler.beginFill(0x000000, 0);
-		this.restartHandler.drawRect(70, 5, 60, 60);
+		this.restartHandler.drawRect(hudLayout.restart.x, hudLayout.restart.y, hudLayout.restart.width, hudLayout.restart.height);
 		this.restartHandler.fixedToCamera = true;
 		this.restartHandler.inputEnabled = true;
 		this.restartHandler.events.onInputUp.add(function(){this.restartGame(true)},this);
@@ -1259,14 +1227,14 @@ Kolobok.Game.prototype = {
 		if (GAME_SOUND_ENABLED==true)
 			{
 			// ADDING THE SOUND ON ICON
-			this.soundIcon = this.add.sprite(135, 5, "hudSoundOn");
+			this.soundIcon = this.add.sprite(hudLayout.sound.x, hudLayout.sound.y, "hudSoundOn");
 			this.soundIcon.alpha = 1;
 			this.soundIcon.fixedToCamera = true;
 			}
 			else
 			{
 			// ADDING THE SOUND OFF ICON
-			this.soundIcon = this.add.sprite(135, 5, "hudSoundOff");
+			this.soundIcon = this.add.sprite(hudLayout.sound.x, hudLayout.sound.y, "hudSoundOff");
 			this.soundIcon.alpha = 1;
 			this.soundIcon.fixedToCamera = true;
 			}
@@ -1274,7 +1242,7 @@ Kolobok.Game.prototype = {
 		// ADDING THE SOUND ICON HANDLER
 		this.soundHandler = game.add.graphics();
 		this.soundHandler.beginFill(0x000000, 0);
-		this.soundHandler.drawRect(135, 5, 60, 60);
+		this.soundHandler.drawRect(hudLayout.sound.x, hudLayout.sound.y, hudLayout.sound.width, hudLayout.sound.height);
 		this.soundHandler.fixedToCamera = true;
 		this.soundHandler.inputEnabled = true;
 		this.soundHandler.events.onInputUp.add(function(){this.toggleSound()},this);
@@ -1282,15 +1250,15 @@ Kolobok.Game.prototype = {
 		// ADDING THE DEBUG WIN BUTTON
 		this.debugWinButton = game.add.graphics();
 		this.debugWinButton.beginFill(0x6A4E2D, 0.9);
-		this.debugWinButton.drawRoundedRect(205, 20, 74, 30, 8);
+		this.debugWinButton.drawRoundedRect(hudLayout.debugWin.x, hudLayout.debugWin.y, hudLayout.debugWin.width, hudLayout.debugWin.height, 8);
 		this.debugWinButton.fixedToCamera = true;
 		this.debugWinButton.inputEnabled = true;
 		this.debugWinButton.events.onInputUp.add(function(){this.debugPassLevel()},this);
 
 		// ADDING THE DEBUG WIN LABEL
 		this.debugWinLabel = game.add.text(0, 0, "WIN", {font: "20px Semlor", fill: "#fff3cf"});
-		this.debugWinLabel.position.x = 205 + Math.floor((74 - this.debugWinLabel.width) / 2);
-		this.debugWinLabel.position.y = 20 + Math.floor((30 - this.debugWinLabel.height) / 2) - 1;
+		this.debugWinLabel.position.x = hudLayout.debugWin.x + Math.floor((hudLayout.debugWin.width - this.debugWinLabel.width) / 2);
+		this.debugWinLabel.position.y = hudLayout.debugWin.y + Math.floor((hudLayout.debugWin.height - this.debugWinLabel.height) / 2) + hudLayout.debugWin.labelOffsetY;
 		this.debugWinLabel.fixedToCamera = true;
 
 		this.bringHudToTop();
@@ -1299,7 +1267,7 @@ Kolobok.Game.prototype = {
 		// ADDING THE KOLOBOK LAUNCHER
 		this.kolobokLauncher = game.add.graphics(0, 0);
 		this.kolobokLauncher.beginFill(0x000000,0);
-		this.kolobokLauncher.drawRect(145, 265, 75, 75);
+		this.kolobokLauncher.drawRect(slingshotLayout.launcher.x, slingshotLayout.launcher.y, slingshotLayout.launcher.width, slingshotLayout.launcher.height);
 		this.kolobokLauncher.inputEnabled = true;
 		this.kolobokLauncher.events.onInputDown.add(function()
 			{
@@ -2354,16 +2322,19 @@ Kolobok.Game.prototype = {
 
 	showWinOverlay: function(earnedStars)
 		{
+		var overlayLayout = this.GAME_CONFIG.ui.game.overlays;
+		var panelLayout = overlayLayout.panel;
+		var winLayout = overlayLayout.win;
 		if (this.winPanel!=null)
 			{
 			return;
 			}
 
 		this.returnCameraToSceneStart();
-		var panelX = Math.floor((game.width - 480) / 2);
-		var panelY = Math.floor((game.height - 361) / 2);
+		var panelX = Math.floor((game.width - panelLayout.width) / 2);
+		var panelY = Math.floor((game.height - panelLayout.height) / 2);
 		this.winOverlay = game.add.graphics();
-		this.winOverlay.beginFill(0x000000, 0.50);
+		this.winOverlay.beginFill(0x000000, overlayLayout.dimAlpha);
 		this.winOverlay.drawRect(0, 0, game.width, game.height);
 		this.winOverlay.fixedToCamera = true;
 		this.winPanel = game.add.image(0, 0, "gameModal");
@@ -2373,7 +2344,7 @@ Kolobok.Game.prototype = {
 
 		this.winToastText = game.add.text(0, 0, this.getCurrentWinMessage(), {font: "28px Semlor", fill: "#7a230d"});
 		this.winToastText.fixedToCamera = true;
-		this.winToastText.cameraOffset.setTo(Math.floor(game.width / 2 - this.winToastText.width / 2), panelY + 168);
+		this.winToastText.cameraOffset.setTo(Math.floor(game.width / 2 - this.winToastText.width / 2), panelY + winLayout.textOffsetY);
 
 		if (earnedStars==null)
 			{
@@ -2391,12 +2362,12 @@ Kolobok.Game.prototype = {
 		var starAssetKey = "gameStar" + earnedStars;
 		var winStarSprite = game.add.sprite(0, 0, starAssetKey);
 		winStarSprite.fixedToCamera = true;
-		winStarSprite.cameraOffset.setTo(Math.floor(game.width / 2 - winStarSprite.width / 2), panelY + 78);
+		winStarSprite.cameraOffset.setTo(Math.floor(game.width / 2 - winStarSprite.width / 2), panelY + winLayout.starsOffsetY);
 		this.winStars.push(winStarSprite);
 
 		this.winContinueButton = game.add.sprite(0, 0, "uiContinueButton");
 		this.winContinueButton.fixedToCamera = true;
-		this.winContinueButton.cameraOffset.setTo(Math.floor(game.width / 2 - this.winContinueButton.width / 2), panelY + 220);
+		this.winContinueButton.cameraOffset.setTo(Math.floor(game.width / 2 - this.winContinueButton.width / 2), panelY + winLayout.continueOffsetY);
 
 		this.winContinueHandler = game.add.graphics();
 		this.winContinueHandler.beginFill(0x000000, 0);
@@ -2449,16 +2420,19 @@ Kolobok.Game.prototype = {
 
 	showLoseOverlay: function()
 		{
+		var overlayLayout = this.GAME_CONFIG.ui.game.overlays;
+		var panelLayout = overlayLayout.panel;
+		var loseLayout = overlayLayout.lose;
 		if (this.losePanel!=null)
 			{
 			return;
 			}
 
 		this.returnCameraToSceneStart();
-		var panelX = Math.floor((game.width - 480) / 2);
-		var panelY = Math.floor((game.height - 361) / 2);
+		var panelX = Math.floor((game.width - panelLayout.width) / 2);
+		var panelY = Math.floor((game.height - panelLayout.height) / 2);
 		this.loseOverlay = game.add.graphics();
-		this.loseOverlay.beginFill(0x000000, 0.50);
+		this.loseOverlay.beginFill(0x000000, overlayLayout.dimAlpha);
 		this.loseOverlay.drawRect(0, 0, game.width, game.height);
 		this.loseOverlay.fixedToCamera = true;
 		this.losePanel = game.add.image(0, 0, "gameModal");
@@ -2470,11 +2444,11 @@ Kolobok.Game.prototype = {
 			{
 			this.toastText.fill = "#7a230d";
 			this.toastText.fixedToCamera = true;
-			this.toastText.cameraOffset.setTo(Math.floor(game.width / 2 - this.toastText.width / 2), panelY + 148);
+			this.toastText.cameraOffset.setTo(Math.floor(game.width / 2 - this.toastText.width / 2), panelY + loseLayout.textOffsetY);
 			}
 		this.loseRestartButton = game.add.sprite(0, 0, "uiRepeatButton");
 		this.loseRestartButton.fixedToCamera = true;
-		this.loseRestartButton.cameraOffset.setTo(Math.floor(game.width / 2 - this.loseRestartButton.width / 2), panelY + 200);
+		this.loseRestartButton.cameraOffset.setTo(Math.floor(game.width / 2 - this.loseRestartButton.width / 2), panelY + loseLayout.restartOffsetY);
 
 		this.loseRestartHandler = game.add.graphics();
 		this.loseRestartHandler.beginFill(0x000000, 0);
