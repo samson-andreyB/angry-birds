@@ -1538,6 +1538,10 @@ Kolobok.Game.prototype = {
 				{
 				playRandomLevelPlaylistTrack();
 				}
+			else if (MUSIC_PLAYER.paused===true && typeof MUSIC_PLAYER.resume=="function")
+				{
+				MUSIC_PLAYER.resume();
+				}
 			}
 
 		// WAITING 200 MS
@@ -2510,6 +2514,11 @@ Kolobok.Game.prototype = {
 			return;
 			}
 
+		if (MUSIC_PLAYER!=null && isLevelPlaylistTrack(MUSIC_PLAYER.key)==true && typeof MUSIC_PLAYER.pause=="function")
+			{
+			MUSIC_PLAYER.pause();
+			}
+
 		this.returnCameraToSceneStart();
 		var panelX = Math.floor((game.width - panelLayout.width) / 2);
 		var panelY = Math.floor((game.height - panelLayout.height) / 2);
@@ -2615,6 +2624,11 @@ Kolobok.Game.prototype = {
 		if (this.losePanel!=null)
 			{
 			return;
+			}
+
+		if (MUSIC_PLAYER!=null && isLevelPlaylistTrack(MUSIC_PLAYER.key)==true && typeof MUSIC_PLAYER.pause=="function")
+			{
+			MUSIC_PLAYER.pause();
 			}
 
 		this.returnCameraToSceneStart();
