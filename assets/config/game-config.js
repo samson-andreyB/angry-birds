@@ -78,7 +78,7 @@ var KOLOBOK_GAME_CONFIG = {
 		},
 		final: {
 			videoBackground: {
-				enabled: false
+				enabled: true
 			},
 			bottomOffset: 18,
 			bottomGap: 16,
