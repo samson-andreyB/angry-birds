@@ -1,7 +1,7 @@
 var KOLOBOK_GAME_CONFIG = {
 	audio: {
-		menuMusicVolume: 0.7,
-		gameplayMusicVolume: 0.25
+		menuMusicVolume: 0.5,
+		gameMusicVolume: 0.25
 	},
 	gameplay: {
 		maxSpeedShoot: 1000,
@@ -47,6 +47,27 @@ var KOLOBOK_GAME_CONFIG = {
 			flyAudioKey: "sfxFly3"
 		}
 	},
+	text: {
+		splash: {
+			loading: "Загрузка",
+			continue: "Нажмите, чтобы продолжить"
+		},
+		game: {
+			lose: "Эх, попробуй ещё раз!",
+			tutorial: {
+				firstLevel: "Схвати колобка и попади в зверя"
+			},
+			winByEnemy: {
+				rabbit: "Колобок ушёл от зайца",
+				wolf: "Колобок ушёл от волка",
+				bear: "Колобок ушёл от медведя",
+				fox: "Колобок ушёл от лисы"
+			}
+		},
+		final: {
+			awardsSeparator: "из"
+		}
+	},
 	ui: {
 		splash: {
 			textBottomOffset: 58,
@@ -57,7 +78,7 @@ var KOLOBOK_GAME_CONFIG = {
 		},
 		final: {
 			videoBackground: {
-				enabled: true
+				enabled: false
 			},
 			bottomOffset: 18,
 			bottomGap: 16,
@@ -78,7 +99,7 @@ var KOLOBOK_GAME_CONFIG = {
 		},
 		levelSelector: {
 			videoBackground: {
-				enabled: true
+				enabled: false
 			},
 			buttons: [
 				{ level: "1", x: 50, y: 50 },
@@ -95,19 +116,18 @@ var KOLOBOK_GAME_CONFIG = {
 				{ level: "12", x: 200, y: 250 }
 			],
 			backButton: {
-				x: 10,
-				y: 370,
-				hitX: 0,
-				hitY: 360,
-				hitWidth: 90,
-				hitHeight: 90
+				x: 5,
+				y: 377,
+				width: 64,
+				height: 60
 			}
 		},
 		game: {
 			tutorial: {
-				firstLevelText: "Схвати колобка и попади в зверя",
 				textBottomOffset: 48,
-				textFontSize: 24
+				textFontSize: 24,
+				blinkAlpha: 0.35,
+				blinkDuration: 650
 			},
 			floor: {
 				centerYOffset: 24,

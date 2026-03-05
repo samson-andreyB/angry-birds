@@ -13,11 +13,6 @@ function isMobileDevice(){return!!(navigator.userAgent.match(/Android/i)||naviga
 // GETTING THE USER LANGUAGE
 var userLanguage = window.navigator.userLanguage || window.navigator.language;
 
-var STRING_YOULOSE = "";
-
-// CURRENTLY USING A SINGLE RUSSIAN UI COPY
-STRING_YOULOSE = "Эх, попробуй ещё раз!";
-
 var GAME_SOUND_ENABLED = true;
 var GAME_LEVEL_SELECTED = "";
 
@@ -31,10 +26,10 @@ function getMenuMusicVolume()
 	return KOLOBOK_GAME_CONFIG.audio.menuMusicVolume;
 	}
 
-function getGameplayMusicVolume()
-	{
-	return KOLOBOK_GAME_CONFIG.audio.gameplayMusicVolume;
-	}
+function getGameMusicVolume()
+{
+	return KOLOBOK_GAME_CONFIG.audio.gameMusicVolume;
+}
 
 function isLevelPlaylistTrack(musicKey)
 	{
@@ -191,7 +186,7 @@ function playRandomLevelPlaylistTrack()
 	destroyCurrentMusicPlayer();
 
 	MUSIC_PLAYER = game.add.audio(nextPlaylistKey);
-	MUSIC_PLAYER.volume = getGameplayMusicVolume();
+	MUSIC_PLAYER.volume = getGameMusicVolume();
 	MUSIC_PLAYER.loop = false;
 	LAST_LEVEL_PLAYLIST_KEY = nextPlaylistKey;
 	MUSIC_PLAYER.play();
@@ -456,6 +451,7 @@ Kolobok.SplashGame.prototype = {
 	preload: function()
 		{
 		var splashLayout = this.splashLayout || KOLOBOK_GAME_CONFIG.ui.splash;
+		var splashText = KOLOBOK_GAME_CONFIG.text.splash;
 		this.stage.backgroundColor = "#FFFFFF";
 		this.splashScreen = null;
 		this.splashLoadingText = null;
@@ -464,7 +460,7 @@ Kolobok.SplashGame.prototype = {
 		this.splashContinueText = null;
 		this.splashContinueHandler = null;
 		this.splashScreen = game.add.sprite(0, 0, "splashScreen");
-		this.splashLoadingText = game.add.text(0, 0, "Загрузка", {font: splashLayout.textFontSize + "px Semlor", fill: "#fff3cf"});
+		this.splashLoadingText = game.add.text(0, 0, splashText.loading, {font: splashLayout.textFontSize + "px Semlor", fill: "#fff3cf"});
 		this.splashLoadingText.position.x = Math.floor(game.width / 2 - this.splashLoadingText.width / 2);
 		this.splashLoadingText.position.y = Math.floor(game.height - splashLayout.textBottomOffset);
 		this.splashLoadingText.fixedToCamera = true;
@@ -475,11 +471,12 @@ Kolobok.SplashGame.prototype = {
 	loadUpdate: function()
 		{
 		var splashLayout = this.splashLayout || KOLOBOK_GAME_CONFIG.ui.splash;
+		var splashText = KOLOBOK_GAME_CONFIG.text.splash;
 		if (this.splashLoadingText && this.game.time.now - this.splashLoadingLastTick >= splashLayout.loadingTickMs)
 			{
 			this.splashLoadingStep = (this.splashLoadingStep + 1) % 4;
 			this.splashLoadingLastTick = this.game.time.now;
-			this.splashLoadingText.text = "Загрузка" + new Array(this.splashLoadingStep + 1).join(".");
+			this.splashLoadingText.text = splashText.loading + new Array(this.splashLoadingStep + 1).join(".");
 			this.splashLoadingText.position.x = Math.floor(game.width / 2 - this.splashLoadingText.width / 2);
 			}
 		},
@@ -487,13 +484,14 @@ Kolobok.SplashGame.prototype = {
 	create: function()
 		{
 		var splashLayout = this.splashLayout || KOLOBOK_GAME_CONFIG.ui.splash;
+		var splashText = KOLOBOK_GAME_CONFIG.text.splash;
 		if (this.splashLoadingText)
 			{
 			this.splashLoadingText.destroy();
 			this.splashLoadingText = null;
 			}
 
-			this.splashContinueText = game.add.text(0, 0, "Нажмите, чтобы продолжить", {font: splashLayout.textFontSize + "px Semlor", fill: "#fff3cf"});
+			this.splashContinueText = game.add.text(0, 0, splashText.continue, {font: splashLayout.textFontSize + "px Semlor", fill: "#fff3cf"});
 			this.splashContinueText.position.x = Math.floor(game.width / 2 - this.splashContinueText.width / 2);
 			this.splashContinueText.position.y = Math.floor(game.height - splashLayout.textBottomOffset);
 			this.splashContinueText.fixedToCamera = true;
@@ -768,7 +766,7 @@ Kolobok.FinalScreen.prototype = {
 		this.finalAwardsText = game.add.text(
 			this.finalAwardsPanel.x + finalLayout.awardsTextOffsetX,
 			this.finalAwardsPanel.y + finalLayout.awardsTextOffsetY,
-			totalStars + " из " + maxStars,
+			totalStars + " " + KOLOBOK_GAME_CONFIG.text.final.awardsSeparator + " " + maxStars,
 			{
 				font: "bold " + finalLayout.awardsTextFontSize + "px Semlor",
 				fill: finalLayout.awardsTextColor,
@@ -1153,7 +1151,7 @@ Kolobok.LevelSelector.prototype = {
 		// ADDING THE GO BACK HANDLER
 		this.levelSelectorGoBackImageHandler = game.add.graphics();
 		this.levelSelectorGoBackImageHandler.beginFill(0x000000, 0);
-		this.levelSelectorGoBackImageHandler.drawRect(backButtonLayout.hitX, backButtonLayout.hitY, backButtonLayout.hitWidth, backButtonLayout.hitHeight);
+		this.levelSelectorGoBackImageHandler.drawRect(backButtonLayout.x, backButtonLayout.y, backButtonLayout.width, backButtonLayout.height);
 		this.levelSelectorGoBackImageHandler.inputEnabled = true;
 		this.levelSelectorGoBackImageHandler.events.onInputUp.add(function()
 			{
@@ -1452,19 +1450,20 @@ Kolobok.Game.prototype = {
 	getCurrentWinMessage: function()
 		{
 		var levelNumber = parseInt(this.currentLevel, 10);
+		var winByEnemyText = this.GAME_CONFIG.text.game.winByEnemy;
 		if (levelNumber>=10)
 			{
-			return "Колобок ушёл от лисы";
+			return winByEnemyText.fox;
 			}
 		if (levelNumber>=7)
 			{
-			return "Колобок ушёл от медведя";
+			return winByEnemyText.bear;
 			}
 		if (levelNumber>=4)
 			{
-			return "Колобок ушёл от волка";
+			return winByEnemyText.wolf;
 			}
-		return "Колобок ушёл от зайца";
+		return winByEnemyText.rabbit;
 		},
 
 	create: function()
@@ -1658,7 +1657,7 @@ Kolobok.Game.prototype = {
 			this.firstLevelTutorialText = game.add.text(
 				0,
 				game.height - tutorialLayout.textBottomOffset,
-				tutorialLayout.firstLevelText,
+				this.GAME_CONFIG.text.game.tutorial.firstLevel,
 				{
 					font: "bold " + tutorialLayout.textFontSize + "px Semlor",
 					fill: "#fff3cf",
@@ -1667,7 +1666,7 @@ Kolobok.Game.prototype = {
 			);
 			this.firstLevelTutorialText.position.x = Math.floor(game.width / 2 - this.firstLevelTutorialText.width / 2);
 			this.firstLevelTutorialText.fixedToCamera = true;
-			this.add.tween(this.firstLevelTutorialText).to({alpha: splashLayout.blinkAlpha}, splashLayout.blinkDuration, Phaser.Easing.Sinusoidal.InOut, true, 0, -1, true);
+			this.add.tween(this.firstLevelTutorialText).to({alpha: tutorialLayout.blinkAlpha}, tutorialLayout.blinkDuration, Phaser.Easing.Sinusoidal.InOut, true, 0, -1, true);
 			}
 
 		// CHECKING IF THE SOUND IS ENABLED
@@ -2787,7 +2786,7 @@ Kolobok.Game.prototype = {
 		this.losePanel.fixedToCamera = true;
 		this.losePanel.cameraOffset.setTo(panelX, panelY);
 		this.losePanel.alpha = 0;
-		this.showToast(STRING_YOULOSE);
+		this.showToast(this.GAME_CONFIG.text.game.lose);
 		if (this.toastText!=null)
 			{
 			this.toastText.fill = "#7a230d";
