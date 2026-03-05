@@ -5,11 +5,13 @@ import sys
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 JS_PATH = ROOT / "KolobokGame.js"
+LEVELS_PATH = ROOT / "assets/config/levels.js"
 
 REQUIRED_FILES = [
     ROOT / "index.html",
     ROOT / "KolobokGame.html",
     ROOT / "KolobokGame.js",
+    ROOT / "assets/config/levels.js",
     ROOT / "worker.js",
 ]
 
@@ -35,19 +37,21 @@ def main() -> int:
             print(f"  - {p}")
         return 1
 
-    # 2) Ensure level definitions are contiguous and loaded.
-    defined = sorted(set(int(n) for n in re.findall(r"var\s+level(\d+)\s*=", js)))
-    loaded = sorted(set(int(n) for n in re.findall(r'load\.text\("level(\d+)"', js)))
+    # 2) Ensure level definitions are contiguous and loaded from levels config.
+    levels_js = LEVELS_PATH.read_text(encoding="utf-8", errors="ignore")
+    defined = sorted(set(int(n) for n in re.findall(r'^\s*"(\d+)"\s*:', levels_js, flags=re.MULTILINE)))
 
     if not defined:
-        fail("No level definitions found (var levelN = ...)")
+        fail("No level definitions found in assets/config/levels.js (\"N\": {...})")
 
     expected = list(range(1, max(defined) + 1))
     if defined != expected:
         fail(f"Level definitions are not contiguous. Found: {defined}")
 
-    if loaded != expected:
-        fail(f"Loaded levels mismatch. Expected {expected}, got {loaded}")
+    if "KOLOBOK_LEVELS" not in js:
+        fail("KolobokGame.js does not reference KOLOBOK_LEVELS")
+    if 'this.load.text("level" + levelKey' not in js:
+        fail('KolobokGame.js does not load levels via this.load.text("level" + levelKey, ...)')
 
     # 3) Ensure no legacy states are still registered.
     if 'game.state.add("Kolobok.Splash"' in js or 'game.state.add("Kolobok.Disclaimer"' in js:
