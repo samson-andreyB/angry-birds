@@ -362,6 +362,7 @@ Kolobok.Preloader.prototype = {
 		// ALL THE SOUNDS THAT ARE GOING TO BE USED ARE LOADED FROM THE ASSETS FOLDER
 		var musicMenu = "assets/audio/menu.mp3";
 		var musicFinal = "assets/audio/final.mp3";
+		var musicBackground = "assets/audio/background.mp3";
 		var musicPlaylist01 = "assets/audio/playlist/01.mp3";
 		var musicPlaylist05 = "assets/audio/playlist/05.mp3";
 		var sfxSlingshot = "assets/audio/slingshot.mp3";
@@ -445,6 +446,7 @@ Kolobok.Preloader.prototype = {
 		// LOADING THE AUDIOS
 		this.load.audio("musicMenu", musicMenu);
 		this.load.audio("musicFinal", musicFinal);
+		this.load.audio("musicBackground", musicBackground);
 		this.load.audio("musicPlaylist01", musicPlaylist01);
 		this.load.audio("musicPlaylist05", musicPlaylist05);
 		this.load.audio("sfxSlingshot", sfxSlingshot);
@@ -753,6 +755,7 @@ Kolobok.FinalScreen.prototype = {
 		var finalLayout = KOLOBOK_GAME_CONFIG.ui.final;
 		var finalVideoConfig = finalLayout.videoBackground || {};
 		var splashState = game.state.states["Kolobok.SplashGame"];
+		var finalMusicPlayer = null;
 		var totalStars = 0;
 		var maxStars = 36;
 		var levelNumber = 0;
@@ -781,6 +784,23 @@ Kolobok.FinalScreen.prototype = {
 			MUSIC_PLAYER.volume = getMenuMusicVolume();
 			MUSIC_PLAYER.loop = false;
 			MUSIC_PLAYER.play();
+			finalMusicPlayer = MUSIC_PLAYER;
+			if (finalMusicPlayer.onStop!=null)
+				{
+				finalMusicPlayer.onStop.addOnce(function()
+					{
+					if (GAME_SOUND_ENABLED!==true || game.state.current!=="Kolobok.FinalScreen" || MUSIC_PLAYER!==finalMusicPlayer)
+						{
+						return;
+						}
+
+					destroyCurrentMusicPlayer();
+					MUSIC_PLAYER = this.add.audio("musicBackground");
+					MUSIC_PLAYER.volume = getMenuMusicVolume();
+					MUSIC_PLAYER.loop = true;
+					MUSIC_PLAYER.play();
+					}, this);
+				}
 			}
 
 		// ADDING THE FINAL IMAGE OR VIDEO BACKGROUND
