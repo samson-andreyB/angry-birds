@@ -22,6 +22,13 @@ var MUSIC_PLAYER = null;
 var LEVEL_PLAYLIST_KEYS = ["musicPlaylist01", "musicPlaylist02", "musicPlaylist03", "musicPlaylist04", "musicPlaylist05"];
 var LAST_LEVEL_PLAYLIST_KEY = null;
 var LEVEL_PLAYLIST_WATCHDOG_ID = null;
+var LEVEL_PLAYLIST_PHASE3_LOADING = false;
+var LEVEL_PLAYLIST_PHASE3_LOADED = false;
+var LEVEL_PLAYLIST_PHASE3_TRACKS = [
+	{key: "musicPlaylist02", path: "assets/audio/playlist/02.mp3"},
+	{key: "musicPlaylist03", path: "assets/audio/playlist/03.mp3"},
+	{key: "musicPlaylist04", path: "assets/audio/playlist/04.mp3"}
+];
 
 function getMenuMusicVolume()
 	{
@@ -80,6 +87,54 @@ function stopLevelPlaylistWatchdog()
 		window.clearTimeout(LEVEL_PLAYLIST_WATCHDOG_ID);
 		LEVEL_PLAYLIST_WATCHDOG_ID = null;
 		}
+	}
+
+function isPlaylistTrackLoaded(playlistKey)
+	{
+	if (typeof game=="undefined" || game==null || game.cache==null)
+		{
+		return false;
+		}
+
+	if (typeof game.cache.checkSoundKey=="function")
+		{
+		return game.cache.checkSoundKey(playlistKey)===true;
+		}
+
+	return game.cache.getSoundData(playlistKey)!=null;
+	}
+
+function startLevelPlaylistPhase3Load()
+	{
+	var hasDeferredTracks = false;
+
+	if (LEVEL_PLAYLIST_PHASE3_LOADED===true || LEVEL_PLAYLIST_PHASE3_LOADING===true || typeof game=="undefined" || game==null || game.load==null)
+		{
+		return;
+		}
+
+	LEVEL_PLAYLIST_PHASE3_TRACKS.forEach(function(track)
+		{
+		if (isPlaylistTrackLoaded(track.key)!==true)
+			{
+			hasDeferredTracks = true;
+			game.load.audio(track.key, track.path);
+			}
+		});
+
+	if (hasDeferredTracks!==true)
+		{
+		LEVEL_PLAYLIST_PHASE3_LOADED = true;
+		return;
+		}
+
+	LEVEL_PLAYLIST_PHASE3_LOADING = true;
+	game.load.onLoadComplete.addOnce(function()
+		{
+		LEVEL_PLAYLIST_PHASE3_LOADING = false;
+		LEVEL_PLAYLIST_PHASE3_LOADED = true;
+		});
+	game.load.start();
 	}
 
 function getLevelPlaylistTrackDurationMs(expectedPlaylistKey)
@@ -150,27 +205,29 @@ function startLevelPlaylistWatchdog(expectedPlaylistKey)
 		destroyCurrentMusicPlayer();
 		if (GAME_SOUND_ENABLED===true)
 			{
-			playRandomLevelPlaylistTrack();
+			playNextLevelPlaylistTrack();
 			}
 		}, durationMs);
 	}
 
-function getNextRandomLevelPlaylistKey()
+function getNextLevelPlaylistKey()
 	{
-	var availableKeys = LEVEL_PLAYLIST_KEYS.slice();
-
-	if (availableKeys.length>1)
+	var currentIndex = 0;
+	if (LAST_LEVEL_PLAYLIST_KEY==null)
 		{
-		availableKeys = availableKeys.filter(function(playlistKey)
-			{
-			return playlistKey!==LAST_LEVEL_PLAYLIST_KEY;
-			});
+		return LEVEL_PLAYLIST_KEYS[0];
 		}
 
-	return availableKeys[Math.floor(Math.random() * availableKeys.length)];
+	currentIndex = LEVEL_PLAYLIST_KEYS.indexOf(LAST_LEVEL_PLAYLIST_KEY);
+	if (currentIndex<0)
+		{
+		return LEVEL_PLAYLIST_KEYS[0];
+		}
+
+	return LEVEL_PLAYLIST_KEYS[(currentIndex + 1) % LEVEL_PLAYLIST_KEYS.length];
 	}
 
-function playRandomLevelPlaylistTrack()
+function playNextLevelPlaylistTrack()
 	{
 	var nextPlaylistKey = null;
 
@@ -179,9 +236,22 @@ function playRandomLevelPlaylistTrack()
 		return;
 		}
 
-	nextPlaylistKey = getNextRandomLevelPlaylistKey();
+	nextPlaylistKey = getNextLevelPlaylistKey();
 	if (nextPlaylistKey==null)
 		{
+		return;
+		}
+
+	if (isPlaylistTrackLoaded(nextPlaylistKey)!==true)
+		{
+		startLevelPlaylistPhase3Load();
+		window.setTimeout(function()
+			{
+			if (GAME_SOUND_ENABLED===true && (MUSIC_PLAYER==null || MUSIC_PLAYER.isPlaying!==true))
+				{
+				playNextLevelPlaylistTrack();
+				}
+			}, 350);
 		return;
 		}
 
@@ -293,9 +363,6 @@ Kolobok.Preloader.prototype = {
 		var musicMenu = "assets/audio/menu.mp3";
 		var musicFinal = "assets/audio/final.mp3";
 		var musicPlaylist01 = "assets/audio/playlist/01.mp3";
-		var musicPlaylist02 = "assets/audio/playlist/02.mp3";
-		var musicPlaylist03 = "assets/audio/playlist/03.mp3";
-		var musicPlaylist04 = "assets/audio/playlist/04.mp3";
 		var musicPlaylist05 = "assets/audio/playlist/05.mp3";
 		var sfxSlingshot = "assets/audio/slingshot.mp3";
 		var sfxFly1 = "assets/audio/hero-1.mp3";
@@ -379,9 +446,6 @@ Kolobok.Preloader.prototype = {
 		this.load.audio("musicMenu", musicMenu);
 		this.load.audio("musicFinal", musicFinal);
 		this.load.audio("musicPlaylist01", musicPlaylist01);
-		this.load.audio("musicPlaylist02", musicPlaylist02);
-		this.load.audio("musicPlaylist03", musicPlaylist03);
-		this.load.audio("musicPlaylist04", musicPlaylist04);
 		this.load.audio("musicPlaylist05", musicPlaylist05);
 		this.load.audio("sfxSlingshot", sfxSlingshot);
 		this.load.audio("sfxFly1", sfxFly1);
@@ -709,6 +773,7 @@ Kolobok.FinalScreen.prototype = {
 		if (MUSIC_PLAYER!=null)
 			{
 			destroyCurrentMusicPlayer();
+			LAST_LEVEL_PLAYLIST_KEY = null;
 			}
 		if (GAME_SOUND_ENABLED===true)
 			{
@@ -1080,7 +1145,10 @@ Kolobok.Menu.prototype = {
 			// CHECKING IF THERE IS A MUSIC PLAYER
 			if (MUSIC_PLAYER!=null)
 				{
-				destroyCurrentMusicPlayer();
+				if (typeof MUSIC_PLAYER.pause=="function")
+					{
+					MUSIC_PLAYER.pause();
+					}
 				}
 			}
 			else
@@ -1095,7 +1163,14 @@ Kolobok.Menu.prototype = {
 			this.menuSoundIcon.loadTexture("menuSoundOn")
 
 			// LOADING THE MENU MUSIC
-			this.playMenuMusic();
+			if (MUSIC_PLAYER!=null && typeof MUSIC_PLAYER.resume=="function" && MUSIC_PLAYER.paused===true)
+				{
+				MUSIC_PLAYER.resume();
+				}
+			else
+				{
+				this.playMenuMusic();
+				}
 			}
 		}
 	};
@@ -1663,6 +1738,9 @@ Kolobok.Game.prototype = {
 		// ADDING A KOLOBOK
 		this.addKolobok();
 
+		// STARTING DEFERRED PLAYLIST AUDIO LOAD (PHASE 3)
+		startLevelPlaylistPhase3Load();
+
 		if (parseInt(this.currentLevel, 10)===1)
 			{
 			this.firstLevelTutorialText = game.add.text(
@@ -1685,7 +1763,7 @@ Kolobok.Game.prototype = {
 			{
 			if (MUSIC_PLAYER==null || isLevelPlaylistTrack(MUSIC_PLAYER.key)==false)
 				{
-				playRandomLevelPlaylistTrack();
+				playNextLevelPlaylistTrack();
 				}
 			else if (MUSIC_PLAYER.paused===true && typeof MUSIC_PLAYER.resume=="function")
 				{
@@ -2667,7 +2745,14 @@ Kolobok.Game.prototype = {
 			// CHECKING IF THERE IS A MUSIC PLAYER CREATED
 			if (MUSIC_PLAYER!=null)
 				{
-				destroyCurrentMusicPlayer();
+				if (typeof MUSIC_PLAYER.pause=="function")
+					{
+					MUSIC_PLAYER.pause();
+					if (isLevelPlaylistTrack(MUSIC_PLAYER.key)==true)
+						{
+						stopLevelPlaylistWatchdog();
+						}
+					}
 				}
 			}
 			else
@@ -2682,12 +2767,18 @@ Kolobok.Game.prototype = {
 			this.soundIcon.loadTexture("hudSoundOn")
 
 			// CHECKING IF THERE IS A MUSIC PLAYER CREATED
-			if (MUSIC_PLAYER!=null)
+			if (MUSIC_PLAYER!=null && typeof MUSIC_PLAYER.resume=="function" && MUSIC_PLAYER.paused===true)
 				{
-				destroyCurrentMusicPlayer();
+				MUSIC_PLAYER.resume();
+				if (isLevelPlaylistTrack(MUSIC_PLAYER.key)==true)
+					{
+					startLevelPlaylistWatchdog(MUSIC_PLAYER.key);
+					}
 				}
-
-			playRandomLevelPlaylistTrack();
+			else if (MUSIC_PLAYER==null || isLevelPlaylistTrack(MUSIC_PLAYER.key)!==true)
+				{
+				playNextLevelPlaylistTrack();
+				}
 			}
 		},
 
@@ -2706,6 +2797,7 @@ Kolobok.Game.prototype = {
 		if (MUSIC_PLAYER!=null && isLevelPlaylistTrack(MUSIC_PLAYER.key)==true && typeof MUSIC_PLAYER.pause=="function")
 			{
 			MUSIC_PLAYER.pause();
+			stopLevelPlaylistWatchdog();
 			}
 
 		this.returnCameraToSceneStart();
@@ -2821,6 +2913,7 @@ Kolobok.Game.prototype = {
 		if (MUSIC_PLAYER!=null && isLevelPlaylistTrack(MUSIC_PLAYER.key)==true && typeof MUSIC_PLAYER.pause=="function")
 			{
 			MUSIC_PLAYER.pause();
+			stopLevelPlaylistWatchdog();
 			}
 
 		this.returnCameraToSceneStart();
@@ -2903,6 +2996,7 @@ Kolobok.Game.prototype = {
 		if (MUSIC_PLAYER!=null)
 			{
 			destroyCurrentMusicPlayer();
+			LAST_LEVEL_PLAYLIST_KEY = null;
 			}
 
 		// CHECKING IF THE SOUND IS ENABLED
