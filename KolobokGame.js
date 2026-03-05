@@ -2244,6 +2244,8 @@ Kolobok.Game.prototype = {
 
 	restartGame: function(useCurrentLevel)
 		{
+		this.clearPendingResultMusicResume();
+
 		// CHECKING IF THE LEVEL MUST BE RESTARTED
 		if (useCurrentLevel==true)
 			{
@@ -2633,6 +2635,7 @@ Kolobok.Game.prototype = {
 				this.audioPlayer.volume = 1;
 				this.audioPlayer.loop = false;
 				this.audioPlayer.play();
+				this.queueResultMusicResume(this.audioPlayer);
 				}
 			}
 		},
@@ -2722,10 +2725,10 @@ Kolobok.Game.prototype = {
 					}
 
 				// CHECKING IF THE SOUND IS ENABLED
-				if (GAME_SOUND_ENABLED==true)
-					{
-					// LOADING THE AUDIO YOU LOSE
-					this.audioPlayer = this.add.audio("sfxYouLose");
+					if (GAME_SOUND_ENABLED==true)
+						{
+						// LOADING THE AUDIO YOU LOSE
+						this.audioPlayer = this.add.audio("sfxYouLose");
 
 					// SETTING THE AUDIO YOU LOSE VOLUME
 					this.audioPlayer.volume = 1;
@@ -2733,9 +2736,10 @@ Kolobok.Game.prototype = {
 					// SETTING THAT THE AUDIO YOU LOSE WON'T BE LOOPING
 					this.audioPlayer.loop = false;
 
-					// PLAYING THE AUDIO YOU LOSE
-					this.audioPlayer.play();
-					}
+						// PLAYING THE AUDIO YOU LOSE
+						this.audioPlayer.play();
+						this.queueResultMusicResume(this.audioPlayer);
+						}
 
 				}
 			}
@@ -2877,6 +2881,60 @@ Kolobok.Game.prototype = {
 		this.bringHudToTop();
 		},
 
+	clearPendingResultMusicResume: function()
+		{
+		if (this.resultMusicResumeTimer!=null)
+			{
+			game.time.events.remove(this.resultMusicResumeTimer);
+			this.resultMusicResumeTimer = null;
+			}
+		},
+
+	queueResultMusicResume: function(resultAudioPlayer)
+		{
+		var resumeDelayMs = 450;
+
+		this.clearPendingResultMusicResume();
+
+		var resumeMusic = function()
+			{
+			this.resultMusicResumeTimer = null;
+
+			if (GAME_SOUND_ENABLED!==true)
+				{
+				return;
+				}
+
+			if (game.state.current!=="Kolobok.Game")
+				{
+				return;
+				}
+
+			if (MUSIC_PLAYER==null || isLevelPlaylistTrack(MUSIC_PLAYER.key)!==true)
+				{
+				return;
+				}
+
+			if (typeof MUSIC_PLAYER.resume=="function" && MUSIC_PLAYER.paused===true)
+				{
+				MUSIC_PLAYER.resume();
+				}
+			startLevelPlaylistWatchdog(MUSIC_PLAYER.key);
+			};
+
+		if (resultAudioPlayer!=null && resultAudioPlayer.onStop!=null)
+			{
+			resultAudioPlayer.onStop.addOnce(function()
+				{
+				this.resultMusicResumeTimer = game.time.events.add(resumeDelayMs, resumeMusic, this);
+				}, this);
+			}
+		else
+			{
+			this.resultMusicResumeTimer = game.time.events.add(resumeDelayMs, resumeMusic, this);
+			}
+		},
+
 	handleWinContinue: function()
 		{
 		if (this.winOverlayTransitioning===true)
@@ -2886,6 +2944,7 @@ Kolobok.Game.prototype = {
 
 		this.winOverlayTransitioning = true;
 		this.winContinueHandler.inputEnabled = false;
+		this.clearPendingResultMusicResume();
 
 		game.add.tween(this.winContinueButton).to({x: this.winContinueButton.x + 10}, 90, Phaser.Easing.Sinusoidal.Out, true);
 
@@ -3005,6 +3064,8 @@ Kolobok.Game.prototype = {
 
 	goBackToLevelSelector: function()
 		{
+		this.clearPendingResultMusicResume();
+
 		// CHECKING IF THERE IS AN AUDIO PLAYER CREATED
 		if (this.audioPlayer!=null)
 			{
