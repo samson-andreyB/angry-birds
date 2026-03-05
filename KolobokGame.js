@@ -235,7 +235,7 @@ Kolobok.Preloader.prototype = {
 		// ALL THE IMAGES THAT ARE GOING TO BE USED ARE LOADED FROM THE ASSETS FOLDER
 		var splashScreen = "assets/img/splash/screen.png";
 		var menuTitle = "assets/img/menu/title.png";
-		var menuPlayButton = "assets/img/menu/play-button.png";
+		var menuPlayButton = "assets/img/ui/play-button.png";
 		var menuSoundOn = "assets/img/ui/sound-on.png";
 		var menuSoundOff = "assets/img/ui/sound-off.png";
 		var levelSelectBackground = "assets/img/level-selector/background.png";
@@ -287,8 +287,8 @@ Kolobok.Preloader.prototype = {
 		var uiRepeatButtonShadow = "assets/img/ui/repeat-button-shadow.png";
 		var hudSoundOn = "assets/img/ui/sound-on.png";
 		var hudSoundOff = "assets/img/ui/sound-off.png";
-		var finalScreen = "assets/img/splash/final.png";
-		var finalAwards = "assets/img/splash/awards.png";
+		var finalScreen = "assets/img/final/screen.png";
+		var finalAwards = "assets/img/final/awards.png";
 
 		// ALL THE SOUNDS THAT ARE GOING TO BE USED ARE LOADED FROM THE ASSETS FOLDER
 		var musicMenu = "assets/audio/menu.mp3";

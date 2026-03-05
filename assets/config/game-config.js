@@ -1,6 +1,6 @@
 var KOLOBOK_GAME_CONFIG = {
 	audio: {
-		menuMusicVolume: 1,
+		menuMusicVolume: 0.7,
 		gameplayMusicVolume: 0.25
 	},
 	gameplay: {
