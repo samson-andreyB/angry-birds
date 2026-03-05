@@ -262,6 +262,22 @@ function playNextLevelPlaylistTrack()
 	MUSIC_PLAYER.volume = getGameMusicVolume();
 	MUSIC_PLAYER.loop = false;
 	LAST_LEVEL_PLAYLIST_KEY = nextPlaylistKey;
+	if (MUSIC_PLAYER.onStop!=null)
+		{
+		var currentPlaylistPlayer = MUSIC_PLAYER;
+		MUSIC_PLAYER.onStop.addOnce(function()
+			{
+			// Primary playlist continuation path.
+			// destroyCurrentMusicPlayer() clears onStop handlers, so this won't loop on manual stop.
+			if (GAME_SOUND_ENABLED!==true || game.state.current!=="Kolobok.Game" || MUSIC_PLAYER!==currentPlaylistPlayer)
+				{
+				return;
+				}
+			stopLevelPlaylistWatchdog();
+			destroyCurrentMusicPlayer();
+			playNextLevelPlaylistTrack();
+			});
+		}
 	MUSIC_PLAYER.play();
 	startLevelPlaylistWatchdog(nextPlaylistKey);
 	}
@@ -1493,6 +1509,8 @@ Kolobok.Game.prototype = {
 		this.remainingKolobokKeys = [];
 		this.firstLevelTutorialText = null;
 		this.sceneSfxMuted = false;
+		this.resultMusicResumeTimer = null;
+		this.resultMusicResumeFallbackTimer = null;
 		},
 
 	getCurrentBackgroundKey: function()
@@ -2887,17 +2905,64 @@ Kolobok.Game.prototype = {
 			game.time.events.remove(this.resultMusicResumeTimer);
 			this.resultMusicResumeTimer = null;
 			}
+		if (this.resultMusicResumeFallbackTimer!=null)
+			{
+			game.time.events.remove(this.resultMusicResumeFallbackTimer);
+			this.resultMusicResumeFallbackTimer = null;
+			}
 		},
 
 	queueResultMusicResume: function(resultAudioPlayer)
 		{
 		var resumeDelayMs = 450;
+		var fallbackAfterResultMs = 2200;
+		var resumeScheduled = false;
 
 		this.clearPendingResultMusicResume();
 
+		if (resultAudioPlayer!=null)
+			{
+			if (typeof resultAudioPlayer.totalDuration=="number" && isFinite(resultAudioPlayer.totalDuration) && resultAudioPlayer.totalDuration>0)
+				{
+				fallbackAfterResultMs = Math.ceil(resultAudioPlayer.totalDuration * 1000) + 300;
+				}
+			else if (typeof resultAudioPlayer.duration=="number" && isFinite(resultAudioPlayer.duration) && resultAudioPlayer.duration>0)
+				{
+				fallbackAfterResultMs = Math.ceil(resultAudioPlayer.duration * 1000) + 300;
+				}
+			else if (resultAudioPlayer._sound && typeof resultAudioPlayer._sound.duration=="number" && isFinite(resultAudioPlayer._sound.duration) && resultAudioPlayer._sound.duration>0)
+				{
+				fallbackAfterResultMs = Math.ceil(resultAudioPlayer._sound.duration * 1000) + 300;
+				}
+			else if (resultAudioPlayer.key && game.cache && typeof game.cache.getSoundData=="function")
+				{
+				var resultSoundData = game.cache.getSoundData(resultAudioPlayer.key);
+				if (resultSoundData instanceof Array && resultSoundData.length>0)
+					{
+					resultSoundData = resultSoundData[0];
+					}
+				if (resultSoundData && typeof resultSoundData.duration=="number" && isFinite(resultSoundData.duration) && resultSoundData.duration>0)
+					{
+					fallbackAfterResultMs = Math.ceil(resultSoundData.duration * 1000) + 300;
+					}
+				}
+			}
+
+		if (fallbackAfterResultMs<1200)
+			{
+			fallbackAfterResultMs = 1200;
+			}
+
 		var resumeMusic = function()
 			{
+			if (resumeScheduled===true)
+				{
+				return;
+				}
+			resumeScheduled = true;
+
 			this.resultMusicResumeTimer = null;
+			this.resultMusicResumeFallbackTimer = null;
 
 			if (GAME_SOUND_ENABLED!==true)
 				{
@@ -2932,6 +2997,9 @@ Kolobok.Game.prototype = {
 			{
 			this.resultMusicResumeTimer = game.time.events.add(resumeDelayMs, resumeMusic, this);
 			}
+
+		// Fallback: if result SFX onStop is not fired by browser/device, resume anyway.
+		this.resultMusicResumeFallbackTimer = game.time.events.add(fallbackAfterResultMs + resumeDelayMs, resumeMusic, this);
 		},
 
 	handleWinContinue: function()
