@@ -27,7 +27,8 @@ var LEVEL_PLAYLIST_PHASE3_LOADED = false;
 var LEVEL_PLAYLIST_PHASE3_TRACKS = [
 	{key: "musicPlaylist02", path: "assets/audio/playlist/02.mp3"},
 	{key: "musicPlaylist03", path: "assets/audio/playlist/03.mp3"},
-	{key: "musicPlaylist04", path: "assets/audio/playlist/04.mp3"}
+	{key: "musicPlaylist04", path: "assets/audio/playlist/04.mp3"},
+	{key: "musicPlaylist05", path: "assets/audio/playlist/05.mp3"}
 ];
 
 function getMenuMusicVolume()
@@ -242,17 +243,17 @@ function playNextLevelPlaylistTrack()
 		return;
 		}
 
-	if (isPlaylistTrackLoaded(nextPlaylistKey)!==true)
-		{
-		startLevelPlaylistPhase3Load();
-		window.setTimeout(function()
+		if (isPlaylistTrackLoaded(nextPlaylistKey)!==true)
 			{
-			if (GAME_SOUND_ENABLED===true && (MUSIC_PLAYER==null || MUSIC_PLAYER.isPlaying!==true))
+			startLevelPlaylistPhase3Load();
+			window.setTimeout(function()
 				{
-				playNextLevelPlaylistTrack();
-				}
-			}, 350);
-		return;
+				if (GAME_SOUND_ENABLED===true && isPlaylistTrackLoaded(nextPlaylistKey)===true && (MUSIC_PLAYER==null || MUSIC_PLAYER.isPlaying!==true))
+					{
+					playNextLevelPlaylistTrack();
+					}
+				}, 350);
+			return;
 		}
 
 	destroyCurrentMusicPlayer();
@@ -364,7 +365,6 @@ Kolobok.Preloader.prototype = {
 		var musicFinal = "assets/audio/final.mp3";
 		var musicBackground = "assets/audio/background.mp3";
 		var musicPlaylist01 = "assets/audio/playlist/01.mp3";
-		var musicPlaylist05 = "assets/audio/playlist/05.mp3";
 		var sfxSlingshot = "assets/audio/slingshot.mp3";
 		var sfxFly1 = "assets/audio/hero-1.mp3";
 		var sfxFly2 = "assets/audio/hero-2.mp3";
@@ -448,7 +448,6 @@ Kolobok.Preloader.prototype = {
 		this.load.audio("musicFinal", musicFinal);
 		this.load.audio("musicBackground", musicBackground);
 		this.load.audio("musicPlaylist01", musicPlaylist01);
-		this.load.audio("musicPlaylist05", musicPlaylist05);
 		this.load.audio("sfxSlingshot", sfxSlingshot);
 		this.load.audio("sfxFly1", sfxFly1);
 		this.load.audio("sfxFly2", sfxFly2);
