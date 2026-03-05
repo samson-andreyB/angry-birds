@@ -15,6 +15,8 @@ var userLanguage = window.navigator.userLanguage || window.navigator.language;
 
 var GAME_SOUND_ENABLED = true;
 var GAME_LEVEL_SELECTED = "";
+var DEBUG_WIN_BUTTON_UNLOCKED = false;
+var DEBUG_MENU_TITLE_TAP_COUNT = 0;
 
 var MUSIC_PLAYER = null;
 var LEVEL_PLAYLIST_KEYS = ["musicPlaylist01", "musicPlaylist02", "musicPlaylist03", "musicPlaylist04", "musicPlaylist05"];
@@ -819,6 +821,7 @@ Kolobok.Menu.prototype = {
 	init: function()
 		{
 		this.menuMusicUnlockHandler = null;
+		this.menuTitleDebugHandler = null;
 		},
 
 	preload: function()
@@ -828,6 +831,7 @@ Kolobok.Menu.prototype = {
 		this.menuFloorGrassBack = null;
 		this.menuFloorGrassFront = null;
 		this.menuTitle = null;
+		this.menuTitleDebugHandler = null;
 		this.menuPlay = null;
 		this.menuPlayHandler = null;
 		this.menuSoundIcon = null;
@@ -853,6 +857,22 @@ Kolobok.Menu.prototype = {
 		// ADDING THE GAME TITLE
 		this.menuTitle = this.add.sprite(0, menuLayout.titleTop, "menuTitle");
 		this.menuTitle.position.x = game.width / 2 - this.menuTitle.width / 2;
+		this.menuTitleDebugHandler = game.add.graphics();
+		this.menuTitleDebugHandler.beginFill(0x000000, 0);
+		this.menuTitleDebugHandler.drawRect(this.menuTitle.x, this.menuTitle.y, this.menuTitle.width, this.menuTitle.height);
+		this.menuTitleDebugHandler.inputEnabled = true;
+		this.menuTitleDebugHandler.events.onInputUp.add(function()
+			{
+			if (DEBUG_WIN_BUTTON_UNLOCKED===true)
+				{
+				return;
+				}
+			DEBUG_MENU_TITLE_TAP_COUNT = DEBUG_MENU_TITLE_TAP_COUNT + 1;
+			if (DEBUG_MENU_TITLE_TAP_COUNT>=10)
+				{
+				DEBUG_WIN_BUTTON_UNLOCKED = true;
+				}
+			}, this);
 
 
 		// ADDING THE PLAY BUTTON
@@ -1275,6 +1295,8 @@ Kolobok.Game = function (game)
 	this.restartHandler = null;
 	this.soundIcon = null;
 	this.soundHandler = null;
+	this.debugWinButton = null;
+	this.debugWinHandler = null;
 	this.winOverlay = null;
 	this.loseOverlay = null;
 	this.winPanel = null;
@@ -1354,6 +1376,8 @@ Kolobok.Game.prototype = {
 		this.restartHandler = null;
 		this.soundIcon = null;
 		this.soundHandler = null;
+		this.debugWinButton = null;
+		this.debugWinHandler = null;
 		this.winOverlay = null;
 		this.loseOverlay = null;
 		this.winPanel = null;
@@ -1573,6 +1597,11 @@ Kolobok.Game.prototype = {
 		this.soundHandler.inputEnabled = true;
 		this.soundHandler.events.onInputUp.add(function(){this.toggleSound()},this);
 
+		if (DEBUG_WIN_BUTTON_UNLOCKED===true)
+			{
+			this.createDebugWinButton(hudLayout);
+			}
+
 		this.bringHudToTop();
 
 
@@ -1670,6 +1699,44 @@ Kolobok.Game.prototype = {
 			// PAUSING THE PHYSICS
 			game.physics.p2.pause();
 			});
+		},
+
+	createDebugWinButton: function(hudLayout)
+		{
+		var winButtonX = hudLayout.sound.x + hudLayout.sound.width + 12;
+		var winButtonY = hudLayout.sound.y + 6;
+		var winButtonPaddingX = 14;
+		var winButtonPaddingY = 8;
+		var winButtonStyle = {font: "bold 24px Semlor", fill: "#f5f0dc", stroke: "#6d4f2e", strokeThickness: 4};
+
+		this.debugWinButton = this.add.text(winButtonX, winButtonY, "WIN", winButtonStyle);
+		this.debugWinButton.fixedToCamera = true;
+
+		this.debugWinHandler = game.add.graphics();
+		this.debugWinHandler.beginFill(0x000000, 0);
+		this.debugWinHandler.drawRect(
+			winButtonX - winButtonPaddingX,
+			winButtonY - winButtonPaddingY,
+			this.debugWinButton.width + winButtonPaddingX * 2,
+			this.debugWinButton.height + winButtonPaddingY * 2
+		);
+		this.debugWinHandler.fixedToCamera = true;
+		this.debugWinHandler.inputEnabled = true;
+		this.debugWinHandler.events.onInputUp.add(function()
+			{
+			this.forceDebugWin();
+			}, this);
+		},
+
+	forceDebugWin: function()
+		{
+		if (this.gameWon===true || this.winOverlay!=null || this.loseOverlay!=null)
+			{
+			return;
+			}
+
+		this.countDeadEnemies = Math.max(0, this.totalNumEnemies - 1);
+		this.updateDeadCount();
 		},
 
 	update: function()
@@ -2807,9 +2874,11 @@ Kolobok.Game.prototype = {
 		if (this.menuHandler!=null){this.game.world.bringToTop(this.menuHandler);}
 		if (this.restartHandler!=null){this.game.world.bringToTop(this.restartHandler);}
 		if (this.soundHandler!=null){this.game.world.bringToTop(this.soundHandler);}
+		if (this.debugWinHandler!=null){this.game.world.bringToTop(this.debugWinHandler);}
 		if (this.menuIcon!=null){this.game.world.bringToTop(this.menuIcon);}
 		if (this.restartIcon!=null){this.game.world.bringToTop(this.restartIcon);}
 		if (this.soundIcon!=null){this.game.world.bringToTop(this.soundIcon);}
+		if (this.debugWinButton!=null){this.game.world.bringToTop(this.debugWinButton);}
 		},
 
 	nextLevelExists: function()
