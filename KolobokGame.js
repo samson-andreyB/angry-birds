@@ -289,6 +289,7 @@ Kolobok.Preloader.prototype = {
 		var hudSoundOn = "assets/img/ui/sound-on.png";
 		var hudSoundOff = "assets/img/ui/sound-off.png";
 		var finalScreen = "assets/img/final/screen.png";
+		var finalScreenVideo = "assets/video/final.mp4";
 		var finalAwards = "assets/img/final/awards.png";
 
 		// ALL THE SOUNDS THAT ARE GOING TO BE USED ARE LOADED FROM THE ASSETS FOLDER
@@ -306,6 +307,8 @@ Kolobok.Preloader.prototype = {
 		var sfxExplosion = "assets/audio/explosion.mp3";
 		var sfxYouWin = "assets/audio/you-win.mp3";
 		var sfxYouLose = "assets/audio/you-lose.mp3";
+		var levelSelectorVideoEnabled = !!(KOLOBOK_GAME_CONFIG.ui && KOLOBOK_GAME_CONFIG.ui.levelSelector && KOLOBOK_GAME_CONFIG.ui.levelSelector.videoBackground && KOLOBOK_GAME_CONFIG.ui.levelSelector.videoBackground.enabled===true);
+		var finalVideoEnabled = !!(KOLOBOK_GAME_CONFIG.ui && KOLOBOK_GAME_CONFIG.ui.final && KOLOBOK_GAME_CONFIG.ui.final.videoBackground && KOLOBOK_GAME_CONFIG.ui.final.videoBackground.enabled===true);
 
 		// LOADING THE IMAGES
 		if (!this.deferMainAssets)
@@ -317,7 +320,10 @@ Kolobok.Preloader.prototype = {
 		this.load.image("menuSoundOn", menuSoundOn);
 		this.load.image("menuSoundOff", menuSoundOff);
 		this.load.image("levelSelectBackground", levelSelectBackground);
-		this.load.video("levelSelectBackgroundVideo", levelSelectBackgroundVideo);
+		if (levelSelectorVideoEnabled===true)
+			{
+			this.load.video("levelSelectBackgroundVideo", levelSelectBackgroundVideo);
+			}
 		this.load.image("levelSelectButton01", levelSelectButton01);
 		this.load.image("levelSelectButton02", levelSelectButton02);
 		this.load.image("levelSelectButton03", levelSelectButton03);
@@ -366,6 +372,10 @@ Kolobok.Preloader.prototype = {
 		this.load.image("hudSoundOn", hudSoundOn);
 		this.load.image("hudSoundOff", hudSoundOff);
 		this.load.image("finalScreen", finalScreen);
+		if (finalVideoEnabled===true)
+			{
+			this.load.video("finalScreenVideo", finalScreenVideo);
+			}
 		this.load.image("finalAwards", finalAwards);
 
 		// LOADING THE AUDIOS
@@ -684,6 +694,8 @@ Kolobok.FinalScreen.prototype = {
 	init: function()
 		{
 		this.finalBackground = null;
+		this.finalBackgroundVideo = null;
+		this.finalBackgroundVideoSprite = null;
 		this.finalAwardsPanel = null;
 		this.finalAwardsText = null;
 		this.finalContinueButton = null;
@@ -693,6 +705,7 @@ Kolobok.FinalScreen.prototype = {
 	create: function()
 		{
 		var finalLayout = KOLOBOK_GAME_CONFIG.ui.final;
+		var finalVideoConfig = finalLayout.videoBackground || {};
 		var splashState = game.state.states["Kolobok.SplashGame"];
 		var totalStars = 0;
 		var maxStars = 36;
@@ -723,8 +736,23 @@ Kolobok.FinalScreen.prototype = {
 			MUSIC_PLAYER.play();
 			}
 
-		// ADDING THE FINAL IMAGE
-		this.finalBackground = game.add.sprite(0, 0, "finalScreen");
+		// ADDING THE FINAL IMAGE OR VIDEO BACKGROUND
+		if (finalVideoConfig.enabled===true && this.game.cache.checkVideoKey("finalScreenVideo")==true)
+			{
+			this.finalBackgroundVideo = this.add.video("finalScreenVideo");
+			if (this.finalBackgroundVideo!=null)
+				{
+				this.finalBackgroundVideoSprite = this.finalBackgroundVideo.addToWorld(0, 0, 0, 0);
+				this.finalBackgroundVideoSprite.width = game.width;
+				this.finalBackgroundVideoSprite.height = game.height;
+				this.finalBackgroundVideo.play(true);
+				}
+			}
+
+		if (this.finalBackgroundVideoSprite==null)
+			{
+			this.finalBackground = game.add.sprite(0, 0, "finalScreen");
+			}
 
 		// ADDING THE AWARDS PANEL AND THE BUTTON AS A SINGLE BOTTOM BLOCK
 		this.finalAwardsPanel = game.add.sprite(0, 0, "finalAwards");
@@ -757,6 +785,8 @@ Kolobok.FinalScreen.prototype = {
 		this.finalContinueHandler.inputEnabled = true;
 		this.finalContinueHandler.events.onInputUp.add(function()
 			{
+			this.stopFinalBackgroundVideo();
+
 			if (this.game.sound.context && this.game.sound.context.state=="suspended")
 				{
 				this.game.sound.context.resume();
@@ -777,6 +807,28 @@ Kolobok.FinalScreen.prototype = {
 
 			game.state.start("Kolobok.LevelSelector", Phaser.Plugin.StateTransition.Out.SlideLeft);
 			}, this);
+		},
+
+	stopFinalBackgroundVideo: function()
+		{
+		if (this.finalBackgroundVideo!=null)
+			{
+			if (typeof this.finalBackgroundVideo.stop=="function")
+				{
+				this.finalBackgroundVideo.stop();
+				}
+			if (typeof this.finalBackgroundVideo.destroy=="function")
+				{
+				this.finalBackgroundVideo.destroy();
+				}
+			this.finalBackgroundVideo = null;
+			}
+		this.finalBackgroundVideoSprite = null;
+		},
+
+	shutdown: function()
+		{
+		this.stopFinalBackgroundVideo();
 		}
 	};
 

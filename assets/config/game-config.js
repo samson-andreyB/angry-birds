@@ -56,6 +56,9 @@ var KOLOBOK_GAME_CONFIG = {
 			loadingTickMs: 350
 		},
 		final: {
+			videoBackground: {
+				enabled: true
+			},
 			bottomOffset: 18,
 			bottomGap: 16,
 			awardsTextOffsetX: 50,
