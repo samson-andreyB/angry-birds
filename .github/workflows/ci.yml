@@ -23,7 +23,7 @@ jobs:
           python-version: '3.12'
 
       - name: Check JavaScript syntax
-        run: node --check AngryBirdsGame.js
+        run: node --check KolobokGame.js
 
       - name: Validate project integrity
         run: python3 scripts/validate_project.py
