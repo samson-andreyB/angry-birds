@@ -74,6 +74,9 @@ var KOLOBOK_GAME_CONFIG = {
 			}
 		},
 		levelSelector: {
+			videoBackground: {
+				enabled: true
+			},
 			buttons: [
 				{ level: "1", x: 50, y: 50 },
 				{ level: "2", x: 200, y: 50 },

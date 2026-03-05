@@ -239,6 +239,7 @@ Kolobok.Preloader.prototype = {
 		var menuSoundOn = "assets/img/ui/sound-on.png";
 		var menuSoundOff = "assets/img/ui/sound-off.png";
 		var levelSelectBackground = "assets/img/level-selector/background.png";
+		var levelSelectBackgroundVideo = "assets/video/level-selector.mp4";
 		var levelSelectButton01 = "assets/img/level-selector/level-button-01.png";
 		var levelSelectButton02 = "assets/img/level-selector/level-button-02.png";
 		var levelSelectButton03 = "assets/img/level-selector/level-button-03.png";
@@ -316,6 +317,7 @@ Kolobok.Preloader.prototype = {
 		this.load.image("menuSoundOn", menuSoundOn);
 		this.load.image("menuSoundOff", menuSoundOff);
 		this.load.image("levelSelectBackground", levelSelectBackground);
+		this.load.video("levelSelectBackgroundVideo", levelSelectBackgroundVideo);
 		this.load.image("levelSelectButton01", levelSelectButton01);
 		this.load.image("levelSelectButton02", levelSelectButton02);
 		this.load.image("levelSelectButton03", levelSelectButton03);
@@ -1053,6 +1055,8 @@ Kolobok.LevelSelector.prototype = {
 	init: function()
 		{
 		this.levelSelectorBackgroundImage = null;
+		this.levelSelectorBackgroundVideo = null;
+		this.levelSelectorBackgroundVideoSprite = null;
 		this.levelSelectorGoBackImage = null;
 		this.levelSelectorGoBackImageHandler = null;
 		},
@@ -1060,9 +1064,25 @@ Kolobok.LevelSelector.prototype = {
 	create: function()
 		{
 		var levelSelectorLayout = KOLOBOK_GAME_CONFIG.ui.levelSelector;
+		var videoBackgroundConfig = levelSelectorLayout.videoBackground || {};
 		var backButtonLayout = levelSelectorLayout.backButton;
 		// ADDING THE BACKGROUND
-		this.levelSelectorBackgroundImage = this.add.sprite(0, 0, "levelSelectBackground");
+		if (videoBackgroundConfig.enabled===true && this.game.cache.checkVideoKey("levelSelectBackgroundVideo")==true)
+			{
+			this.levelSelectorBackgroundVideo = this.add.video("levelSelectBackgroundVideo");
+			if (this.levelSelectorBackgroundVideo!=null)
+				{
+				this.levelSelectorBackgroundVideoSprite = this.levelSelectorBackgroundVideo.addToWorld(0, 0, 0, 0);
+				this.levelSelectorBackgroundVideoSprite.width = game.width;
+				this.levelSelectorBackgroundVideoSprite.height = game.height;
+				this.levelSelectorBackgroundVideo.play(true);
+				}
+			}
+
+		if (this.levelSelectorBackgroundVideoSprite==null)
+			{
+			this.levelSelectorBackgroundImage = this.add.sprite(0, 0, "levelSelectBackground");
+			}
 
 		// GETTING ALL THE SOLVED LEVELS
 		var solvedLevels = parseInt(game.state.states["Kolobok.SplashGame"].getSolvedLevels());
@@ -1085,9 +1105,28 @@ Kolobok.LevelSelector.prototype = {
 		this.levelSelectorGoBackImageHandler.inputEnabled = true;
 		this.levelSelectorGoBackImageHandler.events.onInputUp.add(function()
 			{
+			this.stopLevelSelectorBackgroundVideo();
+
 			// LOADING THE GAME MENU
 			game.state.start("Kolobok.Menu", Phaser.Plugin.StateTransition.Out.SlideRight);
 			},this);
+		},
+
+	stopLevelSelectorBackgroundVideo: function()
+		{
+		if (this.levelSelectorBackgroundVideo!=null)
+			{
+			if (typeof this.levelSelectorBackgroundVideo.stop=="function")
+				{
+				this.levelSelectorBackgroundVideo.stop();
+				}
+			if (typeof this.levelSelectorBackgroundVideo.destroy=="function")
+				{
+				this.levelSelectorBackgroundVideo.destroy();
+				}
+			this.levelSelectorBackgroundVideo = null;
+			}
+		this.levelSelectorBackgroundVideoSprite = null;
 		},
 
 	createLevelButton: function(x, y, levelNumber, solvedLevels)
@@ -1145,6 +1184,8 @@ Kolobok.LevelSelector.prototype = {
 
 	startLevel: function(levelNumber)
 		{
+		this.stopLevelSelectorBackgroundVideo();
+
 		// SETTING THE SELECTED LEVEL NUMBER
 		GAME_LEVEL_SELECTED = levelNumber;
 
@@ -1156,6 +1197,11 @@ Kolobok.LevelSelector.prototype = {
 
 		// LOADING THE GAME DIRECTLY
 		game.state.start("Kolobok.Game", Phaser.Plugin.StateTransition.Out.SlideLeft);
+		},
+
+	shutdown: function()
+		{
+		this.stopLevelSelectorBackgroundVideo();
 		}
 	};
 
